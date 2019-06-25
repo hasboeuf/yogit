@@ -4,6 +4,8 @@ Command line utility for GitHub daily work.
 import setuptools
 import yogh
 
+DEPENDENCIES = ["click", "requests", "tabulate"]
+
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
@@ -21,5 +23,6 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     classifiers=["Programming Language :: Python :: 3", "Operating System :: OS Independent"],
     zip_safe=True,
+    install_requires=DEPENDENCIES,
     entry_points={"console_scripts": ["yogh=yogh.yogh.cli:main"]},
 )
