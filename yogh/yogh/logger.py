@@ -11,7 +11,7 @@ import yogh
 from yogh.yogh.settings import SETTINGS_DIR, get_log_path
 
 
-def get_logger(logger_name=yogh.__application__, version=yogh.__version__):
+def get_logger(stdout=False, logger_name=yogh.__application__, version=yogh.__version__):
     """
     Create and configure a logger using a given name.
     """
@@ -38,7 +38,7 @@ def get_logger(logger_name=yogh.__application__, version=yogh.__version__):
     local_logger.setLevel(logging.DEBUG)
     local_logger.addHandler(file_log_handler)
 
-    if "YOGH_LOG_TO_STDERR" in os.environ:
+    if stdout:
         console_log_handler = logging.StreamHandler(sys.stdout)
         console_log_handler.setLevel(logging.DEBUG)
         console_log_handler.setFormatter(formatter)
@@ -48,6 +48,11 @@ def get_logger(logger_name=yogh.__application__, version=yogh.__version__):
 
 
 LOGGER = get_logger()
+
+
+def enable_stdout():
+    global LOGGER
+    LOGGER = get_logger(stdout=True)
 
 
 def echo_info(message):
