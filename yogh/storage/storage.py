@@ -3,44 +3,30 @@ yogh storage
 """
 
 import os
-import json
+import yaml
 
 
 class Storage:
-    """ Storage based on JSON file """
+    """ Storage based on YAML file """
 
-    def __init__(self, filename):
+    def __init__(self, filename, version=None):
         self.filename = filename
+        self.version = version
 
-    def get(self, key, default=None):
-        """ Get value for key """
-        data = self._load_dict()
-        return data.get(key, default)
-
-    def put(self, key, value):
-        """ Save value for key """
-        data = self._load_dict()
-        data[key] = value
-        self._save_dict(data)
-
-    def remove(self, key):
-        """ Remove a key/value """
-        data = self._load_dict()
-        if key in data:
-            del data[key]
-            self._save_dict(data)
-
-    def get_all(self):
-        """ Get all key/value """
-        return self._load_dict()
-
-    def _load_dict(self):
+    def load(self):
+        """ Load YAML """
         try:
-            with open(self.filename, "r") as json_file:
-                return json.load(json_file)
+            with open(self.filename, "r") as yaml_file:
+                return yaml.load(yaml_file, Loader=yaml.FullLoader) or {}
         except:
             return {}
 
-    def _save_dict(self, data):
-        with open(self.filename, "w") as json_file:
-            json.dump(data, json_file, indent=4)
+    def save(self, data):
+        with open(self.filename, "w") as yaml_file:
+            if data is not None and self.version is not None:
+                data["version"] = self.version
+            yaml_file.write(yaml.dump(data, indent=4))
+
+    def get_version(self):
+        data = self.storage.load()
+        return data.get("version", None) or None

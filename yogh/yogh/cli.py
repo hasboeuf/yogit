@@ -5,7 +5,11 @@ import click
 
 import yogh
 from yogh.yogh.logger import enable_stdout
-from yogh.yogh.pr import pr
+from yogh.yogh.pullrequest import pull_request
+from yogh.yogh.branch import branch
+from yogh.yogh.review import review
+from yogh.yogh.account import account
+from yogh.yogh.scrum import scrum
 
 
 @click.group()
@@ -20,7 +24,11 @@ def main(ctx, verbose):
         enable_stdout()
 
 
-main.add_command(pr)
+main.add_command(account)
+main.add_command(branch)
+main.add_command(pull_request)
+main.add_command(review)
+main.add_command(scrum)
 
 
 if __name__ == "__main__":

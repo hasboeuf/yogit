@@ -51,6 +51,9 @@ LOGGER = get_logger()
 
 
 def enable_stdout():
+    """
+    Prints logs in stdout
+    """
     global LOGGER
     LOGGER = get_logger(stdout=True)
 
