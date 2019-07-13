@@ -1,19 +1,22 @@
 """
 GraphQL requesters used by yogit
 """
+from string import Template
+
 from yogit.yogit.settings import Settings
 import yogit.api.statements as S
 from yogit.utils.dateutils import today_earliest_str
 
 
-def prepare(statement, tokens):
+def prepare(statement, variables):
     """
-    Set tokens in statement and return the prepared statement
+    Set variable in statement and return the prepared statement
     """
-    prepared_statement = statement
-    for token in tokens:
-        if token == S.LOGIN_TOKEN:
-            prepared_statement = prepared_statement.replace(token, Settings().get_login())
-        elif token == S.TODAY_TOKEN:
-            prepared_statement = prepared_statement.replace(token, today_earliest_str())
-    return prepared_statement
+    template = Template(statement)
+    data = {}
+    for variable in variables:
+        if variable == S.LOGIN_VARIABLE:
+            data[variable] = Settings().get_login()
+        elif variable == S.TODAY_VARIABLE:
+            data[variable] = today_earliest_str()
+    return template.safe_substitute(data)

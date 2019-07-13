@@ -1,8 +1,8 @@
 """
 GraphQL query statements used by yogit
 """
-LOGIN_TOKEN = "@login@"
-TODAY_TOKEN = "@today@"
+LOGIN_VARIABLE = "login"
+TODAY_VARIABLE = "today"
 
 LOGIN_STATEMENT = """
 {
@@ -26,7 +26,7 @@ ORGANIZATION_LIST_STATEMENT = """
 
 REVIEW_REQUESTED_STATEMENT = """
 {
-    search(query: "type:pr state:open review-requested:@login@", type: ISSUE, first: 100) {
+    search(query: "type:pr state:open review-requested:$login", type: ISSUE, first: 100) {
         edges {
             node {
                 ... on PullRequest {
@@ -72,7 +72,7 @@ PULL_REQUEST_LIST_STATEMENT = """
 PULL_REQUEST_CONTRIBUTION_LIST_STATEMENT = """
 {
     viewer {
-        contributionsCollection(from: "@today@") {
+        contributionsCollection(from: "$today") {
             pullRequestContributions(first: 100) {
                 edges {
                     node {

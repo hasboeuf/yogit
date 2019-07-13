@@ -34,13 +34,13 @@ class Query:
 
 
 class GraphQLQuery(Query):
-    def __init__(self, statement, tokens=[]):
+    def __init__(self, statement, variables=[]):
         super().__init__()
         self.statement = statement
-        self.tokens = tokens
+        self.variables = variables
 
     def exec(self):
-        prepared_statement = prepare(self.statement, self.tokens)
+        prepared_statement = prepare(self.statement, self.variables)
         if self.client is None:
             self.client = GraphQLClient()
         self.response = self.client.get(prepared_statement)
@@ -74,7 +74,7 @@ class LoginQuery(GraphQLQuery):
 
 class ReviewRequestedQuery(GraphQLQuery):
     def __init__(self):
-        super().__init__(S.REVIEW_REQUESTED_STATEMENT, [S.LOGIN_TOKEN])
+        super().__init__(S.REVIEW_REQUESTED_STATEMENT, [S.LOGIN_VARIABLE])
         self.data = []
 
     def _handle_response(self):
@@ -127,7 +127,7 @@ class PullRequestListQuery(GraphQLQuery):
 
 class PullRequestContributionListQuery(GraphQLQuery):
     def __init__(self):
-        super().__init__(S.PULL_REQUEST_CONTRIBUTION_LIST_STATEMENT, [S.TODAY_TOKEN])
+        super().__init__(S.PULL_REQUEST_CONTRIBUTION_LIST_STATEMENT, [S.TODAY_VARIABLE])
         self.data = []
 
     def _handle_response(self):

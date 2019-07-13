@@ -21,16 +21,16 @@ def test_prepare_no_token():
 def test_prepare_only_one_token():
     statement = """
     {
-        login: @login@,
-        date: @today@
+        login: $login,
+        date: $today
     }
     """
     assert (
-        prepare(statement, [S.LOGIN_TOKEN])
+        prepare(statement, [S.LOGIN_VARIABLE])
         == """
     {
         login: user1,
-        date: @today@
+        date: $today
     }
     """
     )
@@ -41,12 +41,12 @@ def test_prepare_only_one_token():
 def test_prepare_all_tokens(mock_today_earliest_str):
     statement = """
     {
-        login: @login@,
-        date: @today@
+        login: $login,
+        date: $today
     }
     """
     assert (
-        prepare(statement, [S.LOGIN_TOKEN, S.TODAY_TOKEN])
+        prepare(statement, [S.LOGIN_VARIABLE, S.TODAY_VARIABLE])
         == """
     {
         login: user1,
