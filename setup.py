@@ -14,7 +14,7 @@ setuptools.setup(
     version=yogit.__version__,
     author="Adrien Gavignet",
     author_email="adrien.gavignet@gmail.com",
-    license="Proprietary",
+    license="MIT",
     description="Command line utility for GitHub daily work.",
     long_description=long_description,
     long_description_content_type="text/markdown",
