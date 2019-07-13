@@ -8,4 +8,4 @@ Command line utility for GitHub daily work.
 
 ## Installation
 
-`pip3 install yogh`
+`pip3 install yogit`

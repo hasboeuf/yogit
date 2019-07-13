@@ -2,4 +2,4 @@
 set -ev
 cd $(dirname $0)/..
 
-pylint --output-format=parseable --max-line-length=120 yogh
+pylint --output-format=parseable --max-line-length=120 yogit
