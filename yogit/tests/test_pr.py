@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from unittest.mock import patch, Mock
+from unittest.mock import patch
 import responses
 import pytest
 from click.testing import CliRunner

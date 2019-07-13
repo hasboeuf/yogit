@@ -16,7 +16,7 @@ from yogit.yogit.scrum import scrum
 @click.version_option(version=yogit.__version__)
 @click.option("--verbose", "-v", is_flag=True, help="Print verbose output.")
 @click.pass_context
-def main(ctx, verbose):
+def main(ctx, verbose):  # pylint: disable=unused-argument
     """
     Command line utility for GitHub daily work
     """

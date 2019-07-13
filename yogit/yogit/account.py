@@ -11,8 +11,11 @@ from yogit.yogit.checks import account_required
 
 
 def get_welcome_text():
+    """
+    Return Welcome text
+    """
     settings = Settings()
-    return """                   _ _   
+    return r"""                   _ _
  _   _  ___   __ _(_) |_ 
 | | | |/ _ \ / _` | | __|
 | |_| | (_) | (_| | | |_ 
@@ -31,7 +34,7 @@ Required scopes are:
 Configuration is stored here `{}`,
 and is not encrypted, only use yogit on your personal computer.
 """.format(
-        settings.path
+        settings.get_path()
     )
 
 
@@ -70,7 +73,7 @@ def account_setup():
 @click.command("usage")
 @click.pass_context
 @account_required
-def account_usage(ctx):
+def account_usage(ctx):  # pylint: disable=unused-argument
     """
     Current API usage
     """

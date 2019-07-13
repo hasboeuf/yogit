@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from unittest.mock import patch, Mock
+from unittest.mock import patch
 import responses
 import pytest
 from click.testing import CliRunner
@@ -9,7 +9,7 @@ from yogit.yogit import cli
 from yogit.yogit.errors import ExitCode
 from yogit.api.client import GITHUB_API_URL_V4
 from yogit.yogit.settings import ScrumReportSettings
-from yogit.tests.mocks.mock_settings import temporary_settings, mock_settings, temporary_scrum_report
+from yogit.tests.mocks.mock_settings import mock_settings, temporary_scrum_report
 
 
 def _add_graphql_response(json):
@@ -66,7 +66,7 @@ def test_default_report_ok(utcnow_mock, runner):
 
     assert result.exit_code == ExitCode.NO_ERROR.value
     settings = ScrumReportSettings()
-    assert result.output == "Loaded from `{}`\n".format(settings.path) + (
+    assert result.output == "Loaded from `{}`\n".format(settings.get_path()) + (
         "What have you done today?\n"
         "Do you have any blockers?\n"
         "What do you plan to work on on your next working day?\n"

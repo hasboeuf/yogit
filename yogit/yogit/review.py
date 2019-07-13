@@ -18,7 +18,7 @@ def review():
 @click.command("requested")
 @click.pass_context
 @account_required
-def review_requested_list(ctx):
+def review_requested_list(ctx):  # pylint: disable=unused-argument
     """
     List requested reviews
     """

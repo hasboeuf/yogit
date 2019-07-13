@@ -1,3 +1,6 @@
+"""
+yogit precheck routines
+"""
 import click
 
 from yogit.yogit.settings import Settings
@@ -5,7 +8,7 @@ from yogit.yogit.settings import Settings
 
 def account_required(func):
     """
-    Check if setup has been performed
+    Check if account setup has been performed
     """
 
     def wrapper(self, *args, **kwargs):

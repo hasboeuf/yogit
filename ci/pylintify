@@ -1,5 +1,9 @@
 #!/bin/sh
 set -ev
-cd $(dirname $0)/..
+cd $(dirname $0)/../yogit
 
-pylint --output-format=parseable --max-line-length=120 yogit
+pylint \
+    --output-format=parseable \
+    --ignore=tests \
+    --max-line-length=120 \
+    yogit

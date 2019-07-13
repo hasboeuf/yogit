@@ -54,7 +54,7 @@ def enable_stdout():
     """
     Prints logs in stdout
     """
-    global LOGGER
+    global LOGGER  # pylint: disable=global-statement
     LOGGER = get_logger(stdout=True)
 
 

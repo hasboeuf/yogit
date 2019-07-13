@@ -18,7 +18,7 @@ def pull_request():
 @click.command("list")
 @click.pass_context
 @account_required
-def pull_request_list(ctx):
+def pull_request_list(ctx):  # pylint: disable=unused-argument
     """
     List pull requests
     """

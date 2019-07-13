@@ -3,7 +3,7 @@ Subcommand `scrum`
 """
 import click
 
-from yogit.yogit.scrum_report import ScrumReport
+from yogit.yogit.scrum_report import generate_scrum_report
 from yogit.yogit.checks import account_required
 
 
@@ -17,12 +17,11 @@ def scrum():
 @click.command("report")
 @click.pass_context
 @account_required
-def scrum_report(ctx):
+def scrum_report(ctx):  # pylint: disable=unused-argument
     """
     Generate your scrum report
     """
-    report = ScrumReport()
-    report.exec()
+    generate_scrum_report()
 
 
 scrum.add_command(scrum_report)

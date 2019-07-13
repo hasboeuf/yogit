@@ -1,4 +1,4 @@
-from unittest.mock import patch, Mock
+from unittest.mock import Mock
 import responses
 import pytest
 from click.testing import CliRunner

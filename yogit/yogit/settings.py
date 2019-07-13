@@ -57,8 +57,13 @@ class Settings:
     """ Settings access class """
 
     def __init__(self):
-        self.path = get_settings_path()
-        self.storage = Storage(self.path, SETTINGS_VERSION)
+        self.storage = Storage(get_settings_path(), SETTINGS_VERSION)
+
+    def get_path(self):
+        """
+        Get storage file path
+        """
+        return self.storage.get_path()
 
     def reset(self):
         """ Reset setting values """
@@ -103,11 +108,25 @@ class Settings:
 
 
 class ScrumReportSettings:
-    def __init__(self):
-        self.path = get_scrum_report_path()
-        self.storage = Storage(self.path, SCRUM_REPORT_VERSION)
+    """
+    Scrum report settings access class
+    """
 
-    def load(self):
+    def __init__(self):
+        self.storage = Storage(get_scrum_report_path(), SCRUM_REPORT_VERSION)
+
+    def get_path(self):
+        """
+        Get storage file path
+        """
+        return self.storage.get_path()
+
+    def get(self):
+        """
+        Return scrum report data
+
+        If not present a default one is stored and returned
+        """
         data = self.storage.load()
         if data == {}:
             data = yaml.load(DEFAULT_SCRUM_REPORT_CONFIG, Loader=yaml.FullLoader)

@@ -13,6 +13,12 @@ class Storage:
         self.filename = filename
         self.version = version
 
+    def get_path(self):
+        """
+        Get storage file path
+        """
+        return self.filename
+
     def load(self):
         """ Load YAML """
         try:

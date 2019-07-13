@@ -19,7 +19,7 @@ def branch():
 @click.command("list")
 @click.pass_context
 @account_required
-def branch_list(ctx):
+def branch_list(ctx):  # pylint: disable=unused-argument
     """
     List your branches
     """
