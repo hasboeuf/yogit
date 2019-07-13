@@ -1,0 +1,10 @@
+language: python
+python:
+  - "3.5"
+  - "3.6"
+# command to install dependencies
+install:
+  - pip install -r requirements/yogit.txt -r requirements/tests.txt
+# command to run tests
+script:
+  - pytest -vv -s yogit/tests
