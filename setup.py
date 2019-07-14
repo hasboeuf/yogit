@@ -20,7 +20,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     keywords="git github utility branch pull requests",
     url="https://github.com/hasboeuf/yogit",
-    packages=setuptools.find_packages(),
+    packages=setuptools.find_packages(exclude=["*.tests", "*.tests.*", "tests"]),
     classifiers=["Programming Language :: Python :: 3", "Operating System :: OS Independent"],
     zip_safe=True,
     install_requires=DEPENDENCIES,
