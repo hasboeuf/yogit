@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.2
+
+* Support pagination for branch listing (fix request timeout)
+
 ## 1.0.1
 
 * Be more specific on GitHub required scopes
