@@ -15,7 +15,7 @@ from yogit.utils.dateutils import today_str
 
 def _get_github_report():
     query = PullRequestContributionListQuery()
-    query.exec()
+    query.execute()
     return query.tabulate()
 
 

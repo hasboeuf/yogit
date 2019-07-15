@@ -23,7 +23,7 @@ def review_requested_list(ctx):  # pylint: disable=unused-argument
     List requested reviews
     """
     query = ReviewRequestedQuery()
-    query.exec()
+    query.execute()
     query.print()
 
 

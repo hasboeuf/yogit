@@ -23,7 +23,7 @@ def pull_request_list(ctx):  # pylint: disable=unused-argument
     List pull requests
     """
     query = PullRequestListQuery()
-    query.exec()
+    query.execute()
     query.print()
 
 

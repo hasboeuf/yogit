@@ -20,7 +20,7 @@ class Query:
     def _handle_response(self):
         echo_info("Not fully implemented")
 
-    def exec(self):
+    def execute(self):
         """ Execute the query """
         raise NotImplementedError()
 
@@ -39,7 +39,7 @@ class GraphQLQuery(Query):
         self.statement = statement
         self.variables = variables
 
-    def exec(self):
+    def execute(self):
         prepared_statement = prepare(self.statement, self.variables)
         if self.client is None:
             self.client = GraphQLClient()
@@ -52,7 +52,7 @@ class RESTQuery(Query):
         super().__init__()
         self.endpoint = endpoint
 
-    def exec(self):
+    def execute(self):
         if self.client is None:
             self.client = RESTClient()
         self.response = self.client.get(self.endpoint)

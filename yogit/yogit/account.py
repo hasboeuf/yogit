@@ -61,11 +61,11 @@ def account_setup():
 
     try:
         login_query = LoginQuery()
-        login_query.exec()
+        login_query.execute()
         login = login_query.get_login()
 
         email_query = EmailQuery()
-        email_query.exec()
+        email_query.execute()
     except Exception as exception:
         settings.reset()
         raise exception
@@ -84,7 +84,7 @@ def account_usage(ctx):  # pylint: disable=unused-argument
     Current API usage
     """
     query = RateLimitQuery()
-    query.exec()
+    query.execute()
     query.print()
 
 
