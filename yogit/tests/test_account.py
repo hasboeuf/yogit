@@ -39,7 +39,7 @@ def test_setup_erase_settings(runner):
 def test_setup_ok(runner):
     _add_graphql_response(200, {"data": {"viewer": {"login": "user1"}}})
     _add_rest_response("/user/emails", 200, [{"email": "email1"}, {"email": "email2"}, {"email": "email3"}])
-    result = runner.invoke(cli.main, ["account", "setup"], input="<token>")
+    result = runner.invoke(cli.main, ["account", "setup"], input="   <token>   ")
     assert result.exit_code == ExitCode.NO_ERROR.value
     assert result.output == get_welcome_text() + ("\nGitHub token: \n" "Hello user1!\n")
     settings = Settings()

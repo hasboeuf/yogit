@@ -55,7 +55,7 @@ def account_setup():
     settings.reset()
 
     echo_info(get_welcome_text())
-    token = click.prompt("GitHub token", type=click.STRING, hide_input=True)
+    token = click.prompt("GitHub token", type=click.STRING, hide_input=True).strip()
 
     settings.set_token(token)
 
