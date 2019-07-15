@@ -27,9 +27,10 @@ Welcome to yogit!
 Go here to generate a GitHub personal access token:
 https://github.com/settings/tokens
 Required scopes are:
-- admin:org
+- read:org
+- read:user
+- read:email
 - repo
-- user
 
 Configuration is stored here `{}`,
 and is not encrypted, only use yogit on your personal computer.
