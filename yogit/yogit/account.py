@@ -56,16 +56,21 @@ def account_setup():
     echo_info(get_welcome_text())
     token = click.prompt("GitHub token", type=click.STRING, hide_input=True)
 
-    query = LoginQuery(token)
-    query.exec()
-    login = query.get_login()
-
     settings.set_token(token)
-    settings.set_login(login)
 
-    query = EmailQuery()
-    query.exec()
-    settings.set_emails(query.get_emails())
+    try:
+        login_query = LoginQuery()
+        login_query.exec()
+        login = login_query.get_login()
+
+        email_query = EmailQuery()
+        email_query.exec()
+    except Exception as exception:
+        settings.reset()
+        raise exception
+
+    settings.set_login(login)
+    settings.set_emails(email_query.get_emails())
 
     echo_info("Hello {}!".format(login))
 

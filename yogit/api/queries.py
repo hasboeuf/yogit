@@ -60,9 +60,9 @@ class RESTQuery(Query):
 
 
 class LoginQuery(GraphQLQuery):
-    def __init__(self, token):
+    def __init__(self):
         super().__init__(S.LOGIN_STATEMENT)
-        self.client = GraphQLClient(token)
+        self.client = GraphQLClient()
         self.login = None
 
     def _handle_response(self):

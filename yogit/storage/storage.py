@@ -31,7 +31,7 @@ class Storage:
         with open(self.filename, "w") as yaml_file:
             if data is not None and self.version is not None:
                 data["version"] = self.version
-            yaml_file.write(yaml.dump(data, indent=4))
+            yaml.safe_dump(data, stream=yaml_file, indent=4)
 
     def get_version(self):
         data = self.storage.load()

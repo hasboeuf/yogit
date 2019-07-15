@@ -29,24 +29,19 @@ def _http_call(method, url, **kwargs):
         raise click.ClickException(str(exception))
 
 
-def _get_authorization(token):
+def _get_authorization():
     """
     Craft Authorization HTTP header
     """
-    if token is None:
-        token = Settings().get_token()
+    token = Settings().get_token()
     return "token {}".format(token)
 
 
-def _get_headers(token=None):
+def _get_headers():
     """
     Craft HTTP headers for request
     """
-    return {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "Authorization": _get_authorization(token),
-    }
+    return {"Accept": "application/json", "Content-Type": "application/json", "Authorization": _get_authorization()}
 
 
 class GraphQLClient:
@@ -54,8 +49,7 @@ class GraphQLClient:
     GitHub GraphQL API client
     """
 
-    def __init__(self, token=None):
-        self.token = token
+    def __init__(self):
         self.url = GITHUB_API_URL_V4
 
     def get(self, query):
@@ -64,7 +58,7 @@ class GraphQLClient:
         """
         payload = json.dumps({"query": query})
         LOGGER.debug(payload)
-        response = _http_call("post", self.url, headers=_get_headers(self.token), data=payload)
+        response = _http_call("post", self.url, headers=_get_headers(), data=payload)
         LOGGER.debug(response.content[:500])
         if response.status_code == 200:
             try:
