@@ -112,14 +112,14 @@ class PullRequestListQuery(GraphQLQuery):
 
     def _handle_response(self):
         for pr in self.response["data"]["viewer"]["pullRequests"]["edges"]:
-            created = dt_for_str(pr["node"]["createdAt"])
+            created = dt_for_str(pr["node"]["createdAt"]).date()
             url = pr["node"]["url"]
             title = pr["node"]["title"]
             created_str = days_ago_str(created)
             self.data.append([created, created_str, url, title])
-        # Sort by url, then by reversed string date:
+        # Sort by url, then by reversed date:
         self.data = sorted(self.data, key=lambda x: x[2])
-        self.data = sorted(self.data, key=lambda x: x[1], reverse=True)
+        self.data = sorted(self.data, key=lambda x: x[0], reverse=True)
 
     def print(self):
         echo_info(tabulate([x[1:] for x in self.data], headers=["CREATED", "URL", "TITLE"]))

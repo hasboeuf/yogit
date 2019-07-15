@@ -26,10 +26,10 @@ def today_earliest_str():
     return _utcnow().replace(hour=0, minute=0, second=0, microsecond=0).isoformat()
 
 
-def days_ago_str(dtime):
-    """ Return human readable string between now and a datetime object """
-    today = _utcnow()
-    delta_days = (today - dtime).days
+def days_ago_str(dte):
+    """ Return human readable string between today and another date object """
+    today = _utcnow().date()
+    delta_days = (today - dte).days
     if delta_days == 0:
         return "Today"
     if delta_days == 1:

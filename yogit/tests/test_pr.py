@@ -39,9 +39,15 @@ def test_pr_list_ok(mock_utc_now, runner):
                 "viewer": {
                     "pullRequests": {
                         "edges": [
-                            {"node": {"createdAt": "2019-05-28T18:00:01Z", "url": "https://xyz", "title": "title1"}},
-                            {"node": {"createdAt": "2019-05-28T08:00:01Z", "url": "https://abc", "title": "title2"}},
-                            {"node": {"createdAt": "2019-07-02T18:00:59Z", "url": "https://xyz", "title": "title3"}},
+                            {"node": {"createdAt": "2019-05-27T18:00:01Z", "url": "https://xyz", "title": "title9"}},
+                            {"node": {"createdAt": "2019-05-28T08:00:01Z", "url": "https://abc", "title": "title8"}},
+                            {"node": {"createdAt": "2019-07-02T19:00:59Z", "url": "https://xyz", "title": "title7"}},
+                            {"node": {"createdAt": "2019-07-02T18:00:30Z", "url": "https://abc", "title": "title6"}},
+                            {"node": {"createdAt": "2019-07-11T19:00:30Z", "url": "https://xyz", "title": "title5"}},
+                            {"node": {"createdAt": "2019-07-11T19:00:30Z", "url": "https://efg", "title": "title4"}},
+                            {"node": {"createdAt": "2019-07-11T17:00:30Z", "url": "https://abc", "title": "title3"}},
+                            {"node": {"createdAt": "2019-07-12T13:00:01Z", "url": "https://xyz", "title": "title2"}},
+                            {"node": {"createdAt": "2019-07-12T13:00:01Z", "url": "https://abc", "title": "title1"}},
                         ]
                     }
                 }
@@ -53,7 +59,13 @@ def test_pr_list_ok(mock_utc_now, runner):
     assert result.output == (
         "CREATED      URL          TITLE\n"
         "-----------  -----------  -------\n"
-        "9 days ago   https://xyz  title3\n"
-        "44 days ago  https://abc  title2\n"
-        "44 days ago  https://xyz  title1\n"
+        "Today        https://abc  title1\n"
+        "Today        https://xyz  title2\n"
+        "Yesterday    https://abc  title3\n"
+        "Yesterday    https://efg  title4\n"
+        "Yesterday    https://xyz  title5\n"
+        "10 days ago  https://abc  title6\n"
+        "10 days ago  https://xyz  title7\n"
+        "45 days ago  https://abc  title8\n"
+        "46 days ago  https://xyz  title9\n"
     )
