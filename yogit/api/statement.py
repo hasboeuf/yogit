@@ -20,3 +20,9 @@ def prepare(statement, variables):
         elif variable == S.TODAY_VARIABLE:
             data[variable] = today_earliest_str()
     return template.safe_substitute(data)
+
+
+def prepare_pagination(statement, offset, cursor=None):
+    template = Template(statement)
+    data = {"offset": offset, "after": 'after: "{}"'.format(cursor) if cursor is not None else ""}
+    return template.safe_substitute(data)

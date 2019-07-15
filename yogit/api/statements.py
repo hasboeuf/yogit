@@ -108,7 +108,11 @@ PULL_REQUEST_CONTRIBUTION_LIST_STATEMENT = """
 BRANCH_LIST_STATEMENT = """
 {
     viewer {
-        repositoriesContributedTo(first: 100) {
+        repositoriesContributedTo(first: $offset $after) {
+            pageInfo {
+                hasNextPage,
+                endCursor
+            },
             edges {
                 node {
                     url

@@ -20,7 +20,15 @@ def runner():
 @pytest.mark.usefixtures("mock_settings")
 @responses.activate
 def test_empty_br_list_no_repo(runner):
-    _add_graphql_response({"data": {"viewer": {"repositoriesContributedTo": {"edges": []}}}})
+    _add_graphql_response(
+        {
+            "data": {
+                "viewer": {
+                    "repositoriesContributedTo": {"pageInfo": {"hasNextPage": False, "endCursor": None}, "edges": []}
+                }
+            }
+        }
+    )
     result = runner.invoke(cli.main, ["br", "list"])
     assert result.exit_code == ExitCode.NO_ERROR.value
     assert result.output == ("REPO    BRANCH    PULL REQUEST\n" "------  --------  --------------\n")
@@ -34,10 +42,11 @@ def test_empty_br_list_no_branch(runner):
             "data": {
                 "viewer": {
                     "repositoriesContributedTo": {
+                        "pageInfo": {"hasNextPage": False, "endCursor": None},
                         "edges": [
                             {"node": {"url": "https://", "refs": {"edges": []}}},
                             {"node": {"url": "https://", "refs": {"edges": []}}},
-                        ]
+                        ],
                     }
                 }
             }
@@ -56,6 +65,7 @@ def test_br_list(runner):
             "data": {
                 "viewer": {
                     "repositoriesContributedTo": {
+                        "pageInfo": {"hasNextPage": True, "endCursor": "cursor_id"},
                         "edges": [
                             {
                                 "node": {
@@ -143,7 +153,38 @@ def test_br_list(runner):
                                     },
                                 }
                             },
-                        ]
+                        ],
+                    }
+                }
+            }
+        }
+    )
+    _add_graphql_response(
+        {
+            "data": {
+                "viewer": {
+                    "repositoriesContributedTo": {
+                        "pageInfo": {"hasNextPage": False, "endCursor": None},
+                        "edges": [
+                            {
+                                "node": {
+                                    "url": "https://fgh",
+                                    "refs": {
+                                        "edges": [
+                                            {
+                                                "node": {
+                                                    "associatedPullRequests": {"edges": []},
+                                                    "name": "xyz",
+                                                    "target": {
+                                                        "author": {"email": "user1@company1.com", "name": "user1"}
+                                                    },
+                                                }
+                                            }
+                                        ]
+                                    },
+                                }
+                            }
+                        ],
                     }
                 }
             }
@@ -157,6 +198,7 @@ def test_br_list(runner):
         "https://abc  no_pull_request\n"
         "https://def  has_pull_request  https://abc\n"
         "                               https://xyz\n"
+        "https://fgh  xyz\n"
         "https://xyz  abc\n"
         "https://xyz  xyz\n"
     )
