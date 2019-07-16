@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/hasboeuf/yogit.svg?branch=master)](https://travis-ci.org/hasboeuf/yogit)
 ![License](https://img.shields.io/github/license/mashape/apistatus.svg)
 [![PyPI version](https://badge.fury.io/py/yogit.svg)](https://pypi.org/project/yogit/)
+[![Downloads](https://pepy.tech/badge/yogit)](https://pepy.tech/project/yogit)
 
 Command line utility for git daily work.
 
