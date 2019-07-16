@@ -4,7 +4,7 @@
 
 ### CI
 
-Run by Travis CI, have a look to `.travis.yml` if you are curious.
+Run by Travis CI and Azure Pipelines.
 
 ### Local run
 
