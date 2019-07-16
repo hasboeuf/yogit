@@ -1,5 +1,6 @@
 # yogit
 
+[![Build Status](https://dev.azure.com/hasboeuf/yogit/_apis/build/status/hasboeuf.yogit?branchName=master)](https://dev.azure.com/hasboeuf/yogit/_build/latest?definitionId=1&branchName=master)
 [![Build Status](https://travis-ci.org/hasboeuf/yogit.svg?branch=master)](https://travis-ci.org/hasboeuf/yogit)
 ![License](https://img.shields.io/github/license/mashape/apistatus.svg)
 [![PyPI version](https://badge.fury.io/py/yogit.svg)](https://pypi.org/project/yogit/)
@@ -10,9 +11,14 @@ Command line utility for git daily work.
 ## Requirements
 
 * `Python3` and `pip3`
-* `yogit` is tested with Python 3.5 and 3.6
-* For now it has only been tested on Linux
+* `yogit` is tested with Python `3.5`, `3.6`, `3.7`
+* `yogit` is mostly tested on `Linux` but unittests are passing on `Windows` and `macOS`.
 * For now only GitHub API is supported
+
+## Continuous integration
+
+* [Azure Pipelines](https://dev.azure.com/hasboeuf/yogit)
+* [TravisCI](https://travis-ci.org/hasboeuf/yogit)
 
 ## Installation
 
