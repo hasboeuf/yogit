@@ -69,7 +69,7 @@ def test_default_report_ok(utcnow_mock, runner):
     assert result.output == "Loaded from `{}`\n".format(settings.get_path()) + (
         "What have you done today?\n"
         "Do you have any blockers?\n"
-        "What do you plan to work on on your next working day?\n"
+        "What do you plan to work on your next working day?\n"
         "*REPORT 2019-07-10*\n"
         "*What have you done today?*\n"
         "- thing1\n"
@@ -77,7 +77,7 @@ def test_default_report_ok(utcnow_mock, runner):
         "- thing3\n"
         "*Do you have any blockers?*\n"
         "\n"
-        "*What do you plan to work on on your next working day?*\n"
+        "*What do you plan to work on your next working day?*\n"
         "\n"
         "\n"
         "```\n"
