@@ -21,7 +21,7 @@ DEFAULT_SCRUM_REPORT_CONFIG = """
 questions:
 - "What have you done today?"
 - "Do you have any blockers?"
-- "What do you plan to work on on your next working day?"
+- "What do you plan to work on your next working day?"
 
 template:
 - "*REPORT ${today}*"
