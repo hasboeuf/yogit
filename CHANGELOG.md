@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.4
+
+* Fix typo in scrum report, thx @genygilles
+
 ## 1.0.3
 
 * Fix unauthorized error due to too old PyYAML version
