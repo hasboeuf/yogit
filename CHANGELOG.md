@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.3
+
+* Fix unauthorized error due to too old PyYAML version
+
 ## 1.0.2
 
 * Support pagination for branch listing (fix request timeout)
