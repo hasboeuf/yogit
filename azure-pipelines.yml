@@ -1,0 +1,42 @@
+# https://docs.microsoft.com/azure/devops/pipelines/languages/python
+
+jobs:
+- job: Linux
+  pool:
+   vmImage: 'ubuntu-16.04'
+  strategy:
+    matrix:
+      Python35:
+        python.version: '3.5'
+      Python36:
+        python.version: '3.6'
+      Python37:
+        python.version: '3.7'
+  steps:
+    - template: azure-pipelines-steps.yml
+- job: macOS
+  pool:
+   vmImage: 'macOS-10.14'
+  strategy:
+    matrix:
+      Python35:
+        python.version: '3.5'
+      Python36:
+        python.version: '3.6'
+      Python37:
+        python.version: '3.7'
+  steps:
+    - template: azure-pipelines-steps.yml
+- job: Windows
+  pool:
+   vmImage: 'windows-2019'
+  strategy:
+    matrix:
+      Python35:
+        python.version: '3.5'
+      Python36:
+        python.version: '3.6'
+      Python37:
+        python.version: '3.7'
+  steps:
+    - template: azure-pipelines-steps.yml
