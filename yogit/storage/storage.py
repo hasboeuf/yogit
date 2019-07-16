@@ -24,7 +24,9 @@ class Storage:
         try:
             with open(self.filename, "r") as yaml_file:
                 return yaml.load(yaml_file, Loader=yaml.FullLoader) or {}
-        except:
+        except Exception as error:
+            from yogit.yogit.logger import LOGGER  # TODO fix mutual inclusion
+            LOGGER.error(str(error))
             return {}
 
     def save(self, data):
