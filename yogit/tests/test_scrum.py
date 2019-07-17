@@ -89,4 +89,33 @@ def test_default_report_ok(utcnow_mock, runner):
         "https://xyz     OWNER     OPEN\n"
         "```\n"
         "Copy to clipboard? [y/N] \n"
+
+
+@pytest.mark.usefixtures("mock_settings")
+@pytest.mark.usefixtures("temporary_scrum_report")
+@patch("yogit.yogit.settings.ScrumReportSettings.get", return_value={"invalid": "template"})
+def test_report_wrong_template(mock_get_report, runner):
+
+    result = runner.invoke(cli.main, ["scrum", "report"])
+    settings = ScrumReportSettings()
+
+    assert result.exception
+    assert result.exit_code == ExitCode.DEFAULT_ERROR.value
+    assert result.output == "Loaded from `{}`\n".format(settings.get_path()) + (
+        "Error: Unable to parse SCRUM report template\n"
+    )
+
+
+@pytest.mark.usefixtures("mock_settings")
+@pytest.mark.usefixtures("temporary_scrum_report")
+@patch("yogit.yogit.settings.ScrumReportSettings.get", return_value={"questions": [], "template": []})
+@patch("pyperclip.copy", side_effect=Exception("error"))
+def test_report_clipboard_copy_error(mock_copy, mock_get_report, runner):
+    result = runner.invoke(cli.main, ["scrum", "report"], input="\n".join(["y\n"]))
+    settings = ScrumReportSettings()
+
+    assert result.exception
+    assert result.exit_code == ExitCode.DEFAULT_ERROR.value
+    assert result.output == "Loaded from `{}`\n".format(settings.get_path()) + (
+        "\nCopy to clipboard? [y/N] y\n" "Error: Not supported on your system, please `sudo apt-get install xclip`\n"
     )
