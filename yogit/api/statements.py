@@ -147,7 +147,7 @@ BRANCH_LIST_STATEMENT = """
                                     edges {
                                         node {
                                             url
-                                          	headRefName
+                                            headRefName
                                         }
                                     }
                                 }
