@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.0
+
+* Add abilitiy to list pull requests of an organization `yogit pr list --orga TEXT`
+
 ## 1.0.4
 
 * Fix typo in scrum report, thx @genygilles
