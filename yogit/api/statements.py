@@ -69,6 +69,30 @@ PULL_REQUEST_LIST_STATEMENT = """
 }
 """
 
+ORGA_PULL_REQUEST_LIST_STATEMENT = """
+{
+    search(query: "is:open is:pr archived:false user:$organization", type: ISSUE, first: $offset $after) {
+        pageInfo {
+            hasNextPage
+            endCursor
+        }
+        edges {
+            node {
+                ... on PullRequest {
+                    repository {
+                        nameWithOwner
+                    }
+                    createdAt
+                    number
+                    url
+                    title
+                }
+            }
+        }
+    }
+}
+"""
+
 PULL_REQUEST_CONTRIBUTION_LIST_STATEMENT = """
 {
     viewer {
@@ -123,7 +147,7 @@ BRANCH_LIST_STATEMENT = """
                                     edges {
                                         node {
                                             url
-                                          	headRefName
+                                            headRefName
                                         }
                                     }
                                 }

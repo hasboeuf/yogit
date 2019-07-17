@@ -69,3 +69,55 @@ def test_pr_list_ok(mock_utc_now, runner):
         "45 days ago  https://abc  title8\n"
         "46 days ago  https://xyz  title9\n"
     )
+
+
+@pytest.mark.usefixtures("mock_settings")
+@responses.activate
+def test_pr_list_with_unknown_orga(runner):
+    _add_graphql_response({"data": {"search": {"pageInfo": {"hasNextPage": False, "endCursor": None}, "edges": []}}})
+    result = runner.invoke(cli.main, ["pr", "list", "--orga", "unknown"])
+    assert result.exit_code == ExitCode.NO_ERROR.value
+    assert result.output == ("CREATED    URL    TITLE\n" "---------  -----  -------\n")
+
+
+@pytest.mark.usefixtures("mock_settings")
+@responses.activate
+@patch("yogit.utils.dateutils._utcnow", return_value=datetime(2019, 7, 17, 8, 15, 30, 666))
+def test_pr_list_with_orga_ok(mock_utc_now, runner):
+    _add_graphql_response(
+        {
+            "data": {
+                "search": {
+                    "pageInfo": {"hasNextPage": True, "endCursor": "cursor_id"},
+                    "edges": [
+                        {"node": {"createdAt": "2019-07-17T10:30:15Z", "url": "https://xyz", "title": "title2"}},
+                        {"node": {"createdAt": "2019-07-17T17:28:15Z", "url": "https://abc", "title": "title1"}},
+                    ],
+                }
+            }
+        }
+    )
+    _add_graphql_response(
+        {
+            "data": {
+                "search": {
+                    "pageInfo": {"hasNextPage": False, "endCursor": None},
+                    "edges": [
+                        {"node": {"createdAt": "2019-06-17T01:18:00Z", "url": "https://xyz", "title": "title3"}},
+                        {"node": {"createdAt": "2019-05-17T08:36:15Z", "url": "https://abc", "title": "title4"}},
+                    ],
+                }
+            }
+        }
+    )
+    result = runner.invoke(cli.main, ["pr", "list", "--orga", "Orga"])
+    print(str(result.exception))
+    assert result.exit_code == ExitCode.NO_ERROR.value
+    assert result.output == (
+        "CREATED      URL          TITLE\n"
+        "-----------  -----------  -------\n"
+        "Today        https://abc  title1\n"
+        "Today        https://xyz  title2\n"
+        "30 days ago  https://xyz  title3\n"
+        "61 days ago  https://abc  title4\n"
+    )

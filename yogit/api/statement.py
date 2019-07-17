@@ -8,12 +8,12 @@ import yogit.api.statements as S
 from yogit.utils.dateutils import today_earliest_str
 
 
-def prepare(statement, variables):
+def prepare(statement, variables, extra_data={}):
     """
     Set variable in statement and return the prepared statement
     """
     template = Template(statement)
-    data = {}
+    data = extra_data.copy()
     for variable in variables:
         if variable == S.LOGIN_VARIABLE:
             data[variable] = Settings().get_login()
