@@ -11,6 +11,7 @@ from yogit.yogit.logger import echo_info
 from yogit.yogit.settings import ScrumReportSettings
 from yogit.api.queries import PullRequestContributionListQuery
 from yogit.utils.dateutils import today_str
+from yogit.yogit.logger import LOGGER
 
 
 def _get_github_report():
@@ -30,7 +31,14 @@ def generate_scrum_report():
     echo_info("Loaded from `{}`".format(settings.get_path()))
 
     data = {}
-    for idx, question in enumerate(settings_data["questions"]):
+    try:
+        questions = settings_data["questions"]
+        tpl = settings_data["template"]
+    except Exception as error:
+        LOGGER.error(str(error))
+        raise click.ClickException("Unable to parse SCRUM report template")
+
+    for idx, question in enumerate(questions):
         echo_info(question)
         answers = []
         while True:
@@ -41,7 +49,7 @@ def generate_scrum_report():
         data["q{}".format(idx)] = question
         data["a{}".format(idx)] = "\n".join(answers)
 
-    template = Template("\n".join(settings_data["template"]))
+    template = Template("\n".join(tpl))
 
     data["today"] = today_str()
     if "${github_report}" in template.template:
@@ -54,5 +62,6 @@ def generate_scrum_report():
         try:
             pyperclip.copy(report)
             echo_info("Copied!")
-        except pyperclip.PyperclipException:
-            echo_info("Not supported on your system, please `sudo apt-get install xclip`")
+        except Exception as error:
+            LOGGER.error(str(error))
+            raise click.ClickException("Not supported on your system, please `sudo apt-get install xclip`")
