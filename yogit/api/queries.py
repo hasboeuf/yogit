@@ -34,18 +34,19 @@ class Query:
 
 
 class GraphQLQuery(Query):
-    def __init__(self, statement, variables=[], pagination_offset=None):
+    def __init__(self, statement, variables=[], extra_data={}, pagination_offset=None):
         super().__init__()
         self.client = GraphQLClient()
         self.statement = statement
         self.variables = variables
+        self.extra_data = extra_data
         self.pagination_offset = pagination_offset
 
     def _get_pagination_info(self):
         raise NotImplementedError()
 
     def execute(self):
-        prepared_statement = prepare(self.statement, self.variables)
+        prepared_statement = prepare(self.statement, self.variables, self.extra_data)
         if self.pagination_offset is None:
             response = self.client.get(prepared_statement)
             super()._handle_response(response)
@@ -141,6 +142,31 @@ class PullRequestListQuery(GraphQLQuery):
         echo_info(tabulate([x[1:] for x in self.data], headers=["CREATED", "URL", "TITLE"]))
 
 
+class OrgaPullRequestListQuery(GraphQLQuery):
+    def __init__(self, organization):
+        super().__init__(
+            S.ORGA_PULL_REQUEST_LIST_STATEMENT, pagination_offset=10, extra_data={"organization": organization}
+        )
+        self.data = []
+
+    def _get_pagination_info(self, response):
+        return response["data"]["search"]["pageInfo"]
+
+    def _handle_response(self, response):
+        for pr in response["data"]["search"]["edges"]:
+            created = dt_for_str(pr["node"]["createdAt"]).date()
+            url = pr["node"]["url"]
+            title = pr["node"]["title"]
+            created_str = days_ago_str(created)
+            self.data.append([created, created_str, url, title])
+        # Sort by url, then by reversed date:
+        self.data = sorted(self.data, key=lambda x: x[2])
+        self.data = sorted(self.data, key=lambda x: x[0], reverse=True)
+
+    def print(self):
+        echo_info(tabulate([x[1:] for x in self.data], headers=["CREATED", "URL", "TITLE"]))
+
+
 class PullRequestContributionListQuery(GraphQLQuery):
     def __init__(self):
         super().__init__(S.PULL_REQUEST_CONTRIBUTION_LIST_STATEMENT, [S.TODAY_VARIABLE])
@@ -173,7 +199,7 @@ class PullRequestContributionListQuery(GraphQLQuery):
 
 class BranchListQuery(GraphQLQuery):
     def __init__(self, emails=None):
-        super().__init__(S.BRANCH_LIST_STATEMENT, [], 10)
+        super().__init__(S.BRANCH_LIST_STATEMENT, pagination_offset=10)
         self.data = []
         self.emails = emails
 
