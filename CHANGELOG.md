@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.1
+
+* Reinforce `scrum report` command (better error handling)
+
 ## 1.1.0
 
 * Add abilitiy to list pull requests of an organization `yogit pr list --orga TEXT`
