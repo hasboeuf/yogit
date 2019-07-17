@@ -25,7 +25,8 @@ def runner():
 @pytest.mark.usefixtures("temporary_scrum_report")
 @responses.activate
 @patch("yogit.utils.dateutils._utcnow", return_value=datetime(2019, 7, 10, 1, 15, 59, 666))
-def test_default_report_ok(utcnow_mock, runner):
+@patch("pyperclip.copy")
+def test_default_report_ok(mock_copy, utcnow_mock, runner):
     _add_graphql_response(
         {
             "data": {
@@ -59,9 +60,7 @@ def test_default_report_ok(utcnow_mock, runner):
         }
     )
     result = runner.invoke(
-        cli.main,
-        ["scrum", "report"],
-        input="\n".join(["- thing1\n- thing2\n- thing3\n\n", "\n", "- thing1\n\n", "y\n", "y\n"]),
+        cli.main, ["scrum", "report"], input="\n".join(["- thing1\n- thing2\n- thing3\n", "", "- thing1\n", "y\n"])
     )
 
     assert result.exit_code == ExitCode.NO_ERROR.value
@@ -78,7 +77,7 @@ def test_default_report_ok(utcnow_mock, runner):
         "*Do you have any blockers?*\n"
         "\n"
         "*What do you plan to work on your next working day?*\n"
-        "\n"
+        "- thing1\n"
         "\n"
         "```\n"
         "PULL REQUEST    ROLE      STATE\n"
@@ -88,7 +87,9 @@ def test_default_report_ok(utcnow_mock, runner):
         "https://ghi     REVIEWER  APPROVED\n"
         "https://xyz     OWNER     OPEN\n"
         "```\n"
-        "Copy to clipboard? [y/N] \n"
+        "Copy to clipboard? [y/N] y\n"
+        "Copied!\n"
+    )
 
 
 @pytest.mark.usefixtures("mock_settings")
