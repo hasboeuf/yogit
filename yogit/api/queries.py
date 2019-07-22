@@ -8,6 +8,7 @@ import yogit.api.statements as S
 from yogit.api.client import GraphQLClient, RESTClient
 from yogit.api.statement import prepare, prepare_pagination
 from yogit.utils.dateutils import dt_for_str, days_ago_str
+from yogit.utils.spinner import spin
 
 
 class Query:
@@ -45,6 +46,7 @@ class GraphQLQuery(Query):
     def _get_pagination_info(self):
         raise NotImplementedError()
 
+    @spin
     def execute(self):
         prepared_statement = prepare(self.statement, self.variables, self.extra_data)
         if self.pagination_offset is None:
@@ -71,6 +73,7 @@ class RESTQuery(Query):
         self.client = RESTClient()
         self.endpoint = endpoint
 
+    @spin
     def execute(self):
         response = self.client.get(self.endpoint)
         super()._handle_response(response)
