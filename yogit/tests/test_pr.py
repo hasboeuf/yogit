@@ -26,7 +26,7 @@ def test_empty_pr_list(runner):
     _add_graphql_response({"data": {"viewer": {"pullRequests": {"edges": []}}}})
     result = runner.invoke(cli.main, ["pr", "list"])
     assert result.exit_code == ExitCode.NO_ERROR.value
-    assert result.output == ("CREATED    URL    TITLE\n" "---------  -----  -------\n")
+    assert result.output == ("Nothing... 😿 Time to push hard 💪\n")
 
 
 @pytest.mark.usefixtures("mock_settings")
@@ -77,7 +77,7 @@ def test_pr_list_with_unknown_orga(runner):
     _add_graphql_response({"data": {"search": {"pageInfo": {"hasNextPage": False, "endCursor": None}, "edges": []}}})
     result = runner.invoke(cli.main, ["pr", "list", "--orga", "unknown"])
     assert result.exit_code == ExitCode.NO_ERROR.value
-    assert result.output == ("CREATED    URL    TITLE\n" "---------  -----  -------\n")
+    assert result.output == ("Nothing... 😿 Time to push hard 💪\n")
 
 
 @pytest.mark.usefixtures("mock_settings")

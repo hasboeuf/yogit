@@ -142,7 +142,10 @@ class PullRequestListQuery(GraphQLQuery):
         self.data = sorted(self.data, key=lambda x: x[0], reverse=True)
 
     def print(self):
-        click.echo(tabulate([x[1:] for x in self.data], headers=["CREATED", "URL", "TITLE"]))
+        if len(self.data) == 0:
+            click.secho("Nothing... 😿 Time to push hard 💪", bold=True)
+        else:
+            click.echo(tabulate([x[1:] for x in self.data], headers=["CREATED", "URL", "TITLE"]))
 
 
 class OrgaPullRequestListQuery(GraphQLQuery):
@@ -167,7 +170,10 @@ class OrgaPullRequestListQuery(GraphQLQuery):
         self.data = sorted(self.data, key=lambda x: x[0], reverse=True)
 
     def print(self):
-        click.echo(tabulate([x[1:] for x in self.data], headers=["CREATED", "URL", "TITLE"]))
+        if len(self.data) == 0:
+            click.secho("Nothing... 😿 Time to push hard 💪", bold=True)
+        else:
+            click.echo(tabulate([x[1:] for x in self.data], headers=["CREATED", "URL", "TITLE"]))
 
 
 class PullRequestContributionListQuery(GraphQLQuery):
