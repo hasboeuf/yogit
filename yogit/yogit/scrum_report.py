@@ -7,7 +7,6 @@ from string import Template
 import click
 import pyperclip
 
-from yogit.yogit.logger import echo_info
 from yogit.yogit.settings import ScrumReportSettings
 from yogit.api.queries import PullRequestContributionListQuery
 from yogit.utils.dateutils import today_str
@@ -28,7 +27,7 @@ def generate_scrum_report():
     """
     settings = ScrumReportSettings()
     settings_data = settings.get()
-    echo_info("Loaded from `{}`".format(settings.get_path()))
+    click.echo("Loaded from `{}`".format(settings.get_path()))
 
     data = {}
     try:
@@ -39,7 +38,7 @@ def generate_scrum_report():
         raise click.ClickException("Unable to parse SCRUM report template")
 
     for idx, question in enumerate(questions):
-        echo_info(question)
+        click.echo(question)
         answers = []
         while True:
             line = input()
@@ -56,12 +55,12 @@ def generate_scrum_report():
         data["github_report"] = _get_github_report()
 
     report = template.safe_substitute(data)
-    echo_info(report)
+    click.echo(report)
 
     if click.confirm("Copy to clipboard?", prompt_suffix=" "):
         try:
             pyperclip.copy(report)
-            echo_info("Copied!")
+            click.echo("Copied!")
         except Exception as error:
             LOGGER.error(str(error))
             raise click.ClickException("Not supported on your system, please `sudo apt-get install xclip`")

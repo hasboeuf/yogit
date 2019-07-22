@@ -5,7 +5,6 @@ Application logger
 import logging
 import os
 import sys
-import click
 
 import yogit
 from yogit.yogit.settings import SETTINGS_DIR, get_log_path
@@ -56,11 +55,3 @@ def enable_stdout():
     """
     global LOGGER  # pylint: disable=global-statement
     LOGGER = get_logger(stdout=True)
-
-
-def echo_info(message):
-    """
-    Print message in stdout and log it
-    """
-    LOGGER.info(message)
-    click.echo(message=message)

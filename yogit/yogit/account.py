@@ -4,7 +4,6 @@ Account commands
 
 import click
 
-from yogit.yogit.logger import echo_info
 from yogit.api.queries import LoginQuery, EmailQuery, RateLimitQuery
 from yogit.yogit.settings import Settings
 from yogit.yogit.checks import account_required
@@ -54,7 +53,7 @@ def account_setup():
     settings = Settings()
     settings.reset()
 
-    echo_info(get_welcome_text())
+    click.echo(get_welcome_text())
     token = click.prompt("GitHub token", type=click.STRING, hide_input=True).strip()
 
     settings.set_token(token)
@@ -73,7 +72,7 @@ def account_setup():
     settings.set_login(login)
     settings.set_emails(email_query.get_emails())
 
-    echo_info("Hello {}!".format(login))
+    click.echo("Hello {}!".format(login))
 
 
 @click.command("usage")
