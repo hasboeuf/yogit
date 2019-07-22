@@ -232,7 +232,10 @@ class BranchListQuery(GraphQLQuery):
         self.data = sorted(self.data, key=lambda x: (x[0], x[1]))
 
     def print(self):
-        click.echo(tabulate(self.data, headers=["REPO", "BRANCH", "PULL REQUEST"]))
+        if len(self.data) == 0:
+            click.secho("Nothing... 😿 Time to push hard 💪", bold=True)
+        else:
+            click.echo(tabulate(self.data, headers=["REPO", "BRANCH", "PULL REQUEST"]))
 
 
 class EmailQuery(RESTQuery):
