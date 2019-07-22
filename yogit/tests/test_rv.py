@@ -23,7 +23,7 @@ def test_rv_requested_empty(runner):
     _add_graphql_response({"data": {"search": {"edges": []}}})
     result = runner.invoke(cli.main, ["rv", "requested"])
     assert result.exit_code == ExitCode.NO_ERROR.value
-    assert result.output == ("REPO    URL\n" "------  -----\n")
+    assert result.output == ("All done! 🎉✨\n")
 
 
 @pytest.mark.usefixtures("mock_settings")

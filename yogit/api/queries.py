@@ -102,7 +102,10 @@ class ReviewRequestedQuery(GraphQLQuery):
         self.data = sorted(self.data, key=lambda x: x[0])
 
     def print(self):
-        click.echo(tabulate(self.data, headers=["REPO", "URL"]))
+        if len(self.data) == 0:
+            click.secho("All done! 🎉✨", bold=True)
+        else:
+            click.echo(tabulate(self.data, headers=["REPO", "URL"]))
 
 
 class RateLimitQuery(GraphQLQuery):
