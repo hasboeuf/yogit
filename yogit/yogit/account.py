@@ -72,7 +72,7 @@ def account_setup():
     settings.set_login(login)
     settings.set_emails(email_query.get_emails())
 
-    click.echo("Hello {}!".format(login))
+    click.secho("Hello {}! 💕✨".format(login), bold=True)
 
 
 @click.command("usage")
