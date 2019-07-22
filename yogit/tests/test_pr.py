@@ -68,6 +68,7 @@ def test_pr_list_ok(mock_utc_now, runner):
         "10 days ago  https://xyz  title7\n"
         "45 days ago  https://abc  title8\n"
         "46 days ago  https://xyz  title9\n"
+        "Count: 9\n"
     )
 
 
@@ -120,4 +121,5 @@ def test_pr_list_with_orga_ok(mock_utc_now, runner):
         "Today        https://xyz  title2\n"
         "30 days ago  https://xyz  title3\n"
         "61 days ago  https://abc  title4\n"
+        "Count: 4\n"
     )

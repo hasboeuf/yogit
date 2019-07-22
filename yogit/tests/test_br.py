@@ -201,4 +201,5 @@ def test_br_list(runner):
         "https://fgh  xyz\n"
         "https://xyz  abc\n"
         "https://xyz  xyz\n"
+        "Count: 5\n"
     )

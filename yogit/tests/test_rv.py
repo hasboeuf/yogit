@@ -44,5 +44,5 @@ def test_rv_requested_ok(runner):
     result = runner.invoke(cli.main, ["rv", "requested"])
     assert result.exit_code == ExitCode.NO_ERROR.value
     assert result.output == (
-        "REPO         URL\n" "-----------  --------\n" "owner1/repo  https://\n" "owner2/repo  https://\n"
+        "REPO         URL\n" "-----------  --------\n" "owner1/repo  https://\n" "owner2/repo  https://\n" "Count: 2\n"
     )

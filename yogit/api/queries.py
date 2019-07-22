@@ -109,6 +109,7 @@ class ReviewRequestedQuery(GraphQLQuery):
             click.secho("All done! 🎉✨", bold=True)
         else:
             click.echo(tabulate(self.data, headers=["REPO", "URL"]))
+            click.secho("Count: {}".format(len(self.data)), bold=True)
 
 
 class RateLimitQuery(GraphQLQuery):
@@ -149,6 +150,7 @@ class PullRequestListQuery(GraphQLQuery):
             click.secho("Nothing... 😿 Time to push hard 💪", bold=True)
         else:
             click.echo(tabulate([x[1:] for x in self.data], headers=["CREATED", "URL", "TITLE"]))
+            click.secho("Count: {}".format(len(self.data)), bold=True)
 
 
 class OrgaPullRequestListQuery(GraphQLQuery):
@@ -177,6 +179,7 @@ class OrgaPullRequestListQuery(GraphQLQuery):
             click.secho("Nothing... 😿 Time to push hard 💪", bold=True)
         else:
             click.echo(tabulate([x[1:] for x in self.data], headers=["CREATED", "URL", "TITLE"]))
+            click.secho("Count: {}".format(len(self.data)), bold=True)
 
 
 class PullRequestContributionListQuery(GraphQLQuery):
@@ -239,6 +242,7 @@ class BranchListQuery(GraphQLQuery):
             click.secho("Nothing... 😿 Time to push hard 💪", bold=True)
         else:
             click.echo(tabulate(self.data, headers=["REPO", "BRANCH", "PULL REQUEST"]))
+            click.secho("Count: {}".format(len(self.data)), bold=True)
 
 
 class EmailQuery(RESTQuery):
