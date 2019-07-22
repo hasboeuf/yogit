@@ -7,7 +7,7 @@ import os
 import sys
 
 import yogit
-from yogit.yogit.settings import SETTINGS_DIR, get_log_path
+from yogit.yogit.paths import get_log_path, SETTINGS_DIR
 
 
 def get_logger(stdout=False, logger_name=yogit.__application__, version=yogit.__version__):
