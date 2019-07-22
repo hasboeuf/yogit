@@ -122,7 +122,7 @@ class RateLimitQuery(GraphQLQuery):
         self.reset_at = rate_limit["resetAt"]
 
     def print(self):
-        click.echo("{}/{} until {}".format(self.remaining, self.limit, self.reset_at))
+        click.secho("{}/{} until {}".format(self.remaining, self.limit, self.reset_at), bold=True)
 
 
 class PullRequestListQuery(GraphQLQuery):
