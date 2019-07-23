@@ -14,9 +14,13 @@ from yogit.yogit.logger import LOGGER
 
 
 def _get_github_report():
-    query = PullRequestContributionListQuery()
-    query.execute()
-    return query.tabulate()
+    try:
+        query = PullRequestContributionListQuery()
+        query.execute()
+        return query.tabulate()
+    except Exception as exception:
+        LOGGER.error(str(exception))
+        return str(exception)
 
 
 def generate_scrum_report():
