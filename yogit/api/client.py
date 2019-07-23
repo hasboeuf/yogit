@@ -89,7 +89,7 @@ class RESTClient:
         url = self._get_url(endpoint)
         LOGGER.debug("GET %s", url)
         response = _http_call("get", url, headers=_get_headers())
-        LOGGER.debug(response.json())
+        LOGGER.debug(response.content[:500])
         if response.status_code == 200:
             try:
                 return response.json()
