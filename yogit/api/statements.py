@@ -100,6 +100,7 @@ PULL_REQUEST_LIST_STATEMENT = """
                     createdAt
                     url
                     title
+                    mergeable
                 }
             }
         }

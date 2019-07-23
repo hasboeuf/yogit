@@ -185,8 +185,9 @@ class PullRequestListQuery(GraphQLQuery):
             created = dt_for_str(pr["node"]["createdAt"]).date()
             url = pr["node"]["url"]
             title = pr["node"]["title"]
+            mergeable = pr["node"]["mergeable"]
             created_str = days_ago_str(created)
-            self.data.append([created, created_str, url, title])
+            self.data.append([created, created_str, url, title, mergeable])
         # Sort by url, then by reversed date:
         self.data = sorted(self.data, key=lambda x: x[2])
         self.data = sorted(self.data, key=lambda x: x[0], reverse=True)
@@ -195,7 +196,7 @@ class PullRequestListQuery(GraphQLQuery):
         if len(self.data) == 0:
             click.secho("Nothing... 😿 Time to push hard 💪", bold=True)
         else:
-            click.echo(tabulate([x[1:] for x in self.data], headers=["CREATED", "URL", "TITLE"]))
+            click.echo(tabulate([x[1:] for x in self.data], headers=["CREATED", "URL", "TITLE", "MERGEABLE"]))
             click.secho("Count: {}".format(len(self.data)), bold=True)
 
 
