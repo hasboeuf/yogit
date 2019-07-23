@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.0
+
+* Add update available check
+
 ## 1.2.1
 
 * Improve help
