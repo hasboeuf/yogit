@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.0
+
+* See if pull requests are conflicted in `yogit pr list`
+* Improve `yogit scrum report` UX and make it robust to network access failure
+* Shorten PR titles in tabulated results (max 50 chars)
+
 ## 1.3.0
 
 * Add update available check
