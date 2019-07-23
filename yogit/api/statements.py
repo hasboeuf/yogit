@@ -41,6 +41,44 @@ REVIEW_REQUESTED_STATEMENT = """
     }
 }"""
 
+
+REVIEW_LIST_STATEMENT = """
+query {
+    viewer {
+        contributionsCollection {
+            pullRequestReviewContributions(first: $offset $after) {
+                pageInfo {
+                    hasNextPage
+                    endCursor
+                }
+                edges {
+                    node {
+                        pullRequestReview {
+                            createdAt
+                            updatedAt
+                            state
+                        }
+                        pullRequest {
+                            url
+                            state
+                            commits(last:1) {
+                                edges {
+                                    node {
+                                        commit {
+                                            pushedDate
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}"""
+
+
 RATE_LIMIT_STATEMENT = """
 {
     rateLimit {
