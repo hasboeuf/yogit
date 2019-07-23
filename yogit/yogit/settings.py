@@ -1,12 +1,11 @@
 """
 yogit settings
 """
-import os
 import yaml
 
+from yogit.yogit.paths import get_settings_path, get_scrum_report_path
 from yogit.storage.storage import Storage
 
-SETTINGS_DIR = os.path.join(os.path.expanduser("~/.yogit"))
 SETTINGS_VERSION = 1
 SCRUM_REPORT_VERSION = 1
 DEFAULT_SCRUM_REPORT_CONFIG = """
@@ -36,21 +35,6 @@ template:
 - "${github_report}"
 - "```"
 """
-
-
-def get_log_path():
-    """ Get yogit log path """
-    return os.path.join(SETTINGS_DIR, "yogit.log")
-
-
-def get_settings_path():
-    """ Get yogit config path """
-    return os.path.join(SETTINGS_DIR, "config.yaml")
-
-
-def get_scrum_report_path():
-    """ Get scrum report path """
-    return os.path.join(SETTINGS_DIR, "scrum_report.yaml")
 
 
 class Settings:

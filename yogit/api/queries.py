@@ -1,13 +1,14 @@
 """
 GraphQL queries used by yogit
 """
+import click
 from tabulate import tabulate
 
-from yogit.yogit.logger import echo_info
 import yogit.api.statements as S
 from yogit.api.client import GraphQLClient, RESTClient
 from yogit.api.statement import prepare, prepare_pagination
 from yogit.utils.dateutils import dt_for_str, days_ago_str
+from yogit.utils.spinner import spin
 
 
 class Query:
@@ -30,7 +31,7 @@ class Query:
 
     def print(self):
         """ Print result """
-        echo_info(self._response)
+        click.echo(self._response)
 
 
 class GraphQLQuery(Query):
@@ -45,6 +46,7 @@ class GraphQLQuery(Query):
     def _get_pagination_info(self):
         raise NotImplementedError()
 
+    @spin
     def execute(self):
         prepared_statement = prepare(self.statement, self.variables, self.extra_data)
         if self.pagination_offset is None:
@@ -71,6 +73,7 @@ class RESTQuery(Query):
         self.client = RESTClient()
         self.endpoint = endpoint
 
+    @spin
     def execute(self):
         response = self.client.get(self.endpoint)
         super()._handle_response(response)
@@ -102,7 +105,11 @@ class ReviewRequestedQuery(GraphQLQuery):
         self.data = sorted(self.data, key=lambda x: x[0])
 
     def print(self):
-        echo_info(tabulate(self.data, headers=["REPO", "URL"]))
+        if len(self.data) == 0:
+            click.secho("All done! 🎉✨", bold=True)
+        else:
+            click.echo(tabulate(self.data, headers=["REPO", "URL"]))
+            click.secho("Count: {}".format(len(self.data)), bold=True)
 
 
 class RateLimitQuery(GraphQLQuery):
@@ -119,7 +126,7 @@ class RateLimitQuery(GraphQLQuery):
         self.reset_at = rate_limit["resetAt"]
 
     def print(self):
-        echo_info("{}/{} until {}".format(self.remaining, self.limit, self.reset_at))
+        click.secho("{}/{} until {}".format(self.remaining, self.limit, self.reset_at), bold=True)
 
 
 class PullRequestListQuery(GraphQLQuery):
@@ -139,7 +146,11 @@ class PullRequestListQuery(GraphQLQuery):
         self.data = sorted(self.data, key=lambda x: x[0], reverse=True)
 
     def print(self):
-        echo_info(tabulate([x[1:] for x in self.data], headers=["CREATED", "URL", "TITLE"]))
+        if len(self.data) == 0:
+            click.secho("Nothing... 😿 Time to push hard 💪", bold=True)
+        else:
+            click.echo(tabulate([x[1:] for x in self.data], headers=["CREATED", "URL", "TITLE"]))
+            click.secho("Count: {}".format(len(self.data)), bold=True)
 
 
 class OrgaPullRequestListQuery(GraphQLQuery):
@@ -164,7 +175,11 @@ class OrgaPullRequestListQuery(GraphQLQuery):
         self.data = sorted(self.data, key=lambda x: x[0], reverse=True)
 
     def print(self):
-        echo_info(tabulate([x[1:] for x in self.data], headers=["CREATED", "URL", "TITLE"]))
+        if len(self.data) == 0:
+            click.secho("Nothing... 😿 Time to push hard 💪", bold=True)
+        else:
+            click.echo(tabulate([x[1:] for x in self.data], headers=["CREATED", "URL", "TITLE"]))
+            click.secho("Count: {}".format(len(self.data)), bold=True)
 
 
 class PullRequestContributionListQuery(GraphQLQuery):
@@ -194,7 +209,7 @@ class PullRequestContributionListQuery(GraphQLQuery):
         return tabulate(self.data, headers=["PULL REQUEST", "ROLE", "STATE"])
 
     def print(self):
-        echo_info(self.tabulate())
+        click.echo(self.tabulate())
 
 
 class BranchListQuery(GraphQLQuery):
@@ -223,7 +238,11 @@ class BranchListQuery(GraphQLQuery):
         self.data = sorted(self.data, key=lambda x: (x[0], x[1]))
 
     def print(self):
-        echo_info(tabulate(self.data, headers=["REPO", "BRANCH", "PULL REQUEST"]))
+        if len(self.data) == 0:
+            click.secho("Nothing... 😿 Time to push hard 💪", bold=True)
+        else:
+            click.echo(tabulate(self.data, headers=["REPO", "BRANCH", "PULL REQUEST"]))
+            click.secho("Count: {}".format(len(self.data)), bold=True)
 
 
 class EmailQuery(RESTQuery):

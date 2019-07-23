@@ -41,7 +41,7 @@ def test_setup_ok(runner):
     _add_rest_response("/user/emails", 200, [{"email": "email1"}, {"email": "email2"}, {"email": "email3"}])
     result = runner.invoke(cli.main, ["account", "setup"], input="   <token>   ")
     assert result.exit_code == ExitCode.NO_ERROR.value
-    assert result.output == get_welcome_text() + ("\nGitHub token: \n" "Hello user1!\n")
+    assert result.output == get_welcome_text() + ("\nGitHub token: \n" "Hello user1! 💕✨\n")
     settings = Settings()
     assert settings.get_token() == "<token>"
     assert settings.get_login() == "user1"

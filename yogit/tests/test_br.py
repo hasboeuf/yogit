@@ -31,7 +31,7 @@ def test_empty_br_list_no_repo(runner):
     )
     result = runner.invoke(cli.main, ["br", "list"])
     assert result.exit_code == ExitCode.NO_ERROR.value
-    assert result.output == ("REPO    BRANCH    PULL REQUEST\n" "------  --------  --------------\n")
+    assert result.output == ("Nothing... 😿 Time to push hard 💪\n")
 
 
 @pytest.mark.usefixtures("mock_settings")
@@ -54,7 +54,7 @@ def test_empty_br_list_no_branch(runner):
     )
     result = runner.invoke(cli.main, ["br", "list"])
     assert result.exit_code == ExitCode.NO_ERROR.value
-    assert result.output == ("REPO    BRANCH    PULL REQUEST\n" "------  --------  --------------\n")
+    assert result.output == ("Nothing... 😿 Time to push hard 💪\n")
 
 
 @pytest.mark.usefixtures("mock_settings")
@@ -201,4 +201,5 @@ def test_br_list(runner):
         "https://fgh  xyz\n"
         "https://xyz  abc\n"
         "https://xyz  xyz\n"
+        "Count: 5\n"
     )
