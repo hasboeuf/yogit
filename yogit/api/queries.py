@@ -1,6 +1,8 @@
 """
 GraphQL queries used by yogit
 """
+import textwrap
+
 import click
 from tabulate import tabulate
 
@@ -9,6 +11,14 @@ from yogit.api.client import GraphQLClient, RESTClient
 from yogit.api.statement import prepare, prepare_pagination
 from yogit.utils.dateutils import dt_for_str, days_ago_str
 from yogit.utils.spinner import spin
+
+
+def shorten_str(full_string):
+    """
+    Shorten string to 50 chars max, including an ending ellipsis
+    Words are not truncated
+    """
+    return textwrap.shorten(full_string, width=50, placeholder="...")
 
 
 class Query:
@@ -184,7 +194,7 @@ class PullRequestListQuery(GraphQLQuery):
         for pr in response["data"]["viewer"]["pullRequests"]["edges"]:
             created = dt_for_str(pr["node"]["createdAt"]).date()
             url = pr["node"]["url"]
-            title = pr["node"]["title"]
+            title = shorten_str(pr["node"]["title"])
             mergeable = pr["node"]["mergeable"]
             created_str = days_ago_str(created)
             self.data.append([created, created_str, url, title, mergeable])
@@ -214,7 +224,7 @@ class OrgaPullRequestListQuery(GraphQLQuery):
         for pr in response["data"]["search"]["edges"]:
             created = dt_for_str(pr["node"]["createdAt"]).date()
             url = pr["node"]["url"]
-            title = pr["node"]["title"]
+            title = shorten_str(pr["node"]["title"])
             created_str = days_ago_str(created)
             self.data.append([created, created_str, url, title])
         # Sort by url, then by reversed date:
