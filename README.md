@@ -31,30 +31,44 @@ Command line utility for git daily work.
 
 `yogit` is able to:
 
-* List your pull requests
-* List reviews you need to look into
-* List your branches
-* Get your GitHub contributions of the day
+* List pull requests
+* List reviews
+* List branches
+* Get your daily activity report
+
+See below for more details.
 
 ## Usage
 
 `yogit --help`
 
+## Account
+
+`yogit account setup`: Setup yogit
+
+`yogit account usage`: Account API usage
+
 ### Pull request
 
-`yogit pr list`
+`yogit pr list`: List your opened pull requests
+
+Options:
+
+* `--orga TEXT`: Expand results to a specific organization
 
 ### Review
 
-`yogit rv requested`
+`yogit rv list`: List your reviews on opened pull requests
+
+`yogit rv requested`: List pull requests where your review is requested
 
 ### Branch
 
-`yogit br list`
+`yogit br list`: List your branches
 
 ### SCRUM
 
-`yogit scrum report`
+`yogit scrum report`: Generate your daily activity report
 
 Template of the report can be changed by editing `~/.yogit/scrum_report.yaml`
 

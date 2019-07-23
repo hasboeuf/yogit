@@ -15,8 +15,8 @@ def pull_request():
     """
 
 
-@click.command("list")
-@click.option("--orga", type=click.STRING, help="List all opened pull requests of an organization")
+@click.command("list", help="List your opened pull requests")
+@click.option("--orga", type=click.STRING, help="Expand results to a specific organization")
 @click.pass_context
 @account_required
 def pull_request_list(ctx, orga):  # pylint: disable=unused-argument

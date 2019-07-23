@@ -15,24 +15,24 @@ def review():
     """
 
 
-@click.command("list")
+@click.command("list", help="List your reviews on opened pull requests")
 @click.pass_context
 @account_required
 def review_list(ctx):  # pylint: disable=unused-argument
     """
-    List your current reviews
+    List your reviews on opened pull requests
     """
     query = ReviewListQuery()
     query.execute()
     query.print()
 
 
-@click.command("requested")
+@click.command("requested", help="List pull requests where your review is requested")
 @click.pass_context
 @account_required
 def review_requested_list(ctx):  # pylint: disable=unused-argument
     """
-    List requested reviews
+    List pull requests where your review is requested
     """
     query = ReviewRequestedQuery()
     query.execute()

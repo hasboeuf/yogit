@@ -14,12 +14,12 @@ def scrum():
     """
 
 
-@click.command("report")
+@click.command("report", help="Generate your daily activity report")
 @click.pass_context
 @account_required
 def scrum_report(ctx):  # pylint: disable=unused-argument
     """
-    Generate your scrum report
+    Generate your daily activity report
     """
     generate_scrum_report()
 

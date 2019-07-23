@@ -45,7 +45,7 @@ def account():
     """
 
 
-@click.command("setup")
+@click.command("setup", help="Setup yogit")
 def account_setup():
     """
     Setup yogit
@@ -75,12 +75,12 @@ def account_setup():
     click.secho("Hello {}! 💕✨".format(login), bold=True)
 
 
-@click.command("usage")
+@click.command("usage", help="Account API usage")
 @click.pass_context
 @account_required
 def account_usage(ctx):  # pylint: disable=unused-argument
     """
-    Current API usage
+    Account API usage
     """
     query = RateLimitQuery()
     query.execute()
