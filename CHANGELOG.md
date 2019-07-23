@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.1
+
+* Fix missing `packaging` dependency
+
 ## 1.4.0
 
 * See if pull requests are conflicted in `yogit pr list`
