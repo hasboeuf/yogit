@@ -6,7 +6,7 @@ import click
 
 from yogit.api.queries import LoginQuery, EmailQuery, RateLimitQuery
 from yogit.yogit.settings import Settings
-from yogit.yogit.checks import account_required
+from yogit.yogit.checks import account_required, check_update
 
 
 def get_welcome_text():
@@ -78,6 +78,7 @@ def account_setup():
 @click.command("usage", help="Account API usage")
 @click.pass_context
 @account_required
+@check_update
 def account_usage(ctx):  # pylint: disable=unused-argument
     """
     Account API usage

@@ -4,6 +4,7 @@ yogit precheck routines
 import click
 
 from yogit.yogit.settings import Settings
+from yogit.yogit.update_checker import UpdateChecker
 
 
 def account_required(func):
@@ -15,6 +16,19 @@ def account_required(func):
         # pylint: disable=missing-docstring
         if not Settings().is_valid():
             raise click.ClickException("Account required, please `yogit account setup` first.")
+        func(self, *args, **kwargs)
+
+    return wrapper
+
+
+def check_update(func):
+    """
+    Check if a new version of yogit is available
+    """
+
+    def wrapper(self, *args, **kwargs):
+        # pylint: disable=missing-docstring
+        UpdateChecker().check()
         func(self, *args, **kwargs)
 
     return wrapper

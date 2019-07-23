@@ -3,7 +3,7 @@ yogit entry point
 """
 import click
 
-import yogit
+from yogit import get_version
 from yogit.yogit.logger import enable_stdout
 from yogit.yogit.pullrequest import pull_request
 from yogit.yogit.branch import branch
@@ -13,7 +13,7 @@ from yogit.yogit.scrum import scrum
 
 
 @click.group()
-@click.version_option(version=yogit.__version__)
+@click.version_option(version=get_version())
 @click.option("--verbose", "-v", is_flag=True, help="Print verbose output.")
 @click.pass_context
 def main(ctx, verbose):  # pylint: disable=unused-argument

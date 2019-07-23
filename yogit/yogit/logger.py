@@ -6,11 +6,11 @@ import logging
 import os
 import sys
 
-import yogit
+from yogit import get_name, get_version
 from yogit.yogit.paths import get_log_path, SETTINGS_DIR
 
 
-def get_logger(stdout=False, logger_name=yogit.__application__, version=yogit.__version__):
+def get_logger(stdout=False, logger_name=get_name(), version=get_version()):
     """
     Create and configure a logger using a given name.
     """
