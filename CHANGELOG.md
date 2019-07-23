@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.1
+
+* Improve help
+
 ## 1.2.0
 
 * Add ability to list your current reviews and see outdated ones with `yogit rv list`
