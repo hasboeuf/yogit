@@ -37,14 +37,15 @@ def generate_scrum_report():
         LOGGER.error(str(error))
         raise click.ClickException("Unable to parse SCRUM report template")
 
+    suffix = "- "
     for idx, question in enumerate(questions):
-        click.echo(question)
+        click.echo(click.style(question, bold=True) + " (empty line to move on)")
         answers = []
         while True:
-            line = input()
+            line = click.prompt("", prompt_suffix=suffix, default="", show_default=False)
             if line == "":
                 break
-            answers.append(line)
+            answers.append(suffix + line)
         data["q{}".format(idx)] = question
         data["a{}".format(idx)] = "\n".join(answers)
 
@@ -55,12 +56,13 @@ def generate_scrum_report():
         data["github_report"] = _get_github_report()
 
     report = template.safe_substitute(data)
-    click.echo(report)
 
     if click.confirm("Copy to clipboard?", prompt_suffix=" "):
         try:
             pyperclip.copy(report)
-            click.echo("Copied!")
+            click.secho("Copied! 🤘", bold=True)
         except Exception as error:
             LOGGER.error(str(error))
             raise click.ClickException("Not supported on your system, please `sudo apt-get install xclip`")
+    else:
+        click.echo(report)

@@ -60,15 +60,44 @@ def test_default_report_ok(mock_copy, utcnow_mock, runner):
         }
     )
     result = runner.invoke(
-        cli.main, ["scrum", "report"], input="\n".join(["- thing1\n- thing2\n- thing3\n", "", "- thing1\n", "y\n"])
+        cli.main, ["scrum", "report"], input="\n".join(["thing1\nthing2\nthing3\n", "", "thing1\n", "y\n"])
     )
 
     assert result.exit_code == ExitCode.NO_ERROR.value
     settings = ScrumReportSettings()
     assert result.output == "Loaded from `{}`\n".format(settings.get_path()) + (
-        "What have you done today?\n"
-        "Do you have any blockers?\n"
-        "What do you plan to work on your next working day?\n"
+        "What have you done today? (empty line to move on)\n"
+        "- thing1\n"
+        "- thing2\n"
+        "- thing3\n"
+        "- \n"
+        "Do you have any blockers? (empty line to move on)\n"
+        "- \n"
+        "What do you plan to work on your next working day? (empty line to move on)\n"
+        "- thing1\n"
+        "- \n"
+        "Copy to clipboard? [y/N] y\n"
+        "Copied! 🤘\n"
+    )
+
+    result = runner.invoke(
+        cli.main, ["scrum", "report"], input="\n".join(["thing1\nthing2\nthing3\n", "", "thing1\n", "n\n"])
+    )
+
+    assert result.exit_code == ExitCode.NO_ERROR.value
+    settings = ScrumReportSettings()
+    assert result.output == "Loaded from `{}`\n".format(settings.get_path()) + (
+        "What have you done today? (empty line to move on)\n"
+        "- thing1\n"
+        "- thing2\n"
+        "- thing3\n"
+        "- \n"
+        "Do you have any blockers? (empty line to move on)\n"
+        "- \n"
+        "What do you plan to work on your next working day? (empty line to move on)\n"
+        "- thing1\n"
+        "- \n"
+        "Copy to clipboard? [y/N] n\n"
         "*REPORT 2019-07-10*\n"
         "*What have you done today?*\n"
         "- thing1\n"
@@ -87,8 +116,6 @@ def test_default_report_ok(mock_copy, utcnow_mock, runner):
         "https://ghi     REVIEWER  APPROVED\n"
         "https://xyz     OWNER     OPEN\n"
         "```\n"
-        "Copy to clipboard? [y/N] y\n"
-        "Copied!\n"
     )
 
 
@@ -118,5 +145,5 @@ def test_report_clipboard_copy_error(mock_copy, mock_get_report, runner):
     assert result.exception
     assert result.exit_code == ExitCode.DEFAULT_ERROR.value
     assert result.output == "Loaded from `{}`\n".format(settings.get_path()) + (
-        "\nCopy to clipboard? [y/N] y\n" "Error: Not supported on your system, please `sudo apt-get install xclip`\n"
+        "Copy to clipboard? [y/N] y\n" "Error: Not supported on your system, please `sudo apt-get install xclip`\n"
     )
