@@ -21,6 +21,10 @@ def account_required(func):
     return wrapper
 
 
+def _check_update():
+    UpdateChecker().check()
+
+
 def check_update(func):
     """
     Check if a new version of yogit is available
@@ -28,7 +32,7 @@ def check_update(func):
 
     def wrapper(self, *args, **kwargs):
         # pylint: disable=missing-docstring
-        UpdateChecker().check()
+        _check_update()
         func(self, *args, **kwargs)
 
     return wrapper
