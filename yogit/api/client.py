@@ -26,6 +26,7 @@ def _http_call(method, url, **kwargs):
             LOGGER.info("Response: %s", dump.dump_all(response).decode("utf-8"))
         return response
     except requests.RequestException as exception:
+        LOGGER.error(str(exception))
         raise click.ClickException(str(exception))
 
 
