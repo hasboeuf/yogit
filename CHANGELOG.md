@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.0
+
+* Add ability to list your current reviews and see outdated ones with `yogit rv list`
+* Dedicated wording when there is no result
+* Add "Count: X" statement right after result list
+* Show a spinner during request time
+* Use bold and emojis to make outputs fancier
+
 ## 1.1.1
 
 * Reinforce `scrum report` command (better error handling)
