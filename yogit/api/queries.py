@@ -112,6 +112,52 @@ class ReviewRequestedQuery(GraphQLQuery):
             click.secho("Count: {}".format(len(self.data)), bold=True)
 
 
+class ReviewListQuery(GraphQLQuery):
+    def __init__(self):
+        super().__init__(S.REVIEW_LIST_STATEMENT, pagination_offset=100)
+        self.data = []
+
+    def _get_pagination_info(self, response):
+        return response["data"]["viewer"]["contributionsCollection"]["pullRequestReviewContributions"]["pageInfo"]
+
+    def _handle_response(self, response):
+        for review in response["data"]["viewer"]["contributionsCollection"]["pullRequestReviewContributions"]["edges"]:
+            pr_state = review["node"]["pullRequest"]["state"]
+            if pr_state != "OPEN":
+                continue
+
+            url = review["node"]["pullRequest"]["url"]
+            rv_state = review["node"]["pullRequestReview"]["state"]
+            last_commit_pushed = dt_for_str(
+                review["node"]["pullRequest"]["commits"]["edges"][0]["node"]["commit"]["pushedDate"]
+            )
+
+            rv_updated = review["node"]["pullRequestReview"]["updatedAt"]
+            if rv_updated is None:
+                rv_updated = review["node"]["pullRequestReview"]["createdAt"]
+            rv_updated = dt_for_str(rv_updated)
+
+            up_to_date = rv_updated > last_commit_pushed
+            rv_updated_str = days_ago_str(rv_updated.date())
+
+            rv_state_str = rv_state
+            if not up_to_date:
+                rv_state_str += " (new commits)"
+
+            self.data.append([rv_updated.date(), rv_updated_str, url, rv_state_str])
+
+        # Sort by url, then by reversed date:
+        self.data = sorted(self.data, key=lambda x: x[2])
+        self.data = sorted(self.data, key=lambda x: x[0], reverse=True)
+
+    def print(self):
+        if len(self.data) == 0:
+            click.secho("Nothing... 😿", bold=True)
+        else:
+            click.echo(tabulate([x[1:] for x in self.data], headers=["UPDATED", "PULL REQUEST", "STATE"]))
+            click.secho("Count: {}".format(len(self.data)), bold=True)
+
+
 class RateLimitQuery(GraphQLQuery):
     def __init__(self):
         super().__init__(S.RATE_LIMIT_STATEMENT)
