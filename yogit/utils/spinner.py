@@ -7,7 +7,7 @@ def spin(func):
     """
 
     def inner(self, *args, **kwargs):
-        with yaspin(text="Loading..."):
-            func(self, *args, **kwargs)
+        with yaspin(text="Loading...") as spinner:
+            func(self, spinner, *args, **kwargs)
 
     return inner

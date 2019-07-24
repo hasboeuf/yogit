@@ -16,7 +16,7 @@ from yogit.yogit.logger import LOGGER
 def _get_github_report():
     try:
         query = PullRequestContributionListQuery()
-        query.execute()
+        query.execute()  # pylint: disable=no-value-for-parameter
         return query.tabulate()
     except Exception as exception:
         LOGGER.error(str(exception))

@@ -53,11 +53,14 @@ class GraphQLQuery(Query):
         self.extra_data = extra_data
         self.pagination_offset = pagination_offset
 
-    def _get_pagination_info(self):
+    def get_pagination_info(self):
+        raise NotImplementedError()
+
+    def get_count(self):
         raise NotImplementedError()
 
     @spin
-    def execute(self):
+    def execute(self, spinner):
         prepared_statement = prepare(self.statement, self.variables, self.extra_data)
         if self.pagination_offset is None:
             response = self.client.get(prepared_statement)
@@ -72,7 +75,10 @@ class GraphQLQuery(Query):
             response = self.client.get(paginated_statement)
             super()._handle_response(response)
             self._handle_response(response)
-            pagination_info = self._get_pagination_info(response)
+            count = self.get_count()
+            if count > 0:
+                spinner.text = "Loading... (yet {} entries found)".format(count)
+            pagination_info = self.get_pagination_info(response)
             has_next = pagination_info["hasNextPage"]
             cursor = pagination_info["endCursor"]
 
@@ -84,7 +90,7 @@ class RESTQuery(Query):
         self.endpoint = endpoint
 
     @spin
-    def execute(self):
+    def execute(self, spinner):
         response = self.client.get(self.endpoint)
         super()._handle_response(response)
         self._handle_response(response)
@@ -127,8 +133,11 @@ class ReviewListQuery(GraphQLQuery):
         super().__init__(S.REVIEW_LIST_STATEMENT, pagination_offset=100)
         self.data = []
 
-    def _get_pagination_info(self, response):
+    def get_pagination_info(self, response):
         return response["data"]["viewer"]["contributionsCollection"]["pullRequestReviewContributions"]["pageInfo"]
+
+    def get_count(self):
+        return len(self.data)
 
     def _handle_response(self, response):
         for review in response["data"]["viewer"]["contributionsCollection"]["pullRequestReviewContributions"]["edges"]:
@@ -217,7 +226,10 @@ class OrgaPullRequestListQuery(GraphQLQuery):
         )
         self.data = []
 
-    def _get_pagination_info(self, response):
+    def get_count(self):
+        return len(self.data)
+
+    def get_pagination_info(self, response):
         return response["data"]["search"]["pageInfo"]
 
     def _handle_response(self, response):
@@ -275,8 +287,11 @@ class BranchListQuery(GraphQLQuery):
         self.data = []
         self.emails = emails
 
-    def _get_pagination_info(self, response):
+    def get_pagination_info(self, response):
         return response["data"]["viewer"]["repositoriesContributedTo"]["pageInfo"]
+
+    def get_count(self):
+        return len(self.data)
 
     def _handle_response(self, response):
         for repo in response["data"]["viewer"]["repositoriesContributedTo"]["edges"]:

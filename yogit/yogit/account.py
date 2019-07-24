@@ -60,11 +60,11 @@ def account_setup():
 
     try:
         login_query = LoginQuery()
-        login_query.execute()
+        login_query.execute()  # pylint: disable=no-value-for-parameter
         login = login_query.get_login()
 
         email_query = EmailQuery()
-        email_query.execute()
+        email_query.execute()  # pylint: disable=no-value-for-parameter
     except Exception as exception:
         settings.reset()
         raise exception
@@ -84,7 +84,7 @@ def account_usage(ctx):  # pylint: disable=unused-argument
     Account API usage
     """
     query = RateLimitQuery()
-    query.execute()
+    query.execute()  # pylint: disable=no-value-for-parameter
     query.print()
 
 

@@ -28,7 +28,7 @@ def pull_request_list(ctx, orga):  # pylint: disable=unused-argument
         query = OrgaPullRequestListQuery(orga)
     else:
         query = PullRequestListQuery()
-    query.execute()
+    query.execute()  # pylint: disable=no-value-for-parameter
     query.print()
 
 

@@ -24,7 +24,7 @@ def review_list(ctx):  # pylint: disable=unused-argument
     List your reviews on opened pull requests
     """
     query = ReviewListQuery()
-    query.execute()
+    query.execute()  # pylint: disable=no-value-for-parameter
     query.print()
 
 
@@ -37,7 +37,7 @@ def review_requested_list(ctx):  # pylint: disable=unused-argument
     List pull requests where your review is requested
     """
     query = ReviewRequestedQuery()
-    query.execute()
+    query.execute()  # pylint: disable=no-value-for-parameter
     query.print()
 
 
