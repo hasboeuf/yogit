@@ -66,6 +66,7 @@ def generate_scrum_report():
             pyperclip.copy(report)
             click.secho("Copied! 🤘", bold=True)
         except Exception as error:
+            click.echo(report)
             LOGGER.error(str(error))
             raise click.ClickException("Not supported on your system, please `sudo apt-get install xclip`")
     else:

@@ -145,5 +145,5 @@ def test_report_clipboard_copy_error(mock_copy, mock_get_report, runner):
     assert result.exception
     assert result.exit_code == ExitCode.DEFAULT_ERROR.value
     assert result.output == "Loaded from `{}`\n".format(settings.get_path()) + (
-        "Copy to clipboard? [y/N] y\n" "Error: Not supported on your system, please `sudo apt-get install xclip`\n"
+        "Copy to clipboard? [y/N] y\n" "\n" "Error: Not supported on your system, please `sudo apt-get install xclip`\n"
     )
