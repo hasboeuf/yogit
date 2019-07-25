@@ -4,7 +4,7 @@ yogit package
 import os
 
 __application__ = "yogit"
-__version__ = "1.4.1"
+__version__ = "1.5.0"
 
 
 def get_name():

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.0
+
+* Tried `yogit` on Windows Terminal and workaround a spinner issue
+* Print count little by little if request is big
+
 ## 1.4.1
 
 * Fix missing `packaging` dependency
