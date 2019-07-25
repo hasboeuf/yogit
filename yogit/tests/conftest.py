@@ -5,7 +5,7 @@ import pytest
 
 @pytest.fixture(scope="session", autouse=True)
 def disable_spinner():
-    with patch("yogit.utils.spinner.yaspin", MagicMock()):
+    with patch("yogit.utils.spinner.Halo", MagicMock()):
         print("Disable spinner")
         yield
 

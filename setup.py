@@ -4,7 +4,7 @@ Command line utility for GitHub daily work.
 import setuptools
 import yogit
 
-DEPENDENCIES = ["click", "tabulate", "requests", "requests-toolbelt", "packaging", "PyYAML>=5.1", "pyperclip", "yaspin"]
+DEPENDENCIES = ["click", "halo", "packaging", "PyYAML>=5.1", "pyperclip", "requests", "requests-toolbelt", "tabulate"]
 
 with open("README.md", "r") as fh:
     long_description = fh.read()

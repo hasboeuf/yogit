@@ -5,4 +5,4 @@ requests-toolbelt==0.9.1
 packaging==19.0
 PyYAML==5.1.1
 pyperclip==1.7.0
-yaspin==0.14.3
+halo==0.0.26
