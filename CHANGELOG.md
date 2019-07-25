@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.1
+
+* Replace `yaspin` by `Halo` dep to handle spinner: better handling of pipes and redirects
+
 ## 1.5.0
 
 * Tried `yogit` on Windows Terminal and workaround a spinner issue
