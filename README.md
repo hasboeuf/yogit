@@ -12,7 +12,7 @@ Command line utility for git daily work.
 
 * `Python3` and `pip3`
 * `yogit` is tested with Python `3.5`, `3.6`, `3.7`
-* `yogit` is mostly tested on `Linux` but unittests are passing on `Windows` and `macOS`.
+* `yogit` is mostly tested on `Linux` but also works on `macOS` and `Windows` (if using [Windows Terminal](https://github.com/microsoft/terminal)).
 * For now only GitHub API is supported
 
 ## Continuous integration
