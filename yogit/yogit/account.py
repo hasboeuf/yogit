@@ -28,7 +28,7 @@ https://github.com/settings/tokens
 Required scopes are:
 - read:org
 - read:user
-- read:email
+- user:email
 - repo
 
 Configuration is stored here `{}`,
