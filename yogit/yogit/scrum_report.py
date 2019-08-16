@@ -2,6 +2,7 @@
 `scrum report` command logic
 """
 
+import re
 from string import Template
 
 import click
@@ -31,7 +32,10 @@ def generate_scrum_report():
     """
     settings = ScrumReportSettings()
     settings_data = settings.get()
-    click.echo("Loaded from `{}`".format(settings.get_path()))
+    click.secho("Tips:", bold=True)
+    click.echo("- To customize report template, edit `{}`".format(settings.get_path()))
+    click.echo("- Begin line with an extra `-` to indent it")
+    click.echo("")
 
     data = {}
     try:
@@ -49,7 +53,9 @@ def generate_scrum_report():
             line = click.prompt("", prompt_suffix=suffix, default="", show_default=False)
             if line == "":
                 break
-            answers.append(suffix + line)
+            line = suffix + line
+            line = re.sub("^- -", "    -", line)
+            answers.append(line)
         data["q{}".format(idx)] = question
         data["a{}".format(idx)] = "\n".join(answers)
 

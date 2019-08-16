@@ -59,13 +59,19 @@ def test_default_report_ok(mock_copy, utcnow_mock, runner):
             }
         }
     )
+
+    # Test with report copy
     result = runner.invoke(
         cli.main, ["scrum", "report"], input="\n".join(["thing1\nthing2\nthing3\n", "", "thing1\n", "y\n"])
     )
 
     assert result.exit_code == ExitCode.NO_ERROR.value
     settings = ScrumReportSettings()
-    assert result.output == "Loaded from `{}`\n".format(settings.get_path()) + (
+    assert result.output == (
+        "Tips:\n"
+        "- To customize report template, edit `{}`\n"
+        "- Begin line with an extra `-` to indent it\n"
+        "\n"
         "What have you done today? (empty line to move on)\n"
         "- thing1\n"
         "- thing2\n"
@@ -78,17 +84,29 @@ def test_default_report_ok(mock_copy, utcnow_mock, runner):
         "- \n"
         "Copy to clipboard? [y/N] y\n"
         "Copied! 🤘\n"
-    )
+    ).format(settings.get_path())
 
+    # Test without report copy and with extra indentation
     result = runner.invoke(
-        cli.main, ["scrum", "report"], input="\n".join(["thing1\nthing2\nthing3\n", "", "thing1\n", "n\n"])
+        cli.main,
+        ["scrum", "report"],
+        input="\n".join(
+            ["thing1:", "- subthing1", "- subthing2", "- subthing3", "thing2", "thing3\n", "", "thing1\n", "n\n"]
+        ),
     )
 
     assert result.exit_code == ExitCode.NO_ERROR.value
     settings = ScrumReportSettings()
-    assert result.output == "Loaded from `{}`\n".format(settings.get_path()) + (
+    assert result.output == (
+        "Tips:\n"
+        "- To customize report template, edit `{}`\n"
+        "- Begin line with an extra `-` to indent it\n"
+        "\n"
         "What have you done today? (empty line to move on)\n"
-        "- thing1\n"
+        "- thing1:\n"
+        "- - subthing1\n"
+        "- - subthing2\n"
+        "- - subthing3\n"
         "- thing2\n"
         "- thing3\n"
         "- \n"
@@ -100,7 +118,10 @@ def test_default_report_ok(mock_copy, utcnow_mock, runner):
         "Copy to clipboard? [y/N] n\n"
         "*REPORT 2019-07-10*\n"
         "*What have you done today?*\n"
-        "- thing1\n"
+        "- thing1:\n"
+        "    - subthing1\n"
+        "    - subthing2\n"
+        "    - subthing3\n"
         "- thing2\n"
         "- thing3\n"
         "*Do you have any blockers?*\n"
@@ -116,7 +137,7 @@ def test_default_report_ok(mock_copy, utcnow_mock, runner):
         "https://ghi     REVIEWER  APPROVED\n"
         "https://xyz     OWNER     OPEN\n"
         "```\n"
-    )
+    ).format(settings.get_path())
 
 
 @pytest.mark.usefixtures("mock_settings")
@@ -129,9 +150,13 @@ def test_report_wrong_template(mock_get_report, runner):
 
     assert result.exception
     assert result.exit_code == ExitCode.DEFAULT_ERROR.value
-    assert result.output == "Loaded from `{}`\n".format(settings.get_path()) + (
+    assert result.output == (
+        "Tips:\n"
+        "- To customize report template, edit `{}`\n"
+        "- Begin line with an extra `-` to indent it\n"
+        "\n"
         "Error: Unable to parse SCRUM report template\n"
-    )
+    ).format(settings.get_path())
 
 
 @pytest.mark.usefixtures("mock_settings")
@@ -144,6 +169,12 @@ def test_report_clipboard_copy_error(mock_copy, mock_get_report, runner):
 
     assert result.exception
     assert result.exit_code == ExitCode.DEFAULT_ERROR.value
-    assert result.output == "Loaded from `{}`\n".format(settings.get_path()) + (
-        "Copy to clipboard? [y/N] y\n" "\n" "Error: Not supported on your system, please `sudo apt-get install xclip`\n"
-    )
+    assert result.output == (
+        "Tips:\n"
+        "- To customize report template, edit `{}`\n"
+        "- Begin line with an extra `-` to indent it\n"
+        "\n"
+        "Copy to clipboard? [y/N] y\n"
+        "\n"
+        "Error: Not supported on your system, please `sudo apt-get install xclip`\n"
+    ).format(settings.get_path())
