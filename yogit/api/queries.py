@@ -251,9 +251,9 @@ class OrgaPullRequestListQuery(GraphQLQuery):
             click.secho("Count: {}".format(len(self.data)), bold=True)
 
 
-class PullRequestContributionListQuery(GraphQLQuery):
+class OneDayContributionListQuery(GraphQLQuery):
     def __init__(self):
-        super().__init__(S.PULL_REQUEST_CONTRIBUTION_LIST_STATEMENT, [S.TODAY_VARIABLE])
+        super().__init__(S.ONE_DAY_CONTRIBUTION_LIST_STATEMENT, [S.TODAY_VARIABLE])
         self.data = []
 
     def _handle_response(self, response):

@@ -132,7 +132,7 @@ ORGA_PULL_REQUEST_LIST_STATEMENT = """
 }
 """
 
-PULL_REQUEST_CONTRIBUTION_LIST_STATEMENT = """
+ONE_DAY_CONTRIBUTION_LIST_STATEMENT = """
 {
     viewer {
         contributionsCollection(from: "$today") {

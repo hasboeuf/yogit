@@ -9,14 +9,14 @@ import click
 import pyperclip
 
 from yogit.yogit.settings import ScrumReportSettings
-from yogit.api.queries import PullRequestContributionListQuery
+from yogit.api.queries import OneDayContributionListQuery
 from yogit.utils.dateutils import today_str
 from yogit.yogit.logger import LOGGER
 
 
 def _get_github_report():
     try:
-        query = PullRequestContributionListQuery()
+        query = OneDayContributionListQuery()
         query.execute()  # pylint: disable=no-value-for-parameter
         return query.tabulate()
     except Exception as exception:
