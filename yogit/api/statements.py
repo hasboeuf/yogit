@@ -168,6 +168,56 @@ ONE_DAY_CONTRIBUTION_LIST_STATEMENT = """
 }
 """
 
+PULL_REQUEST_CONTRIBUTION_LIST_STATEMENT = """
+{
+    viewer {
+        contributionsCollection(from: "$from", to: "$to") {
+            pullRequestContributions(first: $offset $after) {
+                pageInfo {
+                    hasNextPage
+                    endCursor
+                }
+                edges {
+                    node {
+                        pullRequest {
+                            url
+                            title
+                            createdAt
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+"""
+
+PULL_REQUEST_REVIEW_CONTRIBUTION_LIST_STATEMENT = """
+{
+    viewer {
+        contributionsCollection(from: "$from", to: "$to") {
+            pullRequestReviewContributions(first: $offset $after) {
+                pageInfo {
+                    hasNextPage
+                    endCursor
+                }
+                edges {
+                    node {
+                        pullRequestReview {
+                            publishedAt
+                        }
+                        pullRequest {
+                            url
+                            title
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+"""
+
 BRANCH_LIST_STATEMENT = """
 {
     viewer {
