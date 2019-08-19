@@ -132,10 +132,10 @@ ORGA_PULL_REQUEST_LIST_STATEMENT = """
 }
 """
 
-PULL_REQUEST_CONTRIBUTION_LIST_STATEMENT = """
+ONE_DAY_CONTRIBUTION_LIST_STATEMENT = """
 {
     viewer {
-        contributionsCollection(from: "$today") {
+        contributionsCollection(from: "$date", to: "$date") {
             pullRequestContributions(first: 100) {
                 edges {
                     node {
@@ -159,6 +159,56 @@ PULL_REQUEST_CONTRIBUTION_LIST_STATEMENT = """
                         }
                         pullRequest {
                             url
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+"""
+
+PULL_REQUEST_CONTRIBUTION_LIST_STATEMENT = """
+{
+    viewer {
+        contributionsCollection(from: "$from", to: "$to") {
+            pullRequestContributions(first: $offset $after) {
+                pageInfo {
+                    hasNextPage
+                    endCursor
+                }
+                edges {
+                    node {
+                        pullRequest {
+                            url
+                            title
+                            createdAt
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+"""
+
+PULL_REQUEST_REVIEW_CONTRIBUTION_LIST_STATEMENT = """
+{
+    viewer {
+        contributionsCollection(from: "$from", to: "$to") {
+            pullRequestReviewContributions(first: $offset $after) {
+                pageInfo {
+                    hasNextPage
+                    endCursor
+                }
+                edges {
+                    node {
+                        pullRequestReview {
+                            publishedAt
+                        }
+                        pullRequest {
+                            url
+                            title
                         }
                     }
                 }

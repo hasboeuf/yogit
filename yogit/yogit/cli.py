@@ -7,6 +7,7 @@ from yogit import get_version
 from yogit.yogit.logger import enable_stdout
 from yogit.yogit.pullrequest import pull_request
 from yogit.yogit.branch import branch
+from yogit.yogit.contribution import contribution
 from yogit.yogit.review import review
 from yogit.yogit.account import account
 from yogit.yogit.scrum import scrum
@@ -26,6 +27,7 @@ def main(ctx, verbose):  # pylint: disable=unused-argument
 
 main.add_command(account)
 main.add_command(branch)
+main.add_command(contribution)
 main.add_command(pull_request)
 main.add_command(review)
 main.add_command(scrum)

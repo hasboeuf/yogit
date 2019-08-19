@@ -251,9 +251,116 @@ class OrgaPullRequestListQuery(GraphQLQuery):
             click.secho("Count: {}".format(len(self.data)), bold=True)
 
 
+class ContributionListQuery:
+    def __init__(self, dt_from, dt_to, organization=None):
+        # TODO reengineer this class - create a generic one capable of executing
+        #      queries sequentially
+        self.pr_query = PullRequestContributionListQuery(dt_from, dt_to, organization)
+        self.rv_query = PullRequestReviewContributionListQuery(dt_from, dt_to, organization)
+
+    def execute(self):
+        self.pr_query.execute()
+        self.rv_query.execute()
+
+    def print(self):
+        data = []
+        data.extend(self.pr_query.data)
+        data.extend(self.rv_query.data)
+
+        # Sort by url, then by reversed date:
+        data = sorted(data, key=lambda x: (x[1], x[2], x[3]))
+        data = sorted(data, key=lambda x: x[0], reverse=True)
+
+        if len(data) == 0:
+            click.secho("Nothing... 😿 Time to push hard 💪", bold=True)
+        else:
+            click.echo(tabulate(data, headers=["CREATED", "PULL REQUEST", "ROLE", "TITLE"]))
+            click.secho("Count: {}".format(len(data)), bold=True)
+
+
 class PullRequestContributionListQuery(GraphQLQuery):
-    def __init__(self):
-        super().__init__(S.PULL_REQUEST_CONTRIBUTION_LIST_STATEMENT, [S.TODAY_VARIABLE])
+    def __init__(self, dt_from, dt_to, organization=None):
+        super().__init__(
+            S.PULL_REQUEST_CONTRIBUTION_LIST_STATEMENT,
+            pagination_offset=100,
+            extra_data={"organization": organization, "from": dt_from.isoformat(), "to": dt_to.isoformat()},
+        )
+        self.data = []
+
+    def get_count(self):
+        return len(self.data)
+
+    def get_pagination_info(self, response):
+        return response["data"]["viewer"]["contributionsCollection"]["pullRequestContributions"]["pageInfo"]
+
+    def _handle_response(self, response):
+        pr_contributions = response["data"]["viewer"]["contributionsCollection"]["pullRequestContributions"]["edges"]
+
+        for pr_contribution in pr_contributions:
+            created = dt_for_str(pr_contribution["node"]["pullRequest"]["createdAt"]).date()
+            url = pr_contribution["node"]["pullRequest"]["url"]
+            title = shorten_str(pr_contribution["node"]["pullRequest"]["title"])
+            self.data.append([created, url, "OWNER", title])
+
+        # Sort by url, then by reversed date:
+        self.data = sorted(self.data, key=lambda x: (x[1], x[2], x[3]))
+        self.data = sorted(self.data, key=lambda x: x[0], reverse=True)
+
+    def tabulate(self):
+        return tabulate(self.data, headers=["CREATED", "PULL REQUEST", "ROLE", "TITLE"])
+
+    def print(self):
+        if len(self.data) == 0:
+            click.secho("Nothing... 😿 Time to push hard 💪", bold=True)
+        else:
+            click.echo(self.tabulate())
+            click.secho("Count: {}".format(len(self.data)), bold=True)
+
+
+class PullRequestReviewContributionListQuery(GraphQLQuery):
+    def __init__(self, dt_from, dt_to, organization=None):
+        super().__init__(
+            S.PULL_REQUEST_REVIEW_CONTRIBUTION_LIST_STATEMENT,
+            pagination_offset=100,
+            extra_data={"organization": organization, "from": dt_from.isoformat(), "to": dt_to.isoformat()},
+        )
+        self.data = []
+
+    def get_count(self):
+        return len(self.data)
+
+    def get_pagination_info(self, response):
+        return response["data"]["viewer"]["contributionsCollection"]["pullRequestReviewContributions"]["pageInfo"]
+
+    def _handle_response(self, response):
+        rv_contributions = response["data"]["viewer"]["contributionsCollection"]["pullRequestReviewContributions"][
+            "edges"
+        ]
+
+        for rv_contribution in rv_contributions:
+            created = dt_for_str(rv_contribution["node"]["pullRequestReview"]["publishedAt"]).date()
+            url = rv_contribution["node"]["pullRequest"]["url"]
+            title = shorten_str(rv_contribution["node"]["pullRequest"]["title"])
+            self.data.append([created, url, "REVIEWER", title])
+
+        # Sort by url, then by reversed date:
+        self.data = sorted(self.data, key=lambda x: (x[1], x[2], x[3]))
+        self.data = sorted(self.data, key=lambda x: x[0], reverse=True)
+
+    def tabulate(self):
+        return tabulate(self.data, headers=["CREATED", "PULL REQUEST", "ROLE", "TITLE"])
+
+    def print(self):
+        if len(self.data) == 0:
+            click.secho("Nothing... 😿 Time to push hard 💪", bold=True)
+        else:
+            click.echo(self.tabulate())
+            click.secho("Count: {}".format(len(self.data)), bold=True)
+
+
+class OneDayContributionListQuery(GraphQLQuery):
+    def __init__(self, report_dt):
+        super().__init__(S.ONE_DAY_CONTRIBUTION_LIST_STATEMENT, [], extra_data={"date": report_dt.isoformat()})
         self.data = []
 
     def _handle_response(self, response):
