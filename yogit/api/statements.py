@@ -135,7 +135,7 @@ ORGA_PULL_REQUEST_LIST_STATEMENT = """
 ONE_DAY_CONTRIBUTION_LIST_STATEMENT = """
 {
     viewer {
-        contributionsCollection(from: "$today") {
+        contributionsCollection(from: "$date", to: "$date") {
             pullRequestContributions(first: 100) {
                 edges {
                     node {

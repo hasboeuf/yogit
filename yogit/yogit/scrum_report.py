@@ -10,13 +10,12 @@ import pyperclip
 
 from yogit.yogit.settings import ScrumReportSettings
 from yogit.api.queries import OneDayContributionListQuery
-from yogit.utils.dateutils import today_str
 from yogit.yogit.logger import LOGGER
 
 
-def _get_github_report():
+def _get_github_report(report_dt):
     try:
-        query = OneDayContributionListQuery()
+        query = OneDayContributionListQuery(report_dt)
         query.execute()  # pylint: disable=no-value-for-parameter
         return query.tabulate()
     except Exception as exception:
@@ -24,7 +23,7 @@ def _get_github_report():
         return str(exception)
 
 
-def generate_scrum_report():
+def generate_scrum_report(report_dt):
     """
     Generate scrum report based on scrum report template
 
@@ -36,6 +35,7 @@ def generate_scrum_report():
     click.echo("• To customize report template, edit `{}`".format(settings.get_path()))
     click.echo("• Begin line with an extra " + click.style("<space>", bold=True) + " to indent it")
     click.echo("")
+    click.secho("Report of {}".format(report_dt.date().isoformat()), bold=True)
 
     data = {}
     try:
@@ -61,9 +61,9 @@ def generate_scrum_report():
 
     template = Template("\n".join(tpl))
 
-    data["today"] = today_str()
+    data["today"] = report_dt.date().isoformat()  # "today" string does is not meaninful
     if "${github_report}" in template.template:
-        data["github_report"] = _get_github_report()
+        data["github_report"] = _get_github_report(report_dt)
 
     report = template.safe_substitute(data)
 

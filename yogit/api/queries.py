@@ -359,8 +359,8 @@ class PullRequestReviewContributionListQuery(GraphQLQuery):
 
 
 class OneDayContributionListQuery(GraphQLQuery):
-    def __init__(self):
-        super().__init__(S.ONE_DAY_CONTRIBUTION_LIST_STATEMENT, [S.TODAY_VARIABLE])
+    def __init__(self, report_dt):
+        super().__init__(S.ONE_DAY_CONTRIBUTION_LIST_STATEMENT, [], extra_data={"date": report_dt.isoformat()})
         self.data = []
 
     def _handle_response(self, response):
