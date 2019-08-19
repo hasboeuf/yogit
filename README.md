@@ -66,9 +66,17 @@ Options:
 
 `yogit br list`: List your branches
 
+### Contributions
+
+`yogit ct list [--from TEXT] [--to TEXT]`: List your GitHub contributions within a range of dates.
+
+A contribution is either a pull request or pull request review.
+
+By default this command is listing today's contributions.
+
 ### SCRUM
 
-`yogit scrum report`: Generate your daily activity report
+`yogit scrum report [--date TEXT]`: Generate your daily activity report
 
 Template of the report can be changed by editing `~/.yogit/scrum_report.yaml`
 

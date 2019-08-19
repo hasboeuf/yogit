@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.6.0
+
+* Add `yogit ct list` command
+* Add `--date` arg to `yogit scrum report` command
+* Add indentation ability to `yogit scrum report`
+* Print pretty bullet points in generated scrum report
+* Improve documentation
+
 ## 1.5.1
 
 * Replace `yaspin` by `Halo` dep to handle spinner: better handling of pipes and redirects
