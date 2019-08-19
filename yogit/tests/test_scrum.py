@@ -69,19 +69,19 @@ def test_default_report_ok(mock_copy, utcnow_mock, runner):
     settings = ScrumReportSettings()
     assert result.output == (
         "Tips:\n"
-        "- To customize report template, edit `{}`\n"
-        "- Begin line with an extra `-` to indent it\n"
+        "• To customize report template, edit `{}`\n"
+        "• Begin line with an extra <space> to indent it\n"
         "\n"
         "What have you done today? (empty line to move on)\n"
-        "- thing1\n"
-        "- thing2\n"
-        "- thing3\n"
-        "- \n"
+        "• thing1\n"
+        "• thing2\n"
+        "• thing3\n"
+        "• \n"
         "Do you have any blockers? (empty line to move on)\n"
-        "- \n"
+        "• \n"
         "What do you plan to work on your next working day? (empty line to move on)\n"
-        "- thing1\n"
-        "- \n"
+        "• thing1\n"
+        "• \n"
         "Copy to clipboard? [y/N] y\n"
         "Copied! 🤘\n"
     ).format(settings.get_path())
@@ -91,7 +91,7 @@ def test_default_report_ok(mock_copy, utcnow_mock, runner):
         cli.main,
         ["scrum", "report"],
         input="\n".join(
-            ["thing1:", "- subthing1", "- subthing2", "- subthing3", "thing2", "thing3\n", "", "thing1\n", "n\n"]
+            ["thing1:", " subthing1", " subthing2", " subthing3", "thing2", "thing3\n", "", "thing1\n", "n\n"]
         ),
     )
 
@@ -99,35 +99,35 @@ def test_default_report_ok(mock_copy, utcnow_mock, runner):
     settings = ScrumReportSettings()
     assert result.output == (
         "Tips:\n"
-        "- To customize report template, edit `{}`\n"
-        "- Begin line with an extra `-` to indent it\n"
+        "• To customize report template, edit `{}`\n"
+        "• Begin line with an extra <space> to indent it\n"
         "\n"
         "What have you done today? (empty line to move on)\n"
-        "- thing1:\n"
-        "- - subthing1\n"
-        "- - subthing2\n"
-        "- - subthing3\n"
-        "- thing2\n"
-        "- thing3\n"
-        "- \n"
+        "• thing1:\n"
+        "•  subthing1\n"
+        "•  subthing2\n"
+        "•  subthing3\n"
+        "• thing2\n"
+        "• thing3\n"
+        "• \n"
         "Do you have any blockers? (empty line to move on)\n"
-        "- \n"
+        "• \n"
         "What do you plan to work on your next working day? (empty line to move on)\n"
-        "- thing1\n"
-        "- \n"
+        "• thing1\n"
+        "• \n"
         "Copy to clipboard? [y/N] n\n"
         "*REPORT 2019-07-10*\n"
         "*What have you done today?*\n"
-        "- thing1:\n"
-        "    - subthing1\n"
-        "    - subthing2\n"
-        "    - subthing3\n"
-        "- thing2\n"
-        "- thing3\n"
+        "• thing1:\n"
+        "    ‣ subthing1\n"
+        "    ‣ subthing2\n"
+        "    ‣ subthing3\n"
+        "• thing2\n"
+        "• thing3\n"
         "*Do you have any blockers?*\n"
         "\n"
         "*What do you plan to work on your next working day?*\n"
-        "- thing1\n"
+        "• thing1\n"
         "\n"
         "```\n"
         "PULL REQUEST    ROLE      STATE\n"
@@ -152,8 +152,8 @@ def test_report_wrong_template(mock_get_report, runner):
     assert result.exit_code == ExitCode.DEFAULT_ERROR.value
     assert result.output == (
         "Tips:\n"
-        "- To customize report template, edit `{}`\n"
-        "- Begin line with an extra `-` to indent it\n"
+        "• To customize report template, edit `{}`\n"
+        "• Begin line with an extra <space> to indent it\n"
         "\n"
         "Error: Unable to parse SCRUM report template\n"
     ).format(settings.get_path())
@@ -171,8 +171,8 @@ def test_report_clipboard_copy_error(mock_copy, mock_get_report, runner):
     assert result.exit_code == ExitCode.DEFAULT_ERROR.value
     assert result.output == (
         "Tips:\n"
-        "- To customize report template, edit `{}`\n"
-        "- Begin line with an extra `-` to indent it\n"
+        "• To customize report template, edit `{}`\n"
+        "• Begin line with an extra <space> to indent it\n"
         "\n"
         "Copy to clipboard? [y/N] y\n"
         "\n"

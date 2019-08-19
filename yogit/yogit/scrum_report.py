@@ -33,8 +33,8 @@ def generate_scrum_report():
     settings = ScrumReportSettings()
     settings_data = settings.get()
     click.secho("Tips:", bold=True)
-    click.echo("- To customize report template, edit `{}`".format(settings.get_path()))
-    click.echo("- Begin line with an extra `-` to indent it")
+    click.echo("• To customize report template, edit `{}`".format(settings.get_path()))
+    click.echo("• Begin line with an extra " + click.style("<space>", bold=True) + " to indent it")
     click.echo("")
 
     data = {}
@@ -45,7 +45,7 @@ def generate_scrum_report():
         LOGGER.error(str(error))
         raise click.ClickException("Unable to parse SCRUM report template")
 
-    suffix = "- "
+    suffix = "• "
     for idx, question in enumerate(questions):
         click.echo(click.style(question, bold=True) + " (empty line to move on)")
         answers = []
@@ -54,7 +54,7 @@ def generate_scrum_report():
             if line == "":
                 break
             line = suffix + line
-            line = re.sub("^- -", "    -", line)
+            line = re.sub("^•  ", "    ‣ ", line)
             answers.append(line)
         data["q{}".format(idx)] = question
         data["a{}".format(idx)] = "\n".join(answers)
