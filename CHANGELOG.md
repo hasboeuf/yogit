@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.7.0
+
+* Add `yogit ct stats` command
+
 ## 1.6.0
 
 * Add `yogit ct list` command

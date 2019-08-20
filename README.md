@@ -74,6 +74,8 @@ A contribution is either a pull request or pull request review.
 
 By default this command is listing today's contributions.
 
+`yogit ct stats`: Show some GitHub statistics.
+
 ### SCRUM
 
 `yogit scrum report [--date TEXT]`: Generate your daily activity report
