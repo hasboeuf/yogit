@@ -19,8 +19,6 @@ def _compute_date_str(str_from, str_to):
         raise click.ClickException("Bad date format, should be `%Y-%m-%d`")
     if dt_from > dt_to:
         raise click.ClickException("`--from` is not before `--to`")
-    if (dt_to - dt_from).days > 365:
-        raise click.ClickException("Date range must not exceed one year")
     return dt_from, dt_to
 
 
@@ -64,6 +62,8 @@ def contribution_list(ctx, str_from, str_to):  # pylint: disable=unused-argument
     List contributions
     """
     dt_from, dt_to = _compute_date_str(str_from, str_to)
+    if (dt_to - dt_from).days > 365:
+        raise click.ClickException("Date range must not exceed one year")
     click.secho("Contributions from {} to {}".format(str_from, str_to), bold=True)
     query = ContributionListQuery(dt_from, dt_to)
     query.execute()  # pylint: disable=no-value-for-parameter
