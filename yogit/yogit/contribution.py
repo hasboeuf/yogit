@@ -5,7 +5,7 @@ from datetime import datetime
 
 import click
 
-from yogit.api.queries import ContributionListQuery
+from yogit.api.queries import ContributionListQuery, ContributionStatsQuery
 from yogit.yogit.checks import account_required, check_update
 from yogit.utils.dateutils import today_str
 
@@ -70,4 +70,18 @@ def contribution_list(ctx, str_from, str_to):  # pylint: disable=unused-argument
     query.print()
 
 
+@click.command("stats", help="GitHub statistics")
+@click.pass_context
+@account_required
+@check_update
+def contribution_stats(ctx):  # pylint: disable=unused-argument
+    """
+    List GitHub statistics
+    """
+    query = ContributionStatsQuery()
+    query.execute()  # pylint: disable=no-value-for-parameter
+    query.print()
+
+
 contribution.add_command(contribution_list)
+contribution.add_command(contribution_stats)

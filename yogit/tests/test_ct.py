@@ -58,8 +58,11 @@ def test_empty_ct_list(runner):
 
 @pytest.mark.usefixtures("mock_settings")
 @responses.activate
-@patch("yogit.utils.dateutils._utcnow", return_value=datetime(2019, 8, 19, 1, 15, 59, 666))
-def test_ct_list_today_ok(mock_utc_now, runner):
+@patch(
+    "yogit.yogit.contribution._compute_date_str",
+    return_value=(datetime(2019, 7, 10, 1, 15, 59, 666), datetime(2019, 7, 10, 1, 15, 59, 666)),
+)
+def test_ct_list_today_ok(mock_compute_date, runner):
     _add_graphql_response(
         {
             "data": {
@@ -245,3 +248,43 @@ def test_to_earlier_than_from(runner):
     result = runner.invoke(cli.main, ["ct", "list", "--from", "2019-08-02", "--to", "2019-08-01"])
     assert result.exit_code == ExitCode.DEFAULT_ERROR.value
     assert result.output == ("Error: `--from` is not before `--to`\n")
+
+
+@pytest.mark.usefixtures("mock_settings")
+@responses.activate
+def test_empty_ct_stats_ok(runner):
+    _add_graphql_response(
+        {
+            "data": {
+                "viewer": {
+                    "contributionsCollection": {
+                        "totalIssueContributions": 0,
+                        "totalCommitContributions": 1,
+                        "totalRepositoryContributions": 2,
+                        "totalPullRequestContributions": 30,
+                        "totalPullRequestReviewContributions": 31,
+                        "totalRepositoriesWithContributedIssues": 400,
+                        "totalRepositoriesWithContributedCommits": 401,
+                        "totalRepositoriesWithContributedPullRequests": 5000,
+                        "totalRepositoriesWithContributedPullRequestReviews": 5001,
+                    }
+                }
+            }
+        }
+    )
+
+    result = runner.invoke(cli.main, ["ct", "stats"])
+    assert result.exit_code == ExitCode.NO_ERROR.value
+    assert result.output == (
+        "STAT                                                        VALUE\n"
+        "--------------------------------------------------------  -------\n"
+        "Total commit contributions                                      1\n"
+        "Total issue contributions                                       0\n"
+        "Total pull request contributions                               30\n"
+        "Total pull request review contributions                        31\n"
+        "Total repositories with contributed commits                   401\n"
+        "Total repositories with contributed issues                    400\n"
+        "Total repositories with contributed pull request reviews     5001\n"
+        "Total repositories with contributed pull requests            5000\n"
+        "Total repository contributions                                  2\n"
+    )

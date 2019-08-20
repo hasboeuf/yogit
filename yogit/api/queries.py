@@ -278,6 +278,26 @@ class ContributionListQuery:
             click.secho("Count: {}".format(len(data)), bold=True)
 
 
+class ContributionStatsQuery(GraphQLQuery):
+    def __init__(self):
+        super().__init__(S.CONTRIBUTION_STATS_STATEMENT)
+        self.data = []
+
+    def _handle_response(self, response):
+        for k, v in response["data"]["viewer"]["contributionsCollection"].items():
+            # `camelCase` to `Title case`
+            key = "".join([" " + x.lower() if x.isupper() else x for x in k])
+            key = key[0].upper() + key[1:]
+            self.data.append([key, v])
+        self.data = sorted(self.data, key=lambda x: x[0])
+
+    def tabulate(self):
+        return tabulate(self.data, headers=["STAT", "VALUE"])
+
+    def print(self):
+        click.echo(self.tabulate())
+
+
 class PullRequestContributionListQuery(GraphQLQuery):
     def __init__(self, dt_from, dt_to, organization=None):
         super().__init__(

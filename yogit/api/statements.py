@@ -218,6 +218,24 @@ PULL_REQUEST_REVIEW_CONTRIBUTION_LIST_STATEMENT = """
 }
 """
 
+CONTRIBUTION_STATS_STATEMENT = """
+{
+    viewer {
+        contributionsCollection {
+            totalIssueContributions
+            totalCommitContributions
+            totalRepositoryContributions
+            totalPullRequestContributions
+            totalPullRequestReviewContributions
+            totalRepositoriesWithContributedIssues
+            totalRepositoriesWithContributedCommits
+            totalRepositoriesWithContributedPullRequests
+            totalRepositoriesWithContributedPullRequestReviews
+        }
+    }
+}
+"""
+
 BRANCH_LIST_STATEMENT = """
 {
     viewer {
