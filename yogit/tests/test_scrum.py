@@ -66,7 +66,7 @@ def test_with_specific_date(mock_get_report, runner):
 @responses.activate
 @patch("yogit.yogit.scrum._compute_date_str", return_value=datetime(2019, 7, 10, 1, 15, 59, 666))
 @patch("pyperclip.copy")
-def test_default_report_ok(mock_copy, utcnow_mock, runner):
+def test_default_report_ok(mock_copy, mock_compute_date, runner):
     _add_graphql_response(
         {
             "data": {
@@ -186,7 +186,7 @@ def test_default_report_ok(mock_copy, utcnow_mock, runner):
 @pytest.mark.usefixtures("temporary_scrum_report")
 @patch("yogit.yogit.settings.ScrumReportSettings.get", return_value={"invalid": "template"})
 @patch("yogit.yogit.scrum._compute_date_str", return_value=datetime(2019, 8, 20, 1, 15, 59, 666))
-def test_report_wrong_template(mock_utc_now, mock_get_report, runner):
+def test_report_wrong_template(mock_compute_date, mock_get_report, runner):
 
     result = runner.invoke(cli.main, ["scrum", "report"])
     settings = ScrumReportSettings()
@@ -208,7 +208,7 @@ def test_report_wrong_template(mock_utc_now, mock_get_report, runner):
 @patch("yogit.yogit.settings.ScrumReportSettings.get", return_value={"questions": [], "template": []})
 @patch("pyperclip.copy", side_effect=Exception("error"))
 @patch("yogit.yogit.scrum._compute_date_str", return_value=datetime(2019, 8, 20, 1, 15, 59, 666))
-def test_report_clipboard_copy_error(mock_utc_now, mock_copy, mock_get_report, runner):
+def test_report_clipboard_copy_error(mock_compute_date, mock_copy, mock_get_report, runner):
     result = runner.invoke(cli.main, ["scrum", "report"], input="\n".join(["y\n"]))
     settings = ScrumReportSettings()
 
