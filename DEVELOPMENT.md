@@ -55,7 +55,7 @@ python3 -c "import yogit"
 pip3 uninstall yogit
 git clean -d --force --dry-run
 git clean -d --force
-python3 setup.py sdist bdist_wheel
+python3 setup.py sdist
 twine upload dist/*
 pip3 install yogit
 yogit --help
