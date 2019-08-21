@@ -3,7 +3,7 @@ yogit entry point
 """
 import click
 
-from yogit import get_version
+from yogit import get_name, get_version
 from yogit.yogit.logger import enable_stdout
 from yogit.yogit.pullrequest import pull_request
 from yogit.yogit.branch import branch
@@ -13,8 +13,14 @@ from yogit.yogit.account import account
 from yogit.yogit.scrum import scrum
 
 
+def get_version_content():
+    return ("{}, version {}\n" "Changelog: https://github.com/hasboeuf/yogit/blob/{}/CHANGELOG.md").format(
+        get_name(), get_version(), get_version()
+    )
+
+
 @click.group()
-@click.version_option(version=get_version())
+@click.version_option(message=get_version_content())
 @click.option("--verbose", "-v", is_flag=True, help="Print verbose output.")
 @click.pass_context
 def main(ctx, verbose):  # pylint: disable=unused-argument
