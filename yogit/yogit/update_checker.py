@@ -70,6 +70,10 @@ class UpdateChecker:
         if not outdated:
             return
         click.secho(
-            "Update available ({} vs {}) `pip3 install --upgrade yogit` 🎁".format(current_version, latest_version),
-            fg="blue",
+            (
+                "You are using yogit {}, however version {} is available 🎁\n"
+                "You can upgrade it with `pip3 install --upgrade yogit` 🚀\n"
+                "Changelog: https://github.com/hasboeuf/yogit/blob/{}/CHANGELOG.md"
+            ).format(current_version, latest_version, latest_version),
+            fg="yellow",
         )
