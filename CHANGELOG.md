@@ -1,8 +1,12 @@
 # Changelog
 
-## 1.7.1
+## 1.7.2
 
 * Fix `yogit` upgrade from `1.6.0`
+
+## 1.7.1
+
+* Shit happens
 
 ## 1.7.0
 
