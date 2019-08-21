@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.7.1
+
+* Fix `yogit` upgrade from `1.6.0`
+
 ## 1.7.0
 
 * Add `yogit ct stats` command
