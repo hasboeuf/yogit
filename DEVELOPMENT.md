@@ -42,7 +42,7 @@ Password in `.travis.yml` has been encrypted with:
 pip3 uninstall yogit
 git clean -d --force --dry-run
 git clean -d --force
-python3 setup.py sdist bdist_wheel
+python3 setup.py sdist
 twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 pip3 install --index-url https://test.pypi.org/simple/ --no-deps yogit
 yogit --help
