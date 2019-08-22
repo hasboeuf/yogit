@@ -30,7 +30,7 @@ def _get_default_from():
     return today_str()
 
 
-@click.group("ct")
+@click.group("contrib")
 def contribution():
     """
     Contribution actions

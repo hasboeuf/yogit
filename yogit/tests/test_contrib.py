@@ -49,7 +49,7 @@ def test_empty_ct_list(runner):
             }
         }
     )
-    result = runner.invoke(cli.main, ["ct", "list"])
+    result = runner.invoke(cli.main, ["contrib", "list"])
     assert result.exit_code == ExitCode.NO_ERROR.value
     assert result.output == ("Contributions from {} to {}\n" "Nothing... 😿 Time to push hard 💪\n").format(
         today_str(), today_str()
@@ -123,7 +123,7 @@ def test_ct_list_today_ok(mock_compute_date, runner):
             }
         }
     )
-    result = runner.invoke(cli.main, ["ct", "list"])
+    result = runner.invoke(cli.main, ["contrib", "list"])
     assert result.exit_code == ExitCode.NO_ERROR.value
     assert result.output == (
         "Contributions from {} to {}\n"
@@ -209,7 +209,7 @@ def test_ct_list_ok(runner):
             }
         }
     )
-    result = runner.invoke(cli.main, ["ct", "list", "--from", "2019-08-01", "--to", "2019-08-15"])
+    result = runner.invoke(cli.main, ["contrib", "list", "--from", "2019-08-01", "--to", "2019-08-15"])
     assert result.exit_code == ExitCode.NO_ERROR.value
     assert result.output == (
         "Contributions from 2019-08-01 to 2019-08-15\n"
@@ -227,9 +227,9 @@ def test_ct_list_ok(runner):
 @pytest.mark.usefixtures("mock_settings")
 def test_wrong_dates(runner):
     for args in [
-        ["ct", "list", "--from", "badformat"],
-        ["ct", "list", "--to", "badformat"],
-        ["ct", "list", "--from", "badformat", "--to", "badformat"],
+        ["contrib", "list", "--from", "badformat"],
+        ["contrib", "list", "--to", "badformat"],
+        ["contrib", "list", "--from", "badformat", "--to", "badformat"],
     ]:
         result = runner.invoke(cli.main, args)
         assert result.exit_code == ExitCode.DEFAULT_ERROR.value
@@ -238,14 +238,14 @@ def test_wrong_dates(runner):
 
 @pytest.mark.usefixtures("mock_settings")
 def test_range_too_large(runner):
-    result = runner.invoke(cli.main, ["ct", "list", "--from", "2019-08-01", "--to", "2020-08-02"])
+    result = runner.invoke(cli.main, ["contrib", "list", "--from", "2019-08-01", "--to", "2020-08-02"])
     assert result.exit_code == ExitCode.DEFAULT_ERROR.value
     assert result.output == ("Error: Date range must not exceed one year\n")
 
 
 @pytest.mark.usefixtures("mock_settings")
 def test_to_earlier_than_from(runner):
-    result = runner.invoke(cli.main, ["ct", "list", "--from", "2019-08-02", "--to", "2019-08-01"])
+    result = runner.invoke(cli.main, ["contrib", "list", "--from", "2019-08-02", "--to", "2019-08-01"])
     assert result.exit_code == ExitCode.DEFAULT_ERROR.value
     assert result.output == ("Error: `--from` is not before `--to`\n")
 
@@ -273,7 +273,7 @@ def test_empty_ct_stats_ok(runner):
         }
     )
 
-    result = runner.invoke(cli.main, ["ct", "stats"])
+    result = runner.invoke(cli.main, ["contrib", "stats"])
     assert result.exit_code == ExitCode.NO_ERROR.value
     assert result.output == (
         "STAT                                                        VALUE\n"
