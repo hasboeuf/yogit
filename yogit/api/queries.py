@@ -409,10 +409,11 @@ class OneDayContributionListQuery(GraphQLQuery):
 
 
 class BranchListQuery(GraphQLQuery):
-    def __init__(self, emails=None):
+    def __init__(self, emails=None, is_dangling=False):
         super().__init__(S.BRANCH_LIST_STATEMENT, pagination_offset=10)
         self.data = []
         self.emails = emails
+        self.is_dangling = is_dangling
 
     def get_pagination_info(self, response):
         return response["data"]["viewer"]["repositoriesContributedTo"]["pageInfo"]
@@ -429,18 +430,29 @@ class BranchListQuery(GraphQLQuery):
                 pr_list = []
                 for pr in branch["node"]["associatedPullRequests"]["edges"]:
                     pr_list.append(pr["node"]["url"])
+                if self.is_dangling and pr_list:
+                    continue
                 pr_list = sorted(pr_list)
                 if self.emails is not None:
                     if author_email in self.emails:
-                        self.data.append([repo_url, branch_name, "\n".join(pr_list)])
+                        if self.is_dangling:
+                            self.data.append([repo_url, branch_name])
+                        else:
+                            self.data.append([repo_url, branch_name, "\n".join(pr_list)])
 
         self.data = sorted(self.data, key=lambda x: (x[0], x[1]))
 
     def print(self):
+        no_results_message = "Nothing... 😿 Time to push hard 💪"
+        headers = ["REPO", "BRANCH", "PULL REQUEST"]
+        if self.is_dangling:
+            no_results_message = "Everything is clean 👏"
+            headers = ["REPO", "BRANCH"]
+
         if len(self.data) == 0:
-            click.secho("Nothing... 😿 Time to push hard 💪", bold=True)
+            click.secho(no_results_message, bold=True)
         else:
-            click.echo(tabulate(self.data, headers=["REPO", "BRANCH", "PULL REQUEST"]))
+            click.echo(tabulate(self.data, headers=headers))
             click.secho("Count: {}".format(len(self.data)), bold=True)
 
 

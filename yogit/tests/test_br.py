@@ -29,9 +29,16 @@ def test_empty_br_list_no_repo(runner):
             }
         }
     )
+
+    # Without --dangling
     result = runner.invoke(cli.main, ["br", "list"])
     assert result.exit_code == ExitCode.NO_ERROR.value
     assert result.output == ("Nothing... 😿 Time to push hard 💪\n")
+
+    # With --dangling
+    result = runner.invoke(cli.main, ["br", "list", "--dangling"])
+    assert result.exit_code == ExitCode.NO_ERROR.value
+    assert result.output == ("Everything is clean 👏\n")
 
 
 @pytest.mark.usefixtures("mock_settings")
@@ -52,144 +59,139 @@ def test_empty_br_list_no_branch(runner):
             }
         }
     )
+
+    # Without --dangling
     result = runner.invoke(cli.main, ["br", "list"])
     assert result.exit_code == ExitCode.NO_ERROR.value
     assert result.output == ("Nothing... 😿 Time to push hard 💪\n")
+
+    # With --dangling
+    result = runner.invoke(cli.main, ["br", "list", "--dangling"])
+    assert result.exit_code == ExitCode.NO_ERROR.value
+    assert result.output == ("Everything is clean 👏\n")
 
 
 @pytest.mark.usefixtures("mock_settings")
 @responses.activate
 def test_br_list(runner):
-    _add_graphql_response(
-        {
-            "data": {
-                "viewer": {
-                    "repositoriesContributedTo": {
-                        "pageInfo": {"hasNextPage": True, "endCursor": "cursor_id"},
-                        "edges": [
-                            {
-                                "node": {
-                                    "url": "https://xyz",
-                                    "refs": {
-                                        "edges": [
-                                            {
-                                                "node": {
-                                                    "associatedPullRequests": {"edges": []},
-                                                    "name": "xyz",
-                                                    "target": {
-                                                        "author": {"email": "user1@company1.com", "name": "user1"}
-                                                    },
-                                                }
+    response_part_1 = {
+        "data": {
+            "viewer": {
+                "repositoriesContributedTo": {
+                    "pageInfo": {"hasNextPage": True, "endCursor": "cursor_id"},
+                    "edges": [
+                        {
+                            "node": {
+                                "url": "https://xyz",
+                                "refs": {
+                                    "edges": [
+                                        {
+                                            "node": {
+                                                "associatedPullRequests": {"edges": []},
+                                                "name": "xyz",
+                                                "target": {"author": {"email": "user1@company1.com", "name": "user1"}},
                                             }
-                                        ]
-                                    },
-                                }
-                            },
-                            {
-                                "node": {
-                                    "url": "https://xyz",
-                                    "refs": {
-                                        "edges": [
-                                            {
-                                                "node": {
-                                                    "associatedPullRequests": {"edges": []},
-                                                    "name": "abc",
-                                                    "target": {
-                                                        "author": {"email": "user1@company3.com", "name": "user1"}
-                                                    },
-                                                }
-                                            }
-                                        ]
-                                    },
-                                }
-                            },
-                            {
-                                "node": {
-                                    "url": "https://abc",
-                                    "refs": {
-                                        "edges": [
-                                            {
-                                                "node": {
-                                                    "associatedPullRequests": {"edges": []},
-                                                    "name": "no_pull_request",
-                                                    "target": {
-                                                        "author": {"email": "user1@company2.com", "name": "user1"}
-                                                    },
-                                                }
-                                            }
-                                        ]
-                                    },
-                                }
-                            },
-                            {
-                                "node": {
-                                    "url": "https://def",
-                                    "refs": {
-                                        "edges": [
-                                            {
-                                                "node": {
-                                                    "associatedPullRequests": {
-                                                        "edges": [
-                                                            {"node": {"url": "https://xyz"}},
-                                                            {"node": {"url": "https://abc"}},
-                                                        ]
-                                                    },
-                                                    "name": "has_pull_request",
-                                                    "target": {
-                                                        "author": {"email": "user1@company3.com", "name": "user1"}
-                                                    },
-                                                }
-                                            },
-                                            {
-                                                "node": {
-                                                    "associatedPullRequests": {"edges": []},
-                                                    "name": "notmine",
-                                                    "target": {
-                                                        "author": {"email": "notme@company1.fr", "name": "notme"}
-                                                    },
-                                                }
-                                            },
-                                        ]
-                                    },
-                                }
-                            },
-                        ],
-                    }
-                }
-            }
-        }
-    )
-    _add_graphql_response(
-        {
-            "data": {
-                "viewer": {
-                    "repositoriesContributedTo": {
-                        "pageInfo": {"hasNextPage": False, "endCursor": None},
-                        "edges": [
-                            {
-                                "node": {
-                                    "url": "https://fgh",
-                                    "refs": {
-                                        "edges": [
-                                            {
-                                                "node": {
-                                                    "associatedPullRequests": {"edges": []},
-                                                    "name": "xyz",
-                                                    "target": {
-                                                        "author": {"email": "user1@company1.com", "name": "user1"}
-                                                    },
-                                                }
-                                            }
-                                        ]
-                                    },
-                                }
+                                        }
+                                    ]
+                                },
                             }
-                        ],
-                    }
+                        },
+                        {
+                            "node": {
+                                "url": "https://xyz",
+                                "refs": {
+                                    "edges": [
+                                        {
+                                            "node": {
+                                                "associatedPullRequests": {"edges": []},
+                                                "name": "abc",
+                                                "target": {"author": {"email": "user1@company3.com", "name": "user1"}},
+                                            }
+                                        }
+                                    ]
+                                },
+                            }
+                        },
+                        {
+                            "node": {
+                                "url": "https://abc",
+                                "refs": {
+                                    "edges": [
+                                        {
+                                            "node": {
+                                                "associatedPullRequests": {"edges": []},
+                                                "name": "no_pull_request",
+                                                "target": {"author": {"email": "user1@company2.com", "name": "user1"}},
+                                            }
+                                        }
+                                    ]
+                                },
+                            }
+                        },
+                        {
+                            "node": {
+                                "url": "https://def",
+                                "refs": {
+                                    "edges": [
+                                        {
+                                            "node": {
+                                                "associatedPullRequests": {
+                                                    "edges": [
+                                                        {"node": {"url": "https://xyz"}},
+                                                        {"node": {"url": "https://abc"}},
+                                                    ]
+                                                },
+                                                "name": "has_pull_request",
+                                                "target": {"author": {"email": "user1@company3.com", "name": "user1"}},
+                                            }
+                                        },
+                                        {
+                                            "node": {
+                                                "associatedPullRequests": {"edges": []},
+                                                "name": "notmine",
+                                                "target": {"author": {"email": "notme@company1.fr", "name": "notme"}},
+                                            }
+                                        },
+                                    ]
+                                },
+                            }
+                        },
+                    ],
                 }
             }
         }
-    )
+    }
+
+    response_part_2 = {
+        "data": {
+            "viewer": {
+                "repositoriesContributedTo": {
+                    "pageInfo": {"hasNextPage": False, "endCursor": None},
+                    "edges": [
+                        {
+                            "node": {
+                                "url": "https://fgh",
+                                "refs": {
+                                    "edges": [
+                                        {
+                                            "node": {
+                                                "associatedPullRequests": {"edges": []},
+                                                "name": "xyz",
+                                                "target": {"author": {"email": "user1@company1.com", "name": "user1"}},
+                                            }
+                                        }
+                                    ]
+                                },
+                            }
+                        }
+                    ],
+                }
+            }
+        }
+    }
+
+    _add_graphql_response(response_part_1)
+    _add_graphql_response(response_part_2)
     result = runner.invoke(cli.main, ["br", "list"])
     assert result.exit_code == ExitCode.NO_ERROR.value
     assert result.output == (
@@ -202,4 +204,108 @@ def test_br_list(runner):
         "https://xyz  abc\n"
         "https://xyz  xyz\n"
         "Count: 5\n"
+    )
+
+
+@pytest.mark.usefixtures("mock_settings")
+@responses.activate
+def test_br_list(runner):
+    response_part_1 = {
+        "data": {
+            "viewer": {
+                "repositoriesContributedTo": {
+                    "pageInfo": {"hasNextPage": False, "endCursor": None},
+                    "edges": [
+                        {
+                            "node": {
+                                "url": "https://xyz",
+                                "refs": {
+                                    "edges": [
+                                        {
+                                            "node": {
+                                                "associatedPullRequests": {"edges": []},
+                                                "name": "xyz",
+                                                "target": {"author": {"email": "user1@company1.com", "name": "user1"}},
+                                            }
+                                        }
+                                    ]
+                                },
+                            }
+                        },
+                        {
+                            "node": {
+                                "url": "https://xyz",
+                                "refs": {
+                                    "edges": [
+                                        {
+                                            "node": {
+                                                "associatedPullRequests": {"edges": []},
+                                                "name": "abc",
+                                                "target": {"author": {"email": "user1@company3.com", "name": "user1"}},
+                                            }
+                                        }
+                                    ]
+                                },
+                            }
+                        },
+                        {
+                            "node": {
+                                "url": "https://abc",
+                                "refs": {
+                                    "edges": [
+                                        {
+                                            "node": {
+                                                "associatedPullRequests": {"edges": []},
+                                                "name": "no_pull_request",
+                                                "target": {"author": {"email": "user1@company2.com", "name": "user1"}},
+                                            }
+                                        }
+                                    ]
+                                },
+                            }
+                        },
+                        {
+                            "node": {
+                                "url": "https://def",
+                                "refs": {
+                                    "edges": [
+                                        {
+                                            "node": {
+                                                "associatedPullRequests": {
+                                                    "edges": [
+                                                        {"node": {"url": "https://xyz"}},
+                                                        {"node": {"url": "https://abc"}},
+                                                    ]
+                                                },
+                                                "name": "has_pull_request",
+                                                "target": {"author": {"email": "user1@company3.com", "name": "user1"}},
+                                            }
+                                        },
+                                        {
+                                            "node": {
+                                                "associatedPullRequests": {"edges": []},
+                                                "name": "notmine",
+                                                "target": {"author": {"email": "notme@company1.fr", "name": "notme"}},
+                                            }
+                                        },
+                                    ]
+                                },
+                            }
+                        },
+                    ],
+                }
+            }
+        }
+    }
+
+    _add_graphql_response(response_part_1)
+    result = runner.invoke(cli.main, ["br", "list", "--dangling"])
+    assert result.exit_code == ExitCode.NO_ERROR.value
+    assert result.output == (
+        "REPO         BRANCH\n"
+        "-----------  ---------------\n"
+        "https://abc  no_pull_request\n"
+        "https://xyz  abc\n"
+        "https://xyz  xyz\n"
+        "Count: 3\n"
     )

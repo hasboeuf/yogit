@@ -66,6 +66,10 @@ Options:
 
 `yogit br list`: List your branches
 
+Options:
+
+* `--dangling`: Only show branches without associated pull request
+
 ### Contributions
 
 `yogit contrib list [--from TEXT] [--to TEXT]`: List your GitHub contributions within a range of dates.
