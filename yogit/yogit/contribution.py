@@ -37,7 +37,7 @@ def contribution():
     """
 
 
-@click.command("list", help="List your contributions (beta)")
+@click.command("list", help="List your contributions")
 @click.option(
     "--to",
     "str_to",
