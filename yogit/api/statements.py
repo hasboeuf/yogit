@@ -78,6 +78,34 @@ query {
     }
 }"""
 
+ORGANIZATION_MEMBER_LIST_STATEMENT = """
+query {
+    viewer {
+        organizations(first: 100) {
+            edges {
+                node {
+                name
+                    membersWithRole(first: $offset $after) {
+                        pageInfo {
+                            hasNextPage
+                            endCursor
+                        }
+                        totalCount
+                        edges {
+                            role
+                            node {
+                                login
+                                email
+                                location
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+"""
 
 RATE_LIMIT_STATEMENT = """
 {

@@ -80,6 +80,14 @@ By default this command is listing today's contributions.
 
 `yogit contrib stats`: Show some GitHub statistics.
 
+### Organization
+
+`yogit orga member list`: List members of the organization you belong to.
+
+`yogit orga member pickone`: Randomly pick one member of the organization you belong to.
+
+Note: `yogit` does not support accounts which belong to more than one organization (yet).
+
 ### SCRUM
 
 `yogit scrum report [--date TEXT]`: Generate your daily activity report

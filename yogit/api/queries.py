@@ -177,6 +177,43 @@ class ReviewListQuery(GraphQLQuery):
             click.secho("Count: {}".format(len(self.data)), bold=True)
 
 
+class OrganizationMemberListQuery(GraphQLQuery):
+    def __init__(self):
+        super().__init__(S.ORGANIZATION_MEMBER_LIST_STATEMENT, pagination_offset=10)
+        self.data = []
+        self.organization = ""
+
+    def get_pagination_info(self, response):
+        return response["data"]["viewer"]["organizations"]["edges"][0]["node"]["membersWithRole"]["pageInfo"]
+
+    def get_count(self):
+        return len(self.data)
+
+    def _handle_response(self, response):
+        orgas = response["data"]["viewer"]["organizations"]["edges"]
+        if len(orgas) == 0:
+            raise click.ClickException("You do not belong to any organization 😿")
+            return
+        elif len(orgas) > 1:
+            raise click.ClickException("You belong to more than one organization, this is not yet supported 😿")
+            return
+        self.organization = orgas[0]["node"]["name"]
+
+        for member in orgas[0]["node"]["membersWithRole"]["edges"]:
+            login = member["node"]["login"]
+            email = member["node"]["email"]
+            location = member["node"]["location"]
+            role = member["role"]
+            self.data.append([login, email, location, role])
+
+        self.data = sorted(self.data, key=lambda x: x[0])
+
+    def print(self):
+        click.secho("{}'s members".format(self.organization), bold=True)
+        click.echo(tabulate(self.data, headers=["NAME", "EMAIL", "LOCATION", "ROLE"]))
+        click.secho("Count: {}".format(len(self.data)), bold=True)
+
+
 class RateLimitQuery(GraphQLQuery):
     def __init__(self):
         super().__init__(S.RATE_LIMIT_STATEMENT)

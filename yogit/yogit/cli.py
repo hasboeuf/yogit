@@ -5,6 +5,7 @@ import click
 
 from yogit import get_name, get_version
 from yogit.yogit.logger import enable_stdout
+from yogit.yogit.organization import organization
 from yogit.yogit.pullrequest import pull_request
 from yogit.yogit.branch import branch
 from yogit.yogit.contribution import contribution
@@ -37,6 +38,7 @@ def main(ctx, verbose):  # pylint: disable=unused-argument
 main.add_command(account)
 main.add_command(branch)
 main.add_command(contribution)
+main.add_command(organization)
 main.add_command(pull_request)
 main.add_command(review)
 main.add_command(scrum)
