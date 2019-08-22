@@ -14,6 +14,9 @@ from yogit.yogit.scrum import scrum
 
 
 def get_version_content():
+    """
+    Return content printed by `yogit --version` command
+    """
     return ("{}, version {}\n" "Changelog: https://github.com/hasboeuf/yogit/blob/{}/CHANGELOG.md").format(
         get_name(), get_version(), get_version()
     )
