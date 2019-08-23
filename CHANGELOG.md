@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.8.0
+
+* Add `yogit orga member list` command
+* Add `yogit orga member pickone` command
+* Add `--dangling` option to `yogit br list`
+* `yogit ct` command is renamed to `yogit contrib`
+* Improve update warning wording
+* Improve `yogit --version` wording
+
 ## 1.7.2
 
 * Fix `yogit` upgrade from `1.6.0`
