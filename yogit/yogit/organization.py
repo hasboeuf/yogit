@@ -50,7 +50,7 @@ def orga_member_pickone(ctx):  # pylint: disable=unused-argument
     query.execute()  # pylint: disable=no-value-for-parameter
     members = [x[0] for x in query.data]
     count = len(members)
-    click.secho("Picking out one out of {} members... ({:.2f}%) 🎲".format(count, 100 / count), bold=True)
+    click.secho("Picking one out of {} members... ({:.2f}%) 🎲".format(count, 100 / count), bold=True)
     random.seed()
     with get_spinner_object() as spinner:
         for _ in range(20):  # Rolling for 5 seconds

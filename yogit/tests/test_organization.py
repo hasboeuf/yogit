@@ -107,4 +107,4 @@ def test_orga_member_pickone(mock_random, mock_sleep, mock_query, runner):
     mock_query.return_value.data = [["user1"], ["user2"], ["user3"]]
     result = runner.invoke(cli.main, ["orga", "member", "pickone"])
     assert result.exit_code == ExitCode.NO_ERROR.value
-    assert result.output == ("Picking out one out of 3 members... (33.33%) 🎲\n" 'The winner is "user3" 🤠\n')
+    assert result.output == ("Picking one out of 3 members... (33.33%) 🎲\n" 'The winner is "user3" 🤠\n')
