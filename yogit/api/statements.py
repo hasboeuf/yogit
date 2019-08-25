@@ -15,8 +15,11 @@ ORGANIZATION_LIST_STATEMENT = """
 {
     viewer {
         organizations(last: 100) {
-            nodes {
-                login
+            edges {
+                node {
+                    login
+                    url
+                }
             }
         }
     }
@@ -81,24 +84,19 @@ query {
 ORGANIZATION_MEMBER_LIST_STATEMENT = """
 query {
     viewer {
-        organizations(first: 100) {
-            edges {
-                node {
-                name
-                    membersWithRole(first: $offset $after) {
-                        pageInfo {
-                            hasNextPage
-                            endCursor
-                        }
-                        totalCount
-                        edges {
-                            role
-                            node {
-                                login
-                                email
-                                location
-                            }
-                        }
+        organization(login: $organization) {
+            membersWithRole(first: $offset $after) {
+                pageInfo {
+                    hasNextPage
+                    endCursor
+                }
+                totalCount
+                edges {
+                    role
+                    node {
+                        login
+                        email
+                        location
                     }
                 }
             }

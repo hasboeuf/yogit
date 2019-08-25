@@ -93,11 +93,11 @@ By default this command is listing today's contributions.
 
 ### Organization
 
-`yogit orga member list`: List members of the organization you belong to.
+`yogit orga list`: List organizations you belong to.
 
-`yogit orga member pickone`: Randomly pick one member of the organization you belong to.
+`yogit orga member list [--orga TEXT]`: List members of one organization you belong to.
 
-Note: `yogit` does not support accounts which belong to more than one organization (yet).
+`yogit orga member pickone [--orga TEXT]`: Randomly pick one member of one organization you belong to.
 
 ### SCRUM
 
