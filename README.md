@@ -27,22 +27,33 @@ Command line utility for git daily work.
 
 `yogit` internal files are stored in `~/.yogit` folder.
 
+### Auto completion
+
+`yogit` supports auto-completion. To activate it, you need to setup your shell.
+
+* For Bash, edit your `.bashrc` and add `eval "$(_YOGIT_COMPLETE=source yogit)"`
+* For Zsh, edit your `.zshrc` and add `eval "$(_YOGIT_COMPLETE=source_zsh yogit)"`
+
 ## Principle
 
 `yogit` is able to:
 
-* List pull requests
-* List reviews
-* List branches
-* Get your daily activity report
+* Show pull requests
+* Show pull request reviews
+* Show branches
+* Show contributions
+* Show organization's information
+* Help in writing a daily scrum report
 
-See below for more details.
+See documentation below for more details.
 
-## Usage
+## Documentation
+
+### Usage
 
 `yogit --help`
 
-## Account
+### Account
 
 `yogit account setup`: Setup yogit
 
