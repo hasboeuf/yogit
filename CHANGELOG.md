@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.9.0
+
+* Add `yogit orga list` command
+* Add `--orga` discrimator option to `yogit orga member list`
+* Add `--orga` discrimator option to `yogit orga member pickone`
+* Improve doc regarding auto completion
+
 ## 1.8.0
 
 * Add `yogit orga member list` command
