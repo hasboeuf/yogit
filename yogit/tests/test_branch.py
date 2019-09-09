@@ -31,12 +31,12 @@ def test_empty_br_list_no_repo(runner):
     )
 
     # Without --dangling
-    result = runner.invoke(cli.main, ["br", "list"])
+    result = runner.invoke(cli.main, ["branch", "list"])
     assert result.exit_code == ExitCode.NO_ERROR.value
     assert result.output == ("Nothing... 😿 Time to push hard 💪\n")
 
     # With --dangling
-    result = runner.invoke(cli.main, ["br", "list", "--dangling"])
+    result = runner.invoke(cli.main, ["branch", "list", "--dangling"])
     assert result.exit_code == ExitCode.NO_ERROR.value
     assert result.output == ("Everything is clean 👏\n")
 
@@ -61,12 +61,12 @@ def test_empty_br_list_no_branch(runner):
     )
 
     # Without --dangling
-    result = runner.invoke(cli.main, ["br", "list"])
+    result = runner.invoke(cli.main, ["branch", "list"])
     assert result.exit_code == ExitCode.NO_ERROR.value
     assert result.output == ("Nothing... 😿 Time to push hard 💪\n")
 
     # With --dangling
-    result = runner.invoke(cli.main, ["br", "list", "--dangling"])
+    result = runner.invoke(cli.main, ["branch", "list", "--dangling"])
     assert result.exit_code == ExitCode.NO_ERROR.value
     assert result.output == ("Everything is clean 👏\n")
 
@@ -192,7 +192,7 @@ def test_br_list(runner):
 
     _add_graphql_response(response_part_1)
     _add_graphql_response(response_part_2)
-    result = runner.invoke(cli.main, ["br", "list"])
+    result = runner.invoke(cli.main, ["branch", "list"])
     assert result.exit_code == ExitCode.NO_ERROR.value
     assert result.output == (
         "REPO         BRANCH            PULL REQUEST\n"
@@ -299,7 +299,7 @@ def test_br_list(runner):
     }
 
     _add_graphql_response(response_part_1)
-    result = runner.invoke(cli.main, ["br", "list", "--dangling"])
+    result = runner.invoke(cli.main, ["branch", "list", "--dangling"])
     assert result.exit_code == ExitCode.NO_ERROR.value
     assert result.output == (
         "REPO         BRANCH\n"

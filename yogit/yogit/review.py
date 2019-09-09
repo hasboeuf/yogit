@@ -8,7 +8,7 @@ from yogit.api.queries import ReviewListQuery, ReviewRequestedQuery
 from yogit.yogit.checks import account_required, check_update
 
 
-@click.group("rv")
+@click.group("review")
 def review():
     """
     Review actions

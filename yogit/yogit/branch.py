@@ -9,7 +9,7 @@ from yogit.yogit.settings import Settings
 from yogit.yogit.checks import account_required, check_update
 
 
-@click.group("br")
+@click.group("branch")
 def branch():
     """
     Branch actions

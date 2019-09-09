@@ -37,7 +37,7 @@ def test_rv_list_empty(runner):
             }
         }
     )
-    result = runner.invoke(cli.main, ["rv", "list"])
+    result = runner.invoke(cli.main, ["review", "list"])
     assert result.exit_code == ExitCode.NO_ERROR.value
     assert result.output == ("Nothing... 😿\n")
 
@@ -126,7 +126,7 @@ def test_rv_list_ok(mock_utc_now, runner):
             }
         }
     )
-    result = runner.invoke(cli.main, ["rv", "list"])
+    result = runner.invoke(cli.main, ["review", "list"])
     assert result.exit_code == ExitCode.NO_ERROR.value
     assert result.output == (
         "UPDATED       PULL REQUEST    STATE\n"
@@ -143,7 +143,7 @@ def test_rv_list_ok(mock_utc_now, runner):
 @responses.activate
 def test_rv_requested_empty(runner):
     _add_graphql_response({"data": {"search": {"edges": []}}})
-    result = runner.invoke(cli.main, ["rv", "requested"])
+    result = runner.invoke(cli.main, ["review", "requested"])
     assert result.exit_code == ExitCode.NO_ERROR.value
     assert result.output == ("All done! 🎉✨\n")
 
@@ -163,7 +163,7 @@ def test_rv_requested_ok(runner):
             }
         }
     )
-    result = runner.invoke(cli.main, ["rv", "requested"])
+    result = runner.invoke(cli.main, ["review", "requested"])
     assert result.exit_code == ExitCode.NO_ERROR.value
     assert result.output == (
         "REPO         URL\n" "-----------  --------\n" "owner1/repo  https://\n" "owner2/repo  https://\n" "Count: 2\n"

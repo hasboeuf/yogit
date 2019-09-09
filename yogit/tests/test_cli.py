@@ -21,9 +21,9 @@ def test_cli_without_commands(runner):
 def test_cli_account_required(runner):
     account_required_cmd_list = [
         ["account", "usage"],
-        ["br", "list"],
+        ["branch", "list"],
         ["pr", "list"],
-        ["rv", "requested"],
+        ["review", "requested"],
         ["scrum", "report"],
     ]
 
