@@ -74,7 +74,7 @@ def test_orga_member_list_more_than_one_organization(mock_query, runner):
     result = runner.invoke(cli.main, ["orga", "member", "list"])
     assert result.exit_code == ExitCode.DEFAULT_ERROR.value
     assert result.output == (
-        "Error: You belong to more than one organization (hint: `yogit orga list`), use `--orga` option to discriminate\n"
+        "Error: You belong to more than one organization (see `yogit orga list`), use `--orga` option to discriminate\n"
     )
 
 
@@ -85,7 +85,7 @@ def test_orga_member_list_unrecognized_orga(mock_query, runner):
     mock_query.return_value.data = [["orga1"], ["orga2"]]
     result = runner.invoke(cli.main, ["orga", "member", "list", "--orga", "orga3"])
     assert result.exit_code == ExitCode.DEFAULT_ERROR.value
-    assert result.output == ("Error: Unrecognized orga3 organization (hint: `yogit orga list`)\n")
+    assert result.output == ("Error: Unrecognized orga3 organization (see `yogit orga list`)\n")
 
 
 @pytest.mark.usefixtures("mock_settings")

@@ -12,20 +12,22 @@ from yogit.utils.spinner import get_spinner_object
 
 
 def check_organization(orga):
+    """
+    Check if orga exist or if user belong to only one orga
+    """
     query = OrganizationListQuery()
     query.execute()
     orgas = [x[0].lower() for x in query.data]
-    if len(orgas) == 0:
+    if not orgas:
         raise click.ClickException("You do not belong to any organization 😿")
     if orga is None:
         if len(orgas) == 1:
             return orgas[0]
-        else:
-            raise click.ClickException(
-                "You belong to more than one organization (hint: `yogit orga list`), use `--orga` option to discriminate"
-            )
+        raise click.ClickException(
+            "You belong to more than one organization (see `yogit orga list`), use `--orga` option to discriminate"
+        )
     if orga.lower() not in orgas:
-        raise click.ClickException("Unrecognized {} organization (hint: `yogit orga list`)".format(orga))
+        raise click.ClickException("Unrecognized {} organization (see `yogit orga list`)".format(orga))
     return orga
 
 
@@ -65,8 +67,8 @@ def orga_member_list(ctx, orga):  # pylint: disable=unused-argument
     """
     List members of the organization you belong to
     """
-    organization = check_organization(orga)
-    query = OrganizationMemberListQuery(organization)
+    orga = check_organization(orga)
+    query = OrganizationMemberListQuery(orga)
     query.execute()  # pylint: disable=no-value-for-parameter
     query.print()
 
@@ -80,8 +82,8 @@ def orga_member_pickone(ctx, orga):  # pylint: disable=unused-argument
     """
     Randomly pick a member of the organization you belong to
     """
-    organization = check_organization(orga)
-    query = OrganizationMemberListQuery(organization)
+    orga = check_organization(orga)
+    query = OrganizationMemberListQuery(orga)
     query.execute()  # pylint: disable=no-value-for-parameter
     members = [x[0] for x in query.data]
     count = len(members)

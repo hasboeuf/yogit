@@ -71,9 +71,9 @@ class UpdateChecker:
             return
         click.secho(
             (
-                "You are using yogit {}, however version {} is available 🎁\n"
+                "You are using yogit {current_version}, however version {latest_version} is available 🎁\n"
                 "You can upgrade it with `pip3 install --upgrade yogit` 🚀\n"
-                "Changelog: https://github.com/hasboeuf/yogit/blob/{}/CHANGELOG.md"
-            ).format(current_version, latest_version, latest_version),
+                "Changelog: https://github.com/hasboeuf/yogit/blob/{latest_version}/CHANGELOG.md"
+            ).format(current_version=current_version, latest_version=latest_version),
             fg="yellow",
         )
