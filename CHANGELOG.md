@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.10.0
+
+* Add `yogit br` becomes `yogit branch` command
+* Add `yogit rv` becomes `yogit review` command
+
 ## 1.9.0
 
 * Add `yogit orga list` command
