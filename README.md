@@ -69,13 +69,13 @@ Options:
 
 ### Review
 
-`yogit rv list`: List your reviews on opened pull requests
+`yogit review list`: List your reviews on opened pull requests
 
-`yogit rv requested`: List pull requests where your review is requested
+`yogit review requested`: List pull requests where your review is requested
 
 ### Branch
 
-`yogit br list`: List your branches
+`yogit branch list`: List your branches
 
 Options:
 
