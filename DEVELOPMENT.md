@@ -9,7 +9,10 @@ Run by Travis CI and Azure Pipelines.
 ### Local run
 
 `pip3 install -r requirements/tests.txt`
-`pytest -vv -s yogit/tests`
+
+Run unittests: `pytest -vv -s yogit/tests`
+
+Check code coverage: `pytest --cov=yogit yogit/tests`
 
 ## Code sanity
 
