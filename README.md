@@ -61,25 +61,17 @@ See documentation below for more details.
 
 ### Pull request
 
-`yogit pr list`: List your opened pull requests
-
-Options:
-
-* `--orga TEXT`: Expand results to a specific organization
+`yogit pr list [--orga TEXT]`: List your opened pull requests. If `--orga` is provided, results will be expanded to this specific organization.
 
 ### Review
 
 `yogit review list`: List your reviews on opened pull requests
 
-`yogit review requested`: List pull requests where your review is requested
+`yogit review requested [--missed]`: List pull requests where your review is requested. If `--missed` is set, only closed pull requests will be listed.
 
 ### Branch
 
-`yogit branch list`: List your branches
-
-Options:
-
-* `--dangling`: Only show branches without associated pull request
+`yogit branch list [--dangling]`: List your branches. If `--dangling` is set, only branches without associated pull request will be listed.
 
 ### Contributions
 
