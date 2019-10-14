@@ -157,15 +157,7 @@ def test_rv_requested_ok(mock_utc_now, runner):
             "data": {
                 "search": {
                     "pageInfo": {"hasNextPage": True, "endCursor": "cursor_id"},
-                    "edges": [
-                        {
-                            "node": {
-                                "repository": {"nameWithOwner": "owner2/repo"},
-                                "url": "https://def",
-                                "updatedAt": "2019-10-14T20:44:46Z",
-                            }
-                        }
-                    ],
+                    "edges": [{"node": {"url": "https://def", "title": "def", "updatedAt": "2019-10-14T20:44:46Z"}}],
                 }
             }
         }
@@ -176,20 +168,8 @@ def test_rv_requested_ok(mock_utc_now, runner):
                 "search": {
                     "pageInfo": {"hasNextPage": False, "endCursor": None},
                     "edges": [
-                        {
-                            "node": {
-                                "repository": {"nameWithOwner": "owner1/repo"},
-                                "url": "https://xyz",
-                                "updatedAt": "2019-10-10T10:44:46Z",
-                            }
-                        },
-                        {
-                            "node": {
-                                "repository": {"nameWithOwner": "owner1/repo"},
-                                "url": "https://abc",
-                                "updatedAt": "2019-10-10T20:44:46Z",
-                            }
-                        },
+                        {"node": {"url": "https://repo/pull/1", "title": "abc", "updatedAt": "2019-10-10T10:44:46Z"}},
+                        {"node": {"url": "https://repo/pull/2", "title": "xyz", "updatedAt": "2019-10-10T20:44:46Z"}},
                     ],
                 }
             }
@@ -198,11 +178,11 @@ def test_rv_requested_ok(mock_utc_now, runner):
     result = runner.invoke(cli.main, ["review", "requested"])
     assert result.exit_code == ExitCode.NO_ERROR.value
     assert result.output == (
-        "UPDATED     REPO         URL\n"
-        "----------  -----------  -----------\n"
-        "Today       owner2/repo  https://def\n"
-        "4 days ago  owner1/repo  https://abc\n"
-        "4 days ago  owner1/repo  https://xyz\n"
+        "UPDATED     PULL REQUEST         TITLE\n"
+        "----------  -------------------  -------\n"
+        "Today       https://def          def\n"
+        "4 days ago  https://repo/pull/1  abc\n"
+        "4 days ago  https://repo/pull/2  xyz\n"
         "Count: 3\n"
     )
 
@@ -217,27 +197,8 @@ def test_rv_requested_missed_ok(mock_utc_now, runner):
                 "search": {
                     "pageInfo": {"hasNextPage": False, "endCursor": None},
                     "edges": [
-                        {
-                            "node": {
-                                "repository": {"nameWithOwner": "owner2/repo"},
-                                "url": "https://def",
-                                "updatedAt": "2019-10-14T20:44:46Z",
-                            }
-                        },
-                        {
-                            "node": {
-                                "repository": {"nameWithOwner": "owner1/repo"},
-                                "url": "https://xyz",
-                                "updatedAt": "2019-10-10T10:44:46Z",
-                            }
-                        },
-                        {
-                            "node": {
-                                "repository": {"nameWithOwner": "owner1/repo"},
-                                "url": "https://abc",
-                                "updatedAt": "2019-10-10T20:44:46Z",
-                            }
-                        },
+                        {"node": {"url": "https://repo/pull/1", "title": "abc", "updatedAt": "2019-10-10T10:44:46Z"}},
+                        {"node": {"url": "https://repo/pull/2", "title": "xyz", "updatedAt": "2019-10-10T20:44:46Z"}},
                     ],
                 }
             }
@@ -246,10 +207,9 @@ def test_rv_requested_missed_ok(mock_utc_now, runner):
     result = runner.invoke(cli.main, ["review", "requested", "--missed"])
     assert result.exit_code == ExitCode.NO_ERROR.value
     assert result.output == (
-        "UPDATED     REPO         URL\n"
-        "----------  -----------  -----------\n"
-        "Today       owner2/repo  https://def\n"
-        "4 days ago  owner1/repo  https://abc\n"
-        "4 days ago  owner1/repo  https://xyz\n"
-        "Count: 3\n"
+        "UPDATED     PULL REQUEST         TITLE\n"
+        "----------  -------------------  -------\n"
+        "4 days ago  https://repo/pull/1  abc\n"
+        "4 days ago  https://repo/pull/2  xyz\n"
+        "Count: 2\n"
     )

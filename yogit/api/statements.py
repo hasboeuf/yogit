@@ -38,9 +38,7 @@ REVIEW_REQUESTED_STATEMENT = """
             node {
                 ... on PullRequest {
                     updatedAt
-                    repository {
-                        nameWithOwner
-                    }
+                    title
                     number
                     url
                 }

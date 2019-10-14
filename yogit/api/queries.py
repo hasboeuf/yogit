@@ -128,11 +128,11 @@ class ReviewRequestedQuery(GraphQLQuery):
 
     def _handle_response(self, response):
         for pr in response["data"]["search"]["edges"]:
-            repo = pr["node"]["repository"]["nameWithOwner"]
+            title = shorten_str(pr["node"]["title"])
             url = pr["node"]["url"]
             updated = dt_for_str(pr["node"]["updatedAt"]).date()
             updated_str = days_ago_str(updated)
-            self.data.append([updated, updated_str, repo, url])
+            self.data.append([updated, updated_str, url, title])
 
         self.data = sorted(self.data, key=lambda x: (x[2], x[3]))
         self.data = sorted(self.data, key=lambda x: x[0], reverse=True)
@@ -141,7 +141,7 @@ class ReviewRequestedQuery(GraphQLQuery):
         if len(self.data) == 0:
             click.secho("All done! 🎉✨", bold=True)
         else:
-            click.echo(tabulate([x[1:] for x in self.data], headers=["UPDATED", "REPO", "URL"]))
+            click.echo(tabulate([x[1:] for x in self.data], headers=["UPDATED", "PULL REQUEST", "TITLE"]))
             click.secho("Count: {}".format(len(self.data)), bold=True)
 
 
