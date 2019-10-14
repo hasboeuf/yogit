@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.11.0
+
+* Change `yogit review requested` output: print pull request title, don't print repository url anymore
+* Add `--missed` option to `yogit review requested` command
+
 ## 1.10.0
 
 * Add `yogit br` becomes `yogit branch` command
