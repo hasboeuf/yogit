@@ -142,7 +142,7 @@ def test_rv_list_ok(mock_utc_now, runner):
 @pytest.mark.usefixtures("mock_settings")
 @responses.activate
 def test_rv_requested_empty(runner):
-    _add_graphql_response({"data": {"search": {"edges": []}}})
+    _add_graphql_response({"data": {"search": {"pageInfo": {"hasNextPage": False, "endCursor": None}, "edges": []}}})
     result = runner.invoke(cli.main, ["review", "requested"])
     assert result.exit_code == ExitCode.NO_ERROR.value
     assert result.output == ("All done! 🎉✨\n")
@@ -150,15 +150,47 @@ def test_rv_requested_empty(runner):
 
 @pytest.mark.usefixtures("mock_settings")
 @responses.activate
-def test_rv_requested_ok(runner):
+@patch("yogit.utils.dateutils._utcnow", return_value=datetime(2019, 10, 14, 1, 15, 59, 666))
+def test_rv_requested_ok(mock_utc_now, runner):
     _add_graphql_response(
         {
             "data": {
                 "search": {
+                    "pageInfo": {"hasNextPage": True, "endCursor": "cursor_id"},
                     "edges": [
-                        {"node": {"repository": {"nameWithOwner": "owner2/repo"}, "url": "https://"}},
-                        {"node": {"repository": {"nameWithOwner": "owner1/repo"}, "url": "https://"}},
-                    ]
+                        {
+                            "node": {
+                                "repository": {"nameWithOwner": "owner2/repo"},
+                                "url": "https://def",
+                                "updatedAt": "2019-10-14T20:44:46Z",
+                            }
+                        }
+                    ],
+                }
+            }
+        }
+    )
+    _add_graphql_response(
+        {
+            "data": {
+                "search": {
+                    "pageInfo": {"hasNextPage": False, "endCursor": None},
+                    "edges": [
+                        {
+                            "node": {
+                                "repository": {"nameWithOwner": "owner1/repo"},
+                                "url": "https://xyz",
+                                "updatedAt": "2019-10-10T10:44:46Z",
+                            }
+                        },
+                        {
+                            "node": {
+                                "repository": {"nameWithOwner": "owner1/repo"},
+                                "url": "https://abc",
+                                "updatedAt": "2019-10-10T20:44:46Z",
+                            }
+                        },
+                    ],
                 }
             }
         }
@@ -166,5 +198,58 @@ def test_rv_requested_ok(runner):
     result = runner.invoke(cli.main, ["review", "requested"])
     assert result.exit_code == ExitCode.NO_ERROR.value
     assert result.output == (
-        "REPO         URL\n" "-----------  --------\n" "owner1/repo  https://\n" "owner2/repo  https://\n" "Count: 2\n"
+        "UPDATED     REPO         URL\n"
+        "----------  -----------  -----------\n"
+        "Today       owner2/repo  https://def\n"
+        "4 days ago  owner1/repo  https://abc\n"
+        "4 days ago  owner1/repo  https://xyz\n"
+        "Count: 3\n"
+    )
+
+
+@pytest.mark.usefixtures("mock_settings")
+@responses.activate
+@patch("yogit.utils.dateutils._utcnow", return_value=datetime(2019, 10, 14, 1, 15, 59, 666))
+def test_rv_requested_missed_ok(mock_utc_now, runner):
+    _add_graphql_response(
+        {
+            "data": {
+                "search": {
+                    "pageInfo": {"hasNextPage": False, "endCursor": None},
+                    "edges": [
+                        {
+                            "node": {
+                                "repository": {"nameWithOwner": "owner2/repo"},
+                                "url": "https://def",
+                                "updatedAt": "2019-10-14T20:44:46Z",
+                            }
+                        },
+                        {
+                            "node": {
+                                "repository": {"nameWithOwner": "owner1/repo"},
+                                "url": "https://xyz",
+                                "updatedAt": "2019-10-10T10:44:46Z",
+                            }
+                        },
+                        {
+                            "node": {
+                                "repository": {"nameWithOwner": "owner1/repo"},
+                                "url": "https://abc",
+                                "updatedAt": "2019-10-10T20:44:46Z",
+                            }
+                        },
+                    ],
+                }
+            }
+        }
+    )
+    result = runner.invoke(cli.main, ["review", "requested", "--missed"])
+    assert result.exit_code == ExitCode.NO_ERROR.value
+    assert result.output == (
+        "UPDATED     REPO         URL\n"
+        "----------  -----------  -----------\n"
+        "Today       owner2/repo  https://def\n"
+        "4 days ago  owner1/repo  https://abc\n"
+        "4 days ago  owner1/repo  https://xyz\n"
+        "Count: 3\n"
     )

@@ -29,14 +29,15 @@ def review_list(ctx):  # pylint: disable=unused-argument
 
 
 @click.command("requested", help="List pull requests where your review is requested")
+@click.option("--missed", is_flag=True, help="Only show closed pull requests")
 @click.pass_context
 @account_required
 @check_update
-def review_requested_list(ctx):  # pylint: disable=unused-argument
+def review_requested_list(ctx, missed):  # pylint: disable=unused-argument
     """
     List pull requests where your review is requested
     """
-    query = ReviewRequestedQuery()
+    query = ReviewRequestedQuery(is_closed=missed)
     query.execute()  # pylint: disable=no-value-for-parameter
     query.print()
 

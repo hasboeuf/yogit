@@ -109,22 +109,39 @@ class LoginQuery(GraphQLQuery):
 
 
 class ReviewRequestedQuery(GraphQLQuery):
-    def __init__(self):
-        super().__init__(S.REVIEW_REQUESTED_STATEMENT, [S.LOGIN_VARIABLE])
+    def __init__(self, is_closed):
+        self.is_closed = is_closed
+        state = "closed" if self.is_closed else "open"
+        super().__init__(
+            S.REVIEW_REQUESTED_STATEMENT,
+            variables=[S.LOGIN_VARIABLE],
+            extra_data={"state": state},
+            pagination_offset=100,
+        )
         self.data = []
+
+    def get_pagination_info(self, response):
+        return response["data"]["search"]["pageInfo"]
+
+    def get_count(self):
+        return len(self.data)
 
     def _handle_response(self, response):
         for pr in response["data"]["search"]["edges"]:
             repo = pr["node"]["repository"]["nameWithOwner"]
             url = pr["node"]["url"]
-            self.data.append([repo, url])
-        self.data = sorted(self.data, key=lambda x: x[0])
+            updated = dt_for_str(pr["node"]["updatedAt"]).date()
+            updated_str = days_ago_str(updated)
+            self.data.append([updated, updated_str, repo, url])
+
+        self.data = sorted(self.data, key=lambda x: (x[2], x[3]))
+        self.data = sorted(self.data, key=lambda x: x[0], reverse=True)
 
     def print(self):
         if len(self.data) == 0:
             click.secho("All done! 🎉✨", bold=True)
         else:
-            click.echo(tabulate(self.data, headers=["REPO", "URL"]))
+            click.echo(tabulate([x[1:] for x in self.data], headers=["UPDATED", "REPO", "URL"]))
             click.secho("Count: {}".format(len(self.data)), bold=True)
 
 

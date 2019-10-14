@@ -29,10 +29,15 @@ ORGANIZATION_LIST_STATEMENT = """
 
 REVIEW_REQUESTED_STATEMENT = """
 {
-    search(query: "type:pr state:open review-requested:$login", type: ISSUE, first: 100) {
+    search(query: "type:pr state:$state review-requested:$login", type: ISSUE, first: $offset $after) {
+        pageInfo {
+            hasNextPage
+            endCursor
+        }
         edges {
             node {
                 ... on PullRequest {
+                    updatedAt
                     repository {
                         nameWithOwner
                     }
