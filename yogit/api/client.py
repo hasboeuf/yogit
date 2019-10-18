@@ -2,32 +2,15 @@
 GitHub API requester
 """
 import json
-import requests
 
-from requests_toolbelt.utils import dump
 import click
 
 from yogit.yogit.logger import LOGGER
 from yogit.yogit.settings import Settings
+from yogit.api.requester import http_call
 
 GITHUB_API_URL_V4 = "https://api.github.com/graphql"
 GITHUB_API_URL_V3 = "https://api.github.com"
-
-
-def _http_call(method, url, **kwargs):
-    """
-    Perform HTTP call and log around it
-    """
-    try:
-        response = requests.request(method, url, **kwargs)
-        if response:
-            LOGGER.info("Response: %s", response.status_code)
-        else:
-            LOGGER.info("Response: %s", dump.dump_all(response).decode("utf-8"))
-        return response
-    except requests.RequestException as exception:
-        LOGGER.error(str(exception))
-        raise click.ClickException(str(exception))
 
 
 def _get_authorization():
@@ -59,20 +42,7 @@ class GraphQLClient:
         """
         payload = json.dumps({"query": query})
         LOGGER.debug(payload)
-        response = _http_call("post", self.url, headers=_get_headers(), data=payload)
-        LOGGER.debug(response.content[:500])
-        if response.status_code == 200:
-            try:
-                return response.json()
-            except Exception as exception:
-                LOGGER.error(str(exception))
-                raise click.ClickException(response.text)
-        elif response.status_code == 400:
-            raise click.ClickException("Bad request")
-        elif response.status_code == 401:
-            raise click.ClickException("Unauthorized")
-        else:
-            raise click.ClickException(response.text)
+        return http_call("post", self.url, headers=_get_headers(), data=payload)
 
 
 class RESTClient:
@@ -89,17 +59,4 @@ class RESTClient:
         """
         url = self._get_url(endpoint)
         LOGGER.debug("GET %s", url)
-        response = _http_call("get", url, headers=_get_headers())
-        LOGGER.debug(response.content[:500])
-        if response.status_code == 200:
-            try:
-                return response.json()
-            except Exception as exception:
-                LOGGER.error(str(exception))
-                raise click.ClickException(response.text)
-        elif response.status_code == 400:
-            raise click.ClickException("Bad request")
-        elif response.status_code == 401:
-            raise click.ClickException("Unauthorized")
-        else:
-            raise click.ClickException(response.text)
+        return http_call("get", url, headers=_get_headers())

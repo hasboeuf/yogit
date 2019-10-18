@@ -1,11 +1,9 @@
 """
 Send report to slack
 """
-
-
 import json
-import requests
 from yogit.yogit.settings import Settings
+from yogit.api.requester import http_call
 
 
 def _send_to_slack(text, thread_id=None):
@@ -26,14 +24,7 @@ def _send_to_slack(text, thread_id=None):
     else:
         slack_data = {"token": token, "channel": channel, "text": text, "as_user": "True"}
 
-    response = requests.post(webhook_url, data=slack_data)
-
-    if response.status_code != 200:
-        raise ValueError(
-            "Request to slack returned an error %s, the response is:\n%s" % (response.status_code, response.text)
-        )
-
-    return response
+    return http_call("post", webhook_url, data=slack_data)
 
 
 def send_report_to_slack(report):
