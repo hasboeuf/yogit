@@ -58,6 +58,7 @@ def test_with_specific_date(mock_get_report, runner):
         "Report of 2019-06-05\n"
         "Copy to clipboard? [y/N] n\n"
         "\n"
+        "Send to Slack? [y/N] \n"
     ).format(settings.get_path())
 
 
@@ -125,6 +126,7 @@ def test_default_report_ok(mock_copy, mock_compute_date, runner):
         "• \n"
         "Copy to clipboard? [y/N] y\n"
         "Copied! 🤘\n"
+        "Send to Slack? [y/N] \n"
     ).format(settings.get_path())
 
     # Test without report copy and with extra indentation
@@ -179,6 +181,7 @@ def test_default_report_ok(mock_copy, mock_compute_date, runner):
         "https://ghi     REVIEWER  APPROVED\n"
         "https://xyz     OWNER     OPEN\n"
         "```\n"
+        "Send to Slack? [y/N] \n"
     ).format(settings.get_path())
 
 
