@@ -34,7 +34,7 @@ def _get_authorization():
     """
     Craft Authorization HTTP header
     """
-    token = Settings().get_token()
+    token = Settings().get_github_token()
     return "token {}".format(token)
 
 
