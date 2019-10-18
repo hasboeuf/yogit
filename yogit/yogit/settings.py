@@ -1,6 +1,7 @@
 """
 yogit settings
 """
+import collections
 import yaml
 
 from yogit.yogit.paths import get_settings_path, get_scrum_report_path
@@ -53,64 +54,83 @@ class Settings:
         """ Reset setting values """
         self.storage.save(None)
 
-    def is_valid(self):
-        """ Return True if account is setup, False otherwise """
-        return self.get_token() != "" and self.get_login() != "" and self.get_emails() != []
+    def is_github_valid(self):
+        """ Return True if GitHub is setup, False otherwise """
+        return self.get_github_token() != "" and self.get_github_login() != "" and self.get_github_emails() != []
 
-    def get_token(self):
+    def reset_github(self):
+        """ Reset GitHub settings """
+        self.set_github_token("")
+        self.set_github_login("")
+        self.set_github_emails("")
+
+    def get_github_token(self):
         """ Return GitHub token or empty string """
         data = self.storage.load()
         return data.get("token", "") or ""
 
-    def set_token(self, token):
+    def set_github_token(self, token):
         """ Store GitHub token """
         data = self.storage.load()
         data["token"] = token
         self.storage.save(data)
 
-    def get_login(self):
-        """ Return login identifier or empty string """
+    def get_github_login(self):
+        """ Return GitHub login identifier or empty string """
         data = self.storage.load()
         return data.get("login", "") or ""
 
-    def set_login(self, login):
-        """ Store login identifier """
+    def set_github_login(self, login):
+        """ Store GitHub login identifier """
         data = self.storage.load()
         data["login"] = login
         self.storage.save(data)
 
-    def get_emails(self):
+    def get_github_emails(self):
         """ Return email list associated to the GitHub account or empty list """
         data = self.storage.load()
         return data.get("emails", []) or []
 
-    def set_emails(self, emails):
+    def set_github_emails(self, emails):
         """ Store email list """
         data = self.storage.load()
         data["emails"] = emails
         self.storage.save(data)
 
-    def set_slack_token(self, slack_token):
-        """ Store slack token """
+    def is_slack_valid(self):
+        """ Return True if Slack is setup, False otherwise """
+        return self.get_slack_token() != "" and self.get_slack_channel() != ""
+
+    def reset_slack(self):
+        """ Reset Slack settings """
+        self.set_slack_token("")
+        self.set_slack_channel("")
+
+    def set_slack_token(self, token):
+        """ Store Slack token """
         data = self.storage.load()
-        data["slack_token"] = slack_token
+        slack_data = data.get("slack", {}) or {}
+        slack_data["legacy_token"] = token
+        data["slack"] = slack_data
         self.storage.save(data)
 
     def get_slack_token(self):
-        """ Return slack token or empty string """
+        """ Return Slack token or empty string """
         data = self.storage.load()
-        return data.get("slack_token", "") or ""
+        return data.get("slack", {}).get("legacy_token", "") or ""
 
-    def set_slack_channel(self, slack_channel):
-        """ Store slack channel """
+    def set_slack_channel(self, channel):
+        """ Store Slack channel """
         data = self.storage.load()
-        data["slack_channel"] = slack_channel
+        slack_data = data.get("slack", {}) or {}
+        slack_data["report_channel"] = channel
+        data["slack"] = slack_data
         self.storage.save(data)
 
     def get_slack_channel(self):
-        """ Return slack channel or empty string """
+        """ Return Slack channel or empty string """
         data = self.storage.load()
-        return data.get("slack_channel", "") or ""
+        return data.get("slack", {}).get("report_channel", "") or ""
 
 
 class ScrumReportSettings:

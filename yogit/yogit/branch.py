@@ -25,7 +25,7 @@ def branch_list(ctx, dangling):  # pylint: disable=unused-argument
     """
     List your branches
     """
-    query = BranchListQuery(emails=Settings().get_emails(), is_dangling=dangling)
+    query = BranchListQuery(emails=Settings().get_github_emails(), is_dangling=dangling)
     query.execute()  # pylint: disable=no-value-for-parameter
     query.print()
 
