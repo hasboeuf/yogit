@@ -264,9 +264,10 @@ class RateLimitQuery(GraphQLQuery):
 
 
 class PullRequestListQuery(GraphQLQuery):
-    def __init__(self):
+    def __init__(self, labels):
         super().__init__(S.PULL_REQUEST_LIST_STATEMENT)
         self.data = []
+        self.labels = labels
 
     def _handle_response(self, response):
         for pr in response["data"]["viewer"]["pullRequests"]["edges"]:
@@ -275,6 +276,10 @@ class PullRequestListQuery(GraphQLQuery):
             title = shorten_str(pr["node"]["title"])
             mergeable = pr["node"]["mergeable"]
             created_str = days_ago_str(created)
+            if self.labels:
+                pr_labels = [x["node"]["name"].lower() for x in pr["node"]["labels"]["edges"]]
+                if not set(self.labels).issubset(set(pr_labels)):
+                    continue
             self.data.append([created, created_str, url, title, mergeable])
         # Sort by url, then by reversed date:
         self.data = sorted(self.data, key=lambda x: x[2])
@@ -289,11 +294,12 @@ class PullRequestListQuery(GraphQLQuery):
 
 
 class OrgaPullRequestListQuery(GraphQLQuery):
-    def __init__(self, organization):
+    def __init__(self, labels, organization):
         super().__init__(
             S.ORGA_PULL_REQUEST_LIST_STATEMENT, pagination_offset=10, extra_data={"organization": organization}
         )
         self.data = []
+        self.labels = labels
 
     def get_count(self):
         return len(self.data)
@@ -307,6 +313,10 @@ class OrgaPullRequestListQuery(GraphQLQuery):
             url = pr["node"]["url"]
             title = shorten_str(pr["node"]["title"])
             created_str = days_ago_str(created)
+            if self.labels:
+                pr_labels = [x["node"]["name"].lower() for x in pr["node"]["labels"]["edges"]]
+                if not set(self.labels).issubset(set(pr_labels)):
+                    continue
             self.data.append([created, created_str, url, title])
         # Sort by url, then by reversed date:
         self.data = sorted(self.data, key=lambda x: x[2])
