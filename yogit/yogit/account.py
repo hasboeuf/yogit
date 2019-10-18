@@ -94,15 +94,11 @@ def account_slack_setup():
     Setup slack token
     """
     settings = Settings()
-    slack_token = click.prompt(
-        "Slack token", type=click.STRING, hide_input=True
-    ).strip()
+    slack_token = click.prompt("Slack token", type=click.STRING, hide_input=True).strip()
 
     settings.set_slack_token(slack_token)
 
-    slack_channel = click.prompt(
-        "Slack channel", type=click.STRING, hide_input=True
-    ).strip()
+    slack_channel = click.prompt("Slack channel", type=click.STRING, hide_input=True).strip()
 
     settings.set_slack_channel(slack_channel)
 

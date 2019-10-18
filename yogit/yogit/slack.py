@@ -24,19 +24,13 @@ def _send_to_slack(text, thread_id=None):
             "thread_ts": thread_id,
         }
     else:
-        slack_data = {
-            "token": token,
-            "channel": channel,
-            "text": text,
-            "as_user": "True",
-        }
+        slack_data = {"token": token, "channel": channel, "text": text, "as_user": "True"}
 
     response = requests.post(webhook_url, data=slack_data)
 
     if response.status_code != 200:
         raise ValueError(
-            "Request to slack returned an error %s, the response is:\n%s"
-            % (response.status_code, response.text)
+            "Request to slack returned an error %s, the response is:\n%s" % (response.status_code, response.text)
         )
 
     return response
