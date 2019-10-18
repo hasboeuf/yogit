@@ -90,6 +90,28 @@ class Settings:
         data["emails"] = emails
         self.storage.save(data)
 
+    def set_slack_token(self, slack_token):
+        """ Store slack token """
+        data = self.storage.load()
+        data["slack_token"] = slack_token
+        self.storage.save(data)
+
+    def get_slack_token(self):
+        """ Return slack token or empty string """
+        data = self.storage.load()
+        return data.get("slack_token", "") or ""
+
+    def set_slack_channel(self, slack_channel):
+        """ Store slack channel """
+        data = self.storage.load()
+        data["slack_channel"] = slack_channel
+        self.storage.save(data)
+
+    def get_slack_channel(self):
+        """ Return slack channel or empty string """
+        data = self.storage.load()
+        return data.get("slack_channel", "") or ""
+
 
 class ScrumReportSettings:
     """
