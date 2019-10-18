@@ -11,6 +11,7 @@ import pyperclip
 from yogit.yogit.settings import ScrumReportSettings
 from yogit.api.queries import OneDayContributionListQuery
 from yogit.yogit.logger import LOGGER
+from yogit.yogit.slack import send_report_to_slack
 
 
 def _get_github_report(report_dt):
@@ -77,3 +78,11 @@ def generate_scrum_report(report_dt):
             raise click.ClickException("Not supported on your system, please `sudo apt-get install xclip`")
     else:
         click.echo(report)
+
+    if click.confirm("Send to Slack?", prompt_suffix=" "):
+        try:
+            send_report_to_slack(report)
+            click.secho("Sended! ", bold=True)
+        except Exception as error:
+            click.echo(report)
+            LOGGER.error(str(error))
