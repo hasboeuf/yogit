@@ -137,6 +137,70 @@ def test_pr_list_ok(mock_utc_now, runner):
 
 @pytest.mark.usefixtures("mock_settings")
 @responses.activate
+@patch("yogit.utils.dateutils._utcnow", return_value=datetime(2019, 10, 18, 1, 15, 59, 666))
+def test_pr_list_with_label_filter_ok(mock_utc_now, runner):
+    _add_graphql_response(
+        {
+            "data": {
+                "viewer": {
+                    "pullRequests": {
+                        "edges": [
+                            {
+                                "node": {
+                                    "createdAt": "2019-10-17T18:00:01Z",
+                                    "url": "https://xyz",
+                                    "title": "title1",
+                                    "mergeable": "MERGEABLE",
+                                    "labels": {"edges": [{"node": {"name": "LaBeL1"}}, {"node": {"name": "lAbEl2"}}]},
+                                }
+                            },
+                            {
+                                "node": {
+                                    "createdAt": "2019-10-16T08:00:01Z",
+                                    "url": "https://abc",
+                                    "title": "title2",
+                                    "mergeable": "MERGEABLE",
+                                    "labels": {"edges": [{"node": {"name": "LaBeL1"}}, {"node": {"name": "lAbEl3"}}]},
+                                }
+                            },
+                            {
+                                "node": {
+                                    "createdAt": "2019-10-15T19:00:59Z",
+                                    "url": "https://xyz",
+                                    "title": "title3",
+                                    "mergeable": "MERGEABLE",
+                                    "labels": {"edges": []},
+                                }
+                            },
+                        ]
+                    }
+                }
+            }
+        }
+    )
+
+    result = runner.invoke(cli.main, ["pr", "list", "--label", "label1"])
+    assert result.exit_code == ExitCode.NO_ERROR.value
+    assert result.output == (
+        "CREATED     URL          TITLE    MERGEABLE\n"
+        "----------  -----------  -------  -----------\n"
+        "Yesterday   https://xyz  title1   MERGEABLE\n"
+        "2 days ago  https://abc  title2   MERGEABLE\n"
+        "Count: 2\n"
+    )
+
+    result = runner.invoke(cli.main, ["pr", "list", "--label", "LABEL1", "--label", "label3"])
+    assert result.exit_code == ExitCode.NO_ERROR.value
+    assert result.output == (
+        "CREATED     URL          TITLE    MERGEABLE\n"
+        "----------  -----------  -------  -----------\n"
+        "2 days ago  https://abc  title2   MERGEABLE\n"
+        "Count: 1\n"
+    )
+
+
+@pytest.mark.usefixtures("mock_settings")
+@responses.activate
 def test_pr_list_with_unknown_orga(runner):
     _add_graphql_response({"data": {"search": {"pageInfo": {"hasNextPage": False, "endCursor": None}, "edges": []}}})
     result = runner.invoke(cli.main, ["pr", "list", "--orga", "unknown"])
@@ -185,4 +249,90 @@ def test_pr_list_with_orga_ok(mock_utc_now, runner):
         "30 days ago  https://xyz  title3\n"
         "61 days ago  https://abc  title4\n"
         "Count: 4\n"
+    )
+
+
+@pytest.mark.usefixtures("mock_settings")
+@responses.activate
+@patch("yogit.utils.dateutils._utcnow", return_value=datetime(2019, 10, 18, 8, 15, 30, 666))
+def test_pr_list_with_orga_with_label_filter_ok(mock_utc_now, runner):
+    _add_graphql_response(
+        {
+            "data": {
+                "search": {
+                    "pageInfo": {"hasNextPage": True, "endCursor": "cursor_id"},
+                    "edges": [
+                        {
+                            "node": {
+                                "createdAt": "2019-07-17T10:30:15Z",
+                                "url": "https://xyz",
+                                "title": "title1",
+                                "labels": {
+                                    "edges": [{"node": {"name": "LaBeL with spacE"}}, {"node": {"name": "lAbEl2"}}]
+                                },
+                            }
+                        },
+                        {
+                            "node": {
+                                "createdAt": "2019-07-17T17:28:15Z",
+                                "url": "https://abc",
+                                "title": "title2",
+                                "labels": {"edges": []},
+                            }
+                        },
+                    ],
+                }
+            }
+        }
+    )
+    _add_graphql_response(
+        {
+            "data": {
+                "search": {
+                    "pageInfo": {"hasNextPage": False, "endCursor": None},
+                    "edges": [
+                        {
+                            "node": {
+                                "createdAt": "2019-06-17T01:18:00Z",
+                                "url": "https://xyz",
+                                "title": "title3",
+                                "labels": {"edges": []},
+                            }
+                        },
+                        {
+                            "node": {
+                                "createdAt": "2019-05-17T08:36:15Z",
+                                "url": "https://abc",
+                                "title": "title4",
+                                "labels": {
+                                    "edges": [{"node": {"name": "LaBeL with spacE"}}, {"node": {"name": "lAbEl3"}}]
+                                },
+                            }
+                        },
+                    ],
+                }
+            }
+        }
+    )
+    result = runner.invoke(cli.main, ["pr", "list", "--orga", "Orga", "--label", "label with SpAce"])
+    print(str(result.exception))
+    assert result.exit_code == ExitCode.NO_ERROR.value
+    assert result.output == (
+        "CREATED       URL          TITLE\n"
+        "------------  -----------  -------\n"
+        "93 days ago   https://xyz  title1\n"
+        "154 days ago  https://abc  title4\n"
+        "Count: 2\n"
+    )
+
+    result = runner.invoke(
+        cli.main, ["pr", "list", "--orga", "Orga", "--label", "label with SpAce", "--label", "label3"]
+    )
+    print(str(result.exception))
+    assert result.exit_code == ExitCode.NO_ERROR.value
+    assert result.output == (
+        "CREATED       URL          TITLE\n"
+        "------------  -----------  -------\n"
+        "154 days ago  https://abc  title4\n"
+        "Count: 1\n"
     )

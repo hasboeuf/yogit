@@ -17,17 +17,24 @@ def pull_request():
 
 @click.command("list", help="List your opened pull requests")
 @click.option("--orga", type=click.STRING, help="Expand results to a specific organization")
+@click.option(
+    "--label",
+    type=click.STRING,
+    multiple=True,
+    help="Only show pull requests having such label (several --label can be set)",
+)
 @click.pass_context
 @account_required
 @check_update
-def pull_request_list(ctx, orga):  # pylint: disable=unused-argument
+def pull_request_list(ctx, orga, label):  # pylint: disable=unused-argument
     """
     List pull requests
     """
+    labels = [x.lower() for x in label]
     if orga:
-        query = OrgaPullRequestListQuery(orga)
+        query = OrgaPullRequestListQuery(labels, orga)
     else:
-        query = PullRequestListQuery()
+        query = PullRequestListQuery(labels)
     query.execute()  # pylint: disable=no-value-for-parameter
     query.print()
 

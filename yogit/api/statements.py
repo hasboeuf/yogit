@@ -130,6 +130,13 @@ PULL_REQUEST_LIST_STATEMENT = """
                     url
                     title
                     mergeable
+                    labels(first: 100) {
+                        edges {
+                            node {
+                                name
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -154,6 +161,13 @@ ORGA_PULL_REQUEST_LIST_STATEMENT = """
                     number
                     url
                     title
+                    labels(first: 100) {
+                        edges {
+                            node {
+                                name
+                            }
+                        }
+                    }
                 }
             }
         }
