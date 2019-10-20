@@ -31,7 +31,6 @@ def generate_scrum_report(report_dt):
     Also copy the report in clipboard if wanted
     """
     report_settings = ScrumReportSettings()
-    report_data = report_settings.get()
     click.secho("Tips:", bold=True)
     click.echo("• To customize report template, edit `{}`".format(report_settings.get_path()))
     click.echo("• Begin line with an extra " + click.style("<space>", bold=True) + " to indent it")
@@ -39,12 +38,8 @@ def generate_scrum_report(report_dt):
     click.secho("Report of {}".format(report_dt.date().isoformat()), bold=True)
 
     data = {}
-    try:
-        questions = report_data["questions"]
-        tpl = report_data["template"]
-    except Exception as error:
-        LOGGER.error(str(error))
-        raise click.ClickException("Unable to parse SCRUM report template")
+    questions = report_settings.get_questions()
+    tpl = report_settings.get_template()
 
     suffix = "• "
     for idx, question in enumerate(questions):

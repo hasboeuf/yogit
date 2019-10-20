@@ -158,3 +158,11 @@ class ScrumReportSettings:
             data = yaml.load(DEFAULT_SCRUM_REPORT_CONFIG, Loader=yaml.FullLoader)
             self.storage.save(data)
         return data
+
+    def get_questions(self):
+        data = self.get()
+        return data.get("questions", []) or []
+
+    def get_template(self):
+        data = self.get()
+        return data.get("template", []) or []

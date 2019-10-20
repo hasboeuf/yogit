@@ -194,26 +194,6 @@ def test_default_report_ok(mock_copy, mock_compute_date, runner):
 
 @pytest.mark.usefixtures("mock_settings")
 @pytest.mark.usefixtures("temporary_scrum_report")
-@patch("yogit.yogit.settings.ScrumReportSettings.get", return_value={"invalid": "template"})
-@patch("yogit.yogit.scrum._compute_date_str", return_value=datetime(2019, 8, 20, 1, 15, 59, 666))
-def test_report_wrong_template(mock_compute_date, mock_get_report, runner):
-    result = runner.invoke(cli.main, ["scrum", "report"])
-    settings = ScrumReportSettings()
-
-    assert result.exception
-    assert result.exit_code == ExitCode.DEFAULT_ERROR.value
-    assert result.output == (
-        "Tips:\n"
-        "• To customize report template, edit `{}`\n"
-        "• Begin line with an extra <space> to indent it\n"
-        "\n"
-        "Report of 2019-08-20\n"
-        "Error: Unable to parse SCRUM report template\n"
-    ).format(settings.get_path())
-
-
-@pytest.mark.usefixtures("mock_settings")
-@pytest.mark.usefixtures("temporary_scrum_report")
 @patch("yogit.yogit.settings.ScrumReportSettings.get", return_value={"questions": [], "template": []})
 @patch("pyperclip.copy", side_effect=Exception("error"))
 @patch("yogit.yogit.scrum._compute_date_str", return_value=datetime(2019, 8, 20, 1, 15, 59, 666))
