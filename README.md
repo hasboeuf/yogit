@@ -43,7 +43,7 @@ Command line utility for git daily work.
 * Show branches
 * Show contributions
 * Show organization's information
-* Help in writing a daily scrum report
+* Help in writing a daily scrum report and post it on Slack
 
 See documentation below for more details.
 
@@ -55,13 +55,13 @@ See documentation below for more details.
 
 ### Account
 
-`yogit account setup`: Setup yogit
+`yogit account setup`: Setup yogit (include GitHub integration and optionnaly Slack integration to fully enjoy `yogit scrum report` command)
 
 `yogit account usage`: Account API usage
 
 ### Pull request
 
-`yogit pr list [--orga TEXT]`: List your opened pull requests. If `--orga` is provided, results will be expanded to this specific organization.
+`yogit pr list [--orga TEXT] [--label TEXT]`: List your opened pull requests. If `--orga` is set, results will be expanded to this specific organization. If `--label` is set, results will be filtered by pull request labels, you can set multiple `--label`.
 
 ### Review
 
@@ -94,6 +94,8 @@ By default this command is listing today's contributions.
 ### SCRUM
 
 `yogit scrum report [--date TEXT]`: Generate your daily activity report
+
+If Slack integration is setup, report can be published on Slack. Note that report is composed of one or more sections, first section will published as a message, next section will be published as a reply of the first one.
 
 Template of the report can be changed by editing `~/.yogit/scrum_report.yaml`
 
