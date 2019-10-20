@@ -182,4 +182,4 @@ class ScrumReportSettings:
 
     def get_template(self):
         data = self.get()
-        return data.get("template", []) or []
+        return data.get("template", {}) or {}
