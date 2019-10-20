@@ -1,27 +1,28 @@
 # yogit
 
-## Unittests
+## Local environment
 
-### CI
-
-Run by Travis CI and Azure Pipelines.
-
-### Local run
-
-`pip3 install -r requirements/tests.txt`
+```bash
+pip3 install -r requirements/yogit.txt -r requirements/tests.txt -r requirements/codesanity.txt
+pip3 install -e .
+```
 
 Run unittests: `pytest -vv -s yogit/tests`
 
 Check code coverage: `pytest --cov=yogit yogit/tests`
 
-## Code sanity
+Coding style: handled by `black` (via `ci/blackify`) and enforced by CI.
 
-Coding style is handled by `black` (via `ci/blackify`).
-Static checks are handled by `pylint` (via `ci/pylintify`).
+Static checks: handled by `pylint` (via `ci/pylintify`).
 
-You must `pip3 install -r requirements/codesanity.txt` to use those scripts.
+## Continuous integration
 
-Note: continuous integration does not check code sanity.
+Handled by Travis CI and Azure Pipelines.
+Responsible of:
+
+* Passing unittests
+* Checking coding style
+* Releasing
 
 ## Release procedure
 

@@ -1,9 +1,7 @@
 """
 yogit settings
 """
-import collections
 import yaml
-from string import Template
 
 from yogit.yogit.paths import get_settings_path, get_scrum_report_path
 from yogit.storage.storage import Storage
@@ -137,6 +135,9 @@ class Settings:
 
 
 def migrate_report_settings_from_1_to_2(data):
+    """
+    Migrate scrum report template of version 1 to version 2
+    """
     migrated = dict()
     template_data = data.get("template", []) or []
     template_data = "\n".join(template_data).replace("${today}", "${date}").split()
@@ -177,9 +178,11 @@ class ScrumReportSettings:
         return data
 
     def get_questions(self):
+        """ Return questions or empty list """
         data = self.get()
         return data.get("questions", []) or []
 
     def get_template(self):
+        """ Return template dict containing sections or empty dict """
         data = self.get()
-        return data.get("template", []) or []
+        return data.get("template", {}) or {}

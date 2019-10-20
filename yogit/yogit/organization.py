@@ -16,7 +16,7 @@ def check_organization(orga):
     Check if orga exist or if user belong to only one orga
     """
     query = OrganizationListQuery()
-    query.execute()
+    query.execute()  # pylint: disable=no-value-for-parameter
     orgas = [x[0].lower() for x in query.data]
     if not orgas:
         raise click.ClickException("You do not belong to any organization 😿")
