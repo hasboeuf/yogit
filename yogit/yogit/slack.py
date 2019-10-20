@@ -1,6 +1,8 @@
 """
 Slack API requester
 """
+import click
+
 from yogit.yogit.settings import Settings
 from yogit.api.requester import http_call
 from yogit.utils.spinner import spin
@@ -8,6 +10,7 @@ from yogit.yogit.logger import LOGGER
 
 SLACK_API_URL = "https://slack.com/api"
 SLACK_POST_MESSAGE_ENDPOINT = "/chat.postMessage"
+SLACK_AUTH_CHECK_ENDPOINT = "/auth.test"
 
 
 def _get_slack_url(endpoint):
@@ -47,7 +50,27 @@ class SlackQuery:
     def execute(self, spinner):
         """ Execute the query """
         response = self.client.post(self.endpoint, self.payload)
+        if not response.get("ok", False):
+            raise click.ClickException("Slack API: {}".format(response.get("error", "default_error")))
         self._handle_response(response)
+
+
+class SlackAuthCheck(SlackQuery):
+    """
+    Check auth token
+    """
+
+    def __init__(self):
+        super().__init__(SLACK_AUTH_CHECK_ENDPOINT)
+        settings = Settings()
+        self.user = None
+        self.payload = {"token": settings.get_slack_token()}
+
+    def _handle_response(self, response):
+        try:
+            self.user = response["user"]
+        except KeyError as error:
+            raise click.ClickException("Bad response")
 
 
 class SlackPostMessageQuery(SlackQuery):

@@ -76,7 +76,7 @@ def generate_scrum_report(report_dt):
                 click.secho("Sent! 🤘", bold=True)
                 # TODO print message link
             except Exception as error:
-                click.secho("Failed to send", bold=True)
+                click.secho("Failed to send: {}".format(str(error)), bold=True)
                 LOGGER.error(str(error))
 
     report = "\n".join(report_sections)

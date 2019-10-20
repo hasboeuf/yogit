@@ -5,6 +5,7 @@ Account commands
 import click
 
 from yogit.api.queries import LoginQuery, EmailQuery, RateLimitQuery
+from yogit.yogit.slack import SlackAuthCheck
 from yogit.yogit.settings import Settings
 from yogit.yogit.checks import account_required, check_update
 
@@ -95,14 +96,18 @@ def _setup_slack():
 
     click.echo(get_slack_text())
     token = click.prompt("Slack token", type=click.STRING, hide_input=True).strip()
-    channel = click.prompt("Slack channel", type=click.STRING).strip()
-
-    # TODO HTTP call to check if this is OK
-
+    channel = click.prompt("Slack channel", type=click.STRING, prompt_suffix=": #").strip()
     settings.set_slack_token(token)
     settings.set_slack_channel(channel)
 
-    click.secho("✓ Slack! 🔌✨", bold=True)
+    try:
+        auth_query = SlackAuthCheck()
+        auth_query.execute()  # pylint: disable=no-value-for-parameter
+    except Exception as exception:
+        settings.reset_slack()
+        raise exception
+
+    click.secho("✓ Slack, hello {}! 🔌✨".format(auth_query.user), bold=True)
 
 
 @click.group("account")

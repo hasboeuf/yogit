@@ -8,6 +8,7 @@ from yogit.yogit.settings import Settings
 from yogit.yogit.errors import ExitCode
 from yogit.yogit.account import get_welcome_text, get_github_text, get_slack_text
 from yogit.api.client import GITHUB_API_URL_V4, GITHUB_API_URL_V3
+from yogit.yogit.slack import SLACK_API_URL, SLACK_AUTH_CHECK_ENDPOINT
 from yogit.tests.mocks.mock_settings import temporary_settings, mock_settings, assert_empty_settings
 
 
@@ -17,6 +18,10 @@ def _add_graphql_response(status, json):
 
 def _add_rest_response(endpoint, status, json):
     responses.add(responses.GET, GITHUB_API_URL_V3 + endpoint, json=json, status=status)
+
+
+def _add_slack_api_response(endpoint, json):
+    responses.add(responses.POST, SLACK_API_URL + endpoint, json=json, status=200)
 
 
 @pytest.fixture
@@ -53,6 +58,7 @@ def test_setup_github_unauthorized(runner):
 def test_setup_ok(runner):
     _add_graphql_response(200, {"data": {"viewer": {"login": "user1"}}})
     _add_rest_response("/user/emails", 200, [{"email": "email1"}, {"email": "email2"}, {"email": "email3"}])
+    _add_slack_api_response(SLACK_AUTH_CHECK_ENDPOINT, {"ok": True, "user": "user1"})
     result = runner.invoke(
         cli.main,
         ["account", "setup"],
@@ -68,8 +74,8 @@ def test_setup_ok(runner):
             "(optional) Configure Slack integration? [y/N] y",
             get_slack_text(),
             "Slack token: ",
-            "Slack channel:    slack_channel   ",
-            "✓ Slack! 🔌✨",
+            "Slack channel: #   slack_channel   ",
+            "✓ Slack, hello user1! 🔌✨",
             "✓ Done, you can safely rerun this command at any time!\n",
         ]
     )
