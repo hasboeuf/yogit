@@ -35,7 +35,7 @@ def test_wrong_date(runner):
 
 @pytest.mark.usefixtures("mock_settings")
 @pytest.mark.usefixtures("temporary_scrum_report")
-@patch("yogit.yogit.settings.ScrumReportSettings.get", return_value={"questions": [], "template": []})
+@patch("yogit.yogit.settings.ScrumReportSettings.get", return_value={"questions": [], "template": {"sections": []}})
 @responses.activate
 def test_with_specific_date(mock_get_report, runner):
     Settings().reset_slack()
@@ -194,7 +194,7 @@ def test_default_report_ok(mock_copy, mock_compute_date, runner):
 
 @pytest.mark.usefixtures("mock_settings")
 @pytest.mark.usefixtures("temporary_scrum_report")
-@patch("yogit.yogit.settings.ScrumReportSettings.get", return_value={"questions": [], "template": []})
+@patch("yogit.yogit.settings.ScrumReportSettings.get", return_value={"questions": [], "template": {"sections": []}})
 @patch("pyperclip.copy", side_effect=Exception("error"))
 @patch("yogit.yogit.scrum._compute_date_str", return_value=datetime(2019, 8, 20, 1, 15, 59, 666))
 def test_report_clipboard_copy_error(mock_compute_date, mock_copy, mock_get_report, runner):

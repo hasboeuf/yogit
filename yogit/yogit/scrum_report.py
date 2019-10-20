@@ -55,26 +55,31 @@ def generate_scrum_report(report_dt):
         data["q{}".format(idx)] = question
         data["a{}".format(idx)] = "\n".join(answers)
 
-    template = Template("\n".join(tpl))
-
-    data["today"] = report_dt.date().isoformat()  # "today" string does is not meaninful
-    if "${github_report}" in template.template:
-        data["github_report"] = _get_github_report(report_dt)
-
-    report = template.safe_substitute(data)
+    report_sections = []
+    for section in tpl.get("sections", []):
+        template = Template("\n".join(section))
+        data["date"] = report_dt.date().isoformat()
+        if "${github_report}" in template.template:
+            data["github_report"] = _get_github_report(report_dt)
+        report_sections.append(template.safe_substitute(data))
 
     settings = Settings()
     if settings.is_slack_valid():
         if click.confirm("Send to Slack?", prompt_suffix=" "):
             try:
-                query = SlackPostMessageQuery(report)
-                query.execute()
+                first_query = None
+                for section in report_sections:
+                    query = SlackPostMessageQuery(section, reply_to=first_query)
+                    query.execute()
+                    if first_query is None:
+                        first_query = query
                 click.secho("Sent! 🤘", bold=True)
                 # TODO print message link
             except Exception as error:
                 click.secho("Failed to send", bold=True)
                 LOGGER.error(str(error))
 
+    report = "\n".join(report_sections)
     if click.confirm("Copy to clipboard?", prompt_suffix=" "):
         try:
             pyperclip.copy(report)
