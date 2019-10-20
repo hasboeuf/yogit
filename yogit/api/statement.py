@@ -16,7 +16,7 @@ def prepare(statement, variables, extra_data={}):
     data = extra_data.copy()
     for variable in variables:
         if variable == S.LOGIN_VARIABLE:
-            data[variable] = Settings().get_login()
+            data[variable] = Settings().get_github_login()
         elif variable == S.TODAY_VARIABLE:
             data[variable] = today_earliest_str()
     return template.safe_substitute(data)

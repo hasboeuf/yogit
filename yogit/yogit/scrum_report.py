@@ -8,9 +8,10 @@ from string import Template
 import click
 import pyperclip
 
-from yogit.yogit.settings import ScrumReportSettings
+from yogit.yogit.settings import ScrumReportSettings, Settings
 from yogit.api.queries import OneDayContributionListQuery
 from yogit.yogit.logger import LOGGER
+from yogit.yogit.slack import SlackPostMessageQuery
 
 
 def _get_github_report(report_dt):
@@ -29,21 +30,16 @@ def generate_scrum_report(report_dt):
 
     Also copy the report in clipboard if wanted
     """
-    settings = ScrumReportSettings()
-    settings_data = settings.get()
+    report_settings = ScrumReportSettings()
     click.secho("Tips:", bold=True)
-    click.echo("• To customize report template, edit `{}`".format(settings.get_path()))
+    click.echo("• To customize report template, edit `{}`".format(report_settings.get_path()))
     click.echo("• Begin line with an extra " + click.style("<space>", bold=True) + " to indent it")
     click.echo("")
     click.secho("Report of {}".format(report_dt.date().isoformat()), bold=True)
 
     data = {}
-    try:
-        questions = settings_data["questions"]
-        tpl = settings_data["template"]
-    except Exception as error:
-        LOGGER.error(str(error))
-        raise click.ClickException("Unable to parse SCRUM report template")
+    questions = report_settings.get_questions()
+    tpl = report_settings.get_template()
 
     suffix = "• "
     for idx, question in enumerate(questions):
@@ -59,14 +55,31 @@ def generate_scrum_report(report_dt):
         data["q{}".format(idx)] = question
         data["a{}".format(idx)] = "\n".join(answers)
 
-    template = Template("\n".join(tpl))
+    report_sections = []
+    for section in tpl.get("sections", []):
+        template = Template("\n".join(section))
+        data["date"] = report_dt.date().isoformat()
+        if "${github_report}" in template.template:
+            data["github_report"] = _get_github_report(report_dt)
+        report_sections.append(template.safe_substitute(data))
 
-    data["today"] = report_dt.date().isoformat()  # "today" string does is not meaninful
-    if "${github_report}" in template.template:
-        data["github_report"] = _get_github_report(report_dt)
+    settings = Settings()
+    if settings.is_slack_valid():
+        if click.confirm("Send to Slack?", prompt_suffix=" "):
+            try:
+                first_query = None
+                for section in report_sections:
+                    query = SlackPostMessageQuery(section, reply_to=first_query)
+                    query.execute()
+                    if first_query is None:
+                        first_query = query
+                click.secho("Sent! 🤘", bold=True)
+                # TODO print message link
+            except Exception as error:
+                click.secho("Failed to send", bold=True)
+                LOGGER.error(str(error))
 
-    report = template.safe_substitute(data)
-
+    report = "\n".join(report_sections)
     if click.confirm("Copy to clipboard?", prompt_suffix=" "):
         try:
             pyperclip.copy(report)

@@ -37,5 +37,5 @@ class Storage:
             yaml.safe_dump(data, stream=yaml_file, indent=4)
 
     def get_version(self):
-        data = self.storage.load()
+        data = self.load()
         return data.get("version", None) or None

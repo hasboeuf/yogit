@@ -14,7 +14,7 @@ def account_required(func):
 
     def wrapper(self, *args, **kwargs):
         # pylint: disable=missing-docstring
-        if not Settings().is_valid():
+        if not Settings().is_github_valid():
             raise click.ClickException("Account required, please `yogit account setup` first.")
         func(self, *args, **kwargs)
 

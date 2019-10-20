@@ -260,7 +260,7 @@ class RateLimitQuery(GraphQLQuery):
         self.reset_at = rate_limit["resetAt"]
 
     def print(self):
-        click.secho("{}/{} until {}".format(self.remaining, self.limit, self.reset_at), bold=True)
+        click.secho("GitHub usage: {}/{} until {}".format(self.remaining, self.limit, self.reset_at), bold=True)
 
 
 class PullRequestListQuery(GraphQLQuery):

@@ -6,7 +6,7 @@ from click.testing import CliRunner
 from yogit.yogit import cli
 from yogit.yogit.settings import Settings
 from yogit.yogit.errors import ExitCode
-from yogit.yogit.account import get_welcome_text
+from yogit.yogit.account import get_welcome_text, get_github_text, get_slack_text
 from yogit.api.client import GITHUB_API_URL_V4, GITHUB_API_URL_V3
 from yogit.tests.mocks.mock_settings import temporary_settings, mock_settings, assert_empty_settings
 
@@ -26,11 +26,25 @@ def runner():
 
 @pytest.mark.usefixtures("mock_settings")
 @responses.activate
-def test_setup_erase_settings(runner):
+def test_setup_does_not_erase_if_user_does_not_want(runner):
+    result = runner.invoke(cli.main, ["account", "setup"], input="\n".join(["n", "n"]))
+    assert result.exit_code == ExitCode.NO_ERROR.value
+    assert "Reset GitHub config?" in result.output
+    assert "Reset Slack config?" in result.output
+    settings = Settings()
+    assert settings.is_github_valid()
+    assert settings.is_slack_valid()
+
+
+@pytest.mark.usefixtures("temporary_settings")
+@responses.activate
+def test_setup_github_unauthorized(runner):
     _add_graphql_response(401, {})
-    result = runner.invoke(cli.main, ["account", "setup"], input="<bad_token>")
+    result = runner.invoke(cli.main, ["account", "setup"], input="bad_token")
     assert result.exit_code == ExitCode.DEFAULT_ERROR.value
-    assert result.output == get_welcome_text() + ("\nGitHub token: \n" "Error: Unauthorized\n")
+    assert result.output == "\n".join(
+        [get_welcome_text(), get_github_text(), "GitHub token: ", "Error: Unauthorized\n"]
+    )
     assert_empty_settings()
 
 
@@ -39,13 +53,33 @@ def test_setup_erase_settings(runner):
 def test_setup_ok(runner):
     _add_graphql_response(200, {"data": {"viewer": {"login": "user1"}}})
     _add_rest_response("/user/emails", 200, [{"email": "email1"}, {"email": "email2"}, {"email": "email3"}])
-    result = runner.invoke(cli.main, ["account", "setup"], input="   <token>   ")
+    result = runner.invoke(
+        cli.main,
+        ["account", "setup"],
+        input="\n".join(["   github_token   ", "y", "   slack_token   ", "   slack_channel   "]),
+    )
     assert result.exit_code == ExitCode.NO_ERROR.value
-    assert result.output == get_welcome_text() + ("\nGitHub token: \n" "Hello user1! 💕✨\n")
+    assert result.output == "\n".join(
+        [
+            get_welcome_text(),
+            get_github_text(),
+            "GitHub token: ",
+            "✓ GitHub, hello user1! 💕✨",
+            "(optional) Configure Slack integration? [y/N] y",
+            get_slack_text(),
+            "Slack token: ",
+            "Slack channel:    slack_channel   ",
+            "✓ Slack! 🔌✨",
+            "✓ Done, you can safely rerun this command at any time!\n",
+        ]
+    )
+
     settings = Settings()
-    assert settings.get_token() == "<token>"
-    assert settings.get_login() == "user1"
-    assert settings.get_emails() == ["email1", "email2", "email3"]
+    assert settings.get_github_token() == "github_token"
+    assert settings.get_github_login() == "user1"
+    assert settings.get_github_emails() == ["email1", "email2", "email3"]
+    assert settings.get_slack_token() == "slack_token"
+    assert settings.get_slack_channel() == "slack_channel"
 
 
 @pytest.mark.usefixtures("mock_settings")
@@ -56,4 +90,4 @@ def test_ratelimit_ok(runner):
     )
     result = runner.invoke(cli.main, ["account", "usage"])
     assert result.exit_code == ExitCode.NO_ERROR.value
-    assert result.output == "4000/5000 until 2019-07-11T23:39:39Z\n"
+    assert result.output == "GitHub usage: 4000/5000 until 2019-07-11T23:39:39Z\n"

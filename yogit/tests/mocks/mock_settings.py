@@ -64,13 +64,17 @@ def mock_settings():
 
 def fill_settings():
     settings = Settings()
-    settings.set_emails(["user1@company1.com", "user1@company2.com", "user1@company3.com"])
-    settings.set_login("user1")
-    settings.set_token("<token>")
+    settings.set_github_emails(["user1@company1.com", "user1@company2.com", "user1@company3.com"])
+    settings.set_github_login("user1")
+    settings.set_github_token("github_token")
+    settings.set_slack_token("slack_token")
+    settings.set_slack_channel("slack_channel")
 
 
 def assert_empty_settings():
     settings = Settings()
-    assert settings.get_token() == ""
-    assert settings.get_login() == ""
-    assert settings.get_emails() == []
+    assert settings.get_github_token() == ""
+    assert settings.get_github_login() == ""
+    assert settings.get_github_emails() == []
+    assert settings.get_slack_token() == ""
+    assert settings.get_slack_channel() == ""
