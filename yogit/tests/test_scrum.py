@@ -180,7 +180,6 @@ def test_default_report_ok(mock_copy, mock_compute_date, runner):
         "\n"
         "*What do you plan to work on your next working day?*\n"
         "• thing1\n"
-        "\n"
         "```\n"
         "PULL REQUEST    ROLE      STATE\n"
         "--------------  --------  --------\n"
