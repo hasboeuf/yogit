@@ -5,7 +5,7 @@ Account commands
 import click
 
 from yogit.api.queries import LoginQuery, EmailQuery, RateLimitQuery
-from yogit.yogit.slack import SlackAuthCheck
+from yogit.yogit.slack import SlackAuthCheck, SlackChannelListQuery
 from yogit.yogit.settings import Settings
 from yogit.yogit.checks import account_required, check_update
 
@@ -103,6 +103,10 @@ def _setup_slack():
     try:
         auth_query = SlackAuthCheck()
         auth_query.execute()  # pylint: disable=no-value-for-parameter
+        channel_query = SlackChannelListQuery()
+        channel_query.execute()
+        if channel not in channel_query.channels:
+            raise click.ClickException("Channel does not exist")
     except Exception as exception:
         settings.reset_slack()
         raise exception

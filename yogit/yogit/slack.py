@@ -3,6 +3,8 @@ Slack API requester
 """
 import click
 
+from urllib.parse import urlparse
+
 from yogit.yogit.settings import Settings
 from yogit.api.requester import http_call
 from yogit.utils.spinner import spin
@@ -11,10 +13,18 @@ from yogit.yogit.logger import LOGGER
 SLACK_API_URL = "https://slack.com/api"
 SLACK_POST_MESSAGE_ENDPOINT = "/chat.postMessage"
 SLACK_AUTH_CHECK_ENDPOINT = "/auth.test"
+SLACK_CHANNEL_LIST_ENDPOINT = "/conversations.list"
 
 
 def _get_slack_url(endpoint):
     return SLACK_API_URL + endpoint
+
+
+def _get_headers():
+    """
+    Craft HTTP headers for request
+    """
+    return {"Content-Type": "application/x-www-form-urlencoded"}
 
 
 class SlackRESTClient:
@@ -31,16 +41,28 @@ class SlackRESTClient:
         LOGGER.debug(payload)
         return http_call("post", url, data=payload)
 
+    def get(self, endpoint, params):
+        """
+        Perform GET Slack REST request
+        """
+        settings = Settings()
+        url = _get_slack_url(endpoint)
+        LOGGER.debug("GET %s", url)
+        params.append(("token", settings.get_slack_token()))
+        return http_call("get", url, headers=_get_headers(), params=params)
+
 
 class SlackQuery:
     """
     Represent a Slack query
     """
 
-    def __init__(self, endpoint):
+    def __init__(self, method, endpoint, params=[]):
         self.response = None
         self.client = SlackRESTClient()
+        self.method = method
         self.endpoint = endpoint
+        self.params = params
         self.payload = {}
 
     def _handle_response(self, response):
@@ -49,7 +71,10 @@ class SlackQuery:
     @spin
     def execute(self, spinner):
         """ Execute the query """
-        response = self.client.post(self.endpoint, self.payload)
+        if self.method == "post":
+            response = self.client.post(self.endpoint, self.payload)
+        else:
+            response = self.client.get(self.endpoint, self.params)
         if not response.get("ok", False):
             raise click.ClickException("Slack API: {}".format(response.get("error", "default_error")))
         self._handle_response(response)
@@ -61,7 +86,7 @@ class SlackAuthCheck(SlackQuery):
     """
 
     def __init__(self):
-        super().__init__(SLACK_AUTH_CHECK_ENDPOINT)
+        super().__init__("post", SLACK_AUTH_CHECK_ENDPOINT)
         settings = Settings()
         self.user = None
         self.payload = {"token": settings.get_slack_token()}
@@ -79,7 +104,7 @@ class SlackPostMessageQuery(SlackQuery):
     """
 
     def __init__(self, message, reply_to=None):
-        super().__init__(SLACK_POST_MESSAGE_ENDPOINT)
+        super().__init__("post", SLACK_POST_MESSAGE_ENDPOINT)
         self.message = message
         self.reply_to = reply_to
         self.thread_id = None
@@ -99,3 +124,16 @@ class SlackPostMessageQuery(SlackQuery):
 
     def _handle_response(self, response):
         self.thread_id = response.get("ts")
+
+
+class SlackChannelListQuery(SlackQuery):
+    """
+    Request Slack channel list
+    """
+
+    def __init__(self):
+        super().__init__("get", SLACK_CHANNEL_LIST_ENDPOINT, params=[("limit", 1000)])
+        self.channels = []
+
+    def _handle_response(self, response):
+        self.channels = [x["name"] for x in response["channels"]]
