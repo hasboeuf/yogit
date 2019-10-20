@@ -1,7 +1,6 @@
 """
-Send report to slack
+Slack API requester
 """
-import json
 from yogit.yogit.settings import Settings
 from yogit.api.requester import http_call
 from yogit.utils.spinner import spin
@@ -11,26 +10,29 @@ SLACK_API_URL = "https://slack.com/api"
 SLACK_POST_MESSAGE_ENDPOINT = "/chat.postMessage"
 
 
+def _get_slack_url(endpoint):
+    return SLACK_API_URL + endpoint
+
+
 class SlackRESTClient:
     """
     Slack REST API client
     """
 
-    def _get_url(self, endpoint):
-        return SLACK_API_URL + endpoint
-
     def post(self, endpoint, payload):
         """
         Perform POST Slack REST request
         """
-        url = self._get_url(endpoint)
+        url = _get_slack_url(endpoint)
         LOGGER.debug("POST %s", url)
         LOGGER.debug(payload)
         return http_call("post", url, data=payload)
 
 
 class SlackQuery:
-    """ Represent a Slack query """
+    """
+    Represent a Slack query
+    """
 
     def __init__(self, endpoint):
         self.response = None
@@ -49,6 +51,10 @@ class SlackQuery:
 
 
 class SlackPostMessageQuery(SlackQuery):
+    """
+    Post a message or a reply
+    """
+
     def __init__(self, message, reply_to=None):
         super().__init__(SLACK_POST_MESSAGE_ENDPOINT)
         self.message = message
