@@ -74,7 +74,7 @@ def _setup_github():
         email_query = EmailQuery()
         email_query.execute()  # pylint: disable=no-value-for-parameter
     except Exception as exception:
-        settings.reset()
+        settings.reset_github()
         raise exception
 
     settings.set_github_login(login)
