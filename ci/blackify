@@ -2,4 +2,17 @@
 set -ev
 cd $(dirname $0)/..
 
+if ! command -v black; then
+    echo "Black not installed, skipping"
+    exit 0
+fi
+
 black -l 120 .
+
+if test "$1" = "--check"; then
+    if ! git diff --exit-code > black.diff ; then
+        cat black.diff
+        echo "Coding style is broken! Consider to run `ci/blackify`"
+        exit 1
+    fi
+fi
