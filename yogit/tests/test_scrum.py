@@ -8,7 +8,7 @@ from click.testing import CliRunner
 from yogit.yogit import cli
 from yogit.yogit.errors import ExitCode
 from yogit.api.client import GITHUB_API_URL_V4
-from yogit.yogit.slack import SLACK_API_URL, SLACK_POST_MESSAGE_ENDPOINT
+from yogit.yogit.slack import SLACK_API_URL, SLACK_POST_MESSAGE_ENDPOINT, SLACK_MESSAGE_LINK_ENDPOINT
 from yogit.yogit.settings import Settings, ScrumReportSettings
 from yogit.tests.mocks.mock_settings import mock_settings, temporary_scrum_report
 
@@ -17,8 +17,12 @@ def _add_graphql_response(json):
     responses.add(responses.POST, GITHUB_API_URL_V4, json=json, status=200)
 
 
-def _add_slack_api_response(endpoint, json):
+def _add_post_slack_api_response(endpoint, json):
     responses.add(responses.POST, SLACK_API_URL + endpoint, json=json, status=200)
+
+
+def _add_get_slack_api_response(endpoint, json):
+    responses.add(responses.GET, SLACK_API_URL + endpoint, json=json, status=200)
 
 
 @pytest.fixture
@@ -106,7 +110,8 @@ def test_default_report_ok(mock_copy, mock_compute_date, runner):
         }
     )
 
-    _add_slack_api_response(SLACK_POST_MESSAGE_ENDPOINT, {"ok": True, "ts": "1"})
+    _add_post_slack_api_response(SLACK_POST_MESSAGE_ENDPOINT, {"ok": True, "ts": "1"})
+    _add_get_slack_api_response(SLACK_MESSAGE_LINK_ENDPOINT, {"ok": True, "permalink": "https://link"})
 
     # Test with slack post and report copy
     result = runner.invoke(
@@ -131,7 +136,7 @@ def test_default_report_ok(mock_copy, mock_compute_date, runner):
         "• thing1\n"
         "• \n"
         "Send to Slack? [y/N] y\n"
-        "Sent! 🤘\n"
+        "Sent! 🤘 https://link\n"
         "Copy to clipboard? [y/N] y\n"
         "Copied! 🤘\n"
     ).format(settings.get_path())

@@ -11,7 +11,7 @@ import pyperclip
 from yogit.yogit.settings import ScrumReportSettings, Settings
 from yogit.api.queries import OneDayContributionListQuery
 from yogit.yogit.logger import LOGGER
-from yogit.yogit.slack import SlackPostMessageQuery
+from yogit.yogit.slack import SlackPostMessageQuery, SlackMessageLinkQuery
 
 
 def _get_github_report(report_dt):
@@ -73,8 +73,9 @@ def generate_scrum_report(report_dt):
                     query.execute()
                     if first_query is None:
                         first_query = query
-                click.secho("Sent! 🤘", bold=True)
-                # TODO print message link
+                query = SlackMessageLinkQuery(first_query)
+                query.execute()
+                click.secho("Sent! 🤘 {}".format(query.url), bold=True)
             except Exception as error:
                 click.secho("Failed to send: {}".format(str(error)), bold=True)
                 LOGGER.error(str(error))

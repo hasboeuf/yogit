@@ -14,6 +14,7 @@ SLACK_API_URL = "https://slack.com/api"
 SLACK_POST_MESSAGE_ENDPOINT = "/chat.postMessage"
 SLACK_AUTH_CHECK_ENDPOINT = "/auth.test"
 SLACK_CHANNEL_LIST_ENDPOINT = "/conversations.list"
+SLACK_MESSAGE_LINK_ENDPOINT = "/chat.getPermalink"
 
 
 def _get_slack_url(endpoint):
@@ -107,7 +108,8 @@ class SlackPostMessageQuery(SlackQuery):
         super().__init__("post", SLACK_POST_MESSAGE_ENDPOINT)
         self.message = message
         self.reply_to = reply_to
-        self.thread_id = None
+        self.ts = None
+        self.channel_id = None
         self.payload = self._get_payload()
 
     def _get_payload(self):
@@ -119,11 +121,12 @@ class SlackPostMessageQuery(SlackQuery):
             "as_user": True,
         }
         if self.reply_to is not None:
-            payload.update({"thread_ts": self.reply_to.thread_id})
+            payload.update({"thread_ts": self.reply_to.ts})
         return payload
 
     def _handle_response(self, response):
-        self.thread_id = response.get("ts")
+        self.ts = response.get("ts")
+        self.channel_id = response.get("channel")
 
 
 class SlackChannelListQuery(SlackQuery):
@@ -137,3 +140,18 @@ class SlackChannelListQuery(SlackQuery):
 
     def _handle_response(self, response):
         self.channels = [x["name"] for x in response["channels"]]
+
+
+class SlackMessageLinkQuery(SlackQuery):
+    """
+    Get Slack url of a message
+    """
+
+    def __init__(self, link_of):
+        super().__init__(
+            "get", SLACK_MESSAGE_LINK_ENDPOINT, params=[("channel", link_of.channel_id), ("message_ts", link_of.ts)]
+        )
+        self.url = None
+
+    def _handle_response(self, response):
+        self.url = response.get("permalink")
