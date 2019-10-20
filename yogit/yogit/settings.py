@@ -3,17 +3,19 @@ yogit settings
 """
 import collections
 import yaml
+from string import Template
 
 from yogit.yogit.paths import get_settings_path, get_scrum_report_path
 from yogit.storage.storage import Storage
 
 SETTINGS_VERSION = 1
-SCRUM_REPORT_VERSION = 1
+SCRUM_REPORT_VERSION = 2
 DEFAULT_SCRUM_REPORT_CONFIG = """
 # Available placeholders:
 # questions: list of question to ask
-# template: report template, each element is a line, available placeholders are:
-#   ${today}: "yyyy-MM-dd
+# template: report template, contains one or more section.
+#           each element of a section is a line, available placeholders are:
+#   ${date}: "yyyy-MM-dd
 #   ${qx}: x-th question
 #   ${ax}: x-th answer
 #   ${github_report}: GitHub activity presented in a table
@@ -24,17 +26,18 @@ questions:
 - "What do you plan to work on your next working day?"
 
 template:
-- "*REPORT ${today}*"
-- "*${q0}*"
-- "${a0}"
-- "*${q1}*"
-- "${a1}"
-- "*${q2}*"
-- "${a2}"
-- ""
-- "```"
-- "${github_report}"
-- "```"
+    sections:
+    - - "*REPORT ${date}*"
+      - "*${q0}*"
+      - "${a0}"
+      - "*${q1}*"
+      - "${a1}"
+      - "*${q2}*"
+      - "${a2}"
+      - ""
+    - - "```"
+      - "${github_report}"
+      - "```"
 """
 
 
@@ -133,6 +136,17 @@ class Settings:
         return data.get("slack", {}).get("report_channel", "") or ""
 
 
+def migrate_report_settings_from_1_to_2(data):
+    migrated = dict()
+    template_data = data.get("template", []) or []
+    template_data = "\n".join(template_data).replace("${today}", "${date}").split()
+    migrated["version"] = 2
+    migrated["questions"] = data.get("questions", []) or []
+    migrated["template"] = {"sections": [template_data]}
+
+    return migrated
+
+
 class ScrumReportSettings:
     """
     Scrum report settings access class
@@ -156,6 +170,9 @@ class ScrumReportSettings:
         data = self.storage.load()
         if data == {}:
             data = yaml.load(DEFAULT_SCRUM_REPORT_CONFIG, Loader=yaml.FullLoader)
+            self.storage.save(data)
+        if self.storage.get_version() == 1:
+            data = migrate_report_settings_from_1_to_2(data)
             self.storage.save(data)
         return data
 
