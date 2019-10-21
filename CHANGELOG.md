@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.12.0
+
+* Add `--label` filter to `yogit pr list` command
+* Add Slack integration: thanks @thomascarpentier for this contribution sponsored by Genymobile for #hacktoberfest. It allows `yogit scrum report` to publish the report on Slack on your behalf. To configure it: `yogit account setup`
+
 ## 1.11.0
 
 * Change `yogit review requested` output: print pull request title, don't print repository url anymore
