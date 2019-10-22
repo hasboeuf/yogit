@@ -140,10 +140,12 @@ def migrate_report_settings_from_1_to_2(data):
     """
     migrated = dict()
     template_data = data.get("template", []) or []
-    template_data = "\n".join(template_data).replace("${today}", "${date}").split()
+    migrated_template = []
+    for item in template_data:
+        migrated_template.append(item.replace("${today}", "${date}"))
     migrated["version"] = 2
     migrated["questions"] = data.get("questions", []) or []
-    migrated["template"] = {"sections": [template_data]}
+    migrated["template"] = {"sections": [migrated_template]}
 
     return migrated
 
@@ -172,7 +174,7 @@ class ScrumReportSettings:
         if data == {}:
             data = yaml.load(DEFAULT_SCRUM_REPORT_CONFIG, Loader=yaml.FullLoader)
             self.storage.save(data)
-        if self.storage.get_version() == 1:
+        if self.storage.get_version() is None or self.storage.get_version() == 1:
             data = migrate_report_settings_from_1_to_2(data)
             self.storage.save(data)
         return data

@@ -36,7 +36,8 @@ template:
         - ${a1}
         - '*${q2}*'
         - ${a2}
-    -   - '```'
+        - ''
+        - '```'
         - ${github_report}
         - '```'
 version: 2
