@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.12.1
+
+* Fix `yogit orga member ...` command: GitHub API became less permissive about param types
+
 ## 1.12.0
 
 * Add `--label` filter to `yogit pr list` command
