@@ -25,16 +25,16 @@ questions:
 
 template:
     sections:
-    - - "*REPORT ${date}*"
-      - "*${q0}*"
-      - "${a0}"
-      - "*${q1}*"
-      - "${a1}"
-      - "*${q2}*"
-      - "${a2}"
-    - - "```"
-      - "${github_report}"
-      - "```"
+    -   - "*REPORT ${date}*"
+        - "*${q0}*"
+        - "${a0}"
+        - "*${q1}*"
+        - "${a1}"
+        - "*${q2}*"
+        - "${a2}"
+    -   - "```"
+        - "${github_report}"
+        - "```"
 version: 2
 """
 
