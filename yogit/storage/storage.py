@@ -5,6 +5,8 @@ yogit storage
 import os
 import yaml
 
+import click
+
 from yogit.yogit.logger import LOGGER
 
 
@@ -27,8 +29,8 @@ class Storage:
             with open(self.filename, "r") as yaml_file:
                 return yaml.load(yaml_file, Loader=yaml.FullLoader) or {}
         except Exception as error:
+            raise click.ClickException("Cannot parse `{}`: {}".format(self.get_path(), str(error)))
             LOGGER.error(str(error))
-            return {}
 
     def save(self, data):
         with open(self.filename, "w") as yaml_file:

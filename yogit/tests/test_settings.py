@@ -1,5 +1,6 @@
 import pytest
 
+import click
 
 from yogit.tests.mocks.mock_settings import temporary_settings, assert_empty_settings, temporary_scrum_report
 from yogit.yogit.settings import Settings, ScrumReportSettings
@@ -78,6 +79,21 @@ def test_set_get_reset_settings():
     settings.reset_github()
     assert not settings.is_github_valid()
     assert_empty_settings()
+
+
+@pytest.mark.usefixtures("temporary_scrum_report")
+def test_cannot_parse_report():
+    report_settings = ScrumReportSettings()
+
+    with open(report_settings.storage.get_path(), "w") as settings_file:
+        settings_file.write("*")
+
+    try:
+        report_settings.get()
+    except click.ClickException as error:
+        assert "Cannot parse" in str(error)
+        return
+    assert False
 
 
 @pytest.mark.usefixtures("temporary_scrum_report")
