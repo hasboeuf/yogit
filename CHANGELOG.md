@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.12.3
+
+* Fix config file loading: do not raise an error when file does not exist
+
 ## 1.12.2
 
 * Fix scrum report template migration of `yogit 1.12.0`. If you encountered the bug, remove `~/.yogit/scrum_report.yaml` to get the default one back
