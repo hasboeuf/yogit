@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.12.2
+
+* Fix scrum report template migration of `yogit 1.12.0`. If you encountered the bug, remove `~/.yogit/scrum_report.yaml` to get the default one back
+
 ## 1.12.1
 
 * Fix `yogit orga member ...` command: GitHub API became less permissive about param types
