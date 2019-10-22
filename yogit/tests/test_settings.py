@@ -6,22 +6,21 @@ from yogit.yogit.settings import Settings, ScrumReportSettings
 
 REPORT_TEMPLATE_1 = r"""
 questions:
-- What have you done today?
-- Do you have any blockers?
-- What do you plan to work on your next working day?
+- "What have you done today?"
+- "Do you have any blockers?"
+- "What do you plan to work on your next working day?"
 template:
-- *REPORT ${today}*
-- *${q0}*
-- ${a0}
-- *${q1}*
-- ${a1}
-- *${q2}*
-- ${a2}
--
-- ```
-- ${github_report}
-- ```
-version: 1
+- "*REPORT ${today}*"
+- "*${q0}*"
+- "${a0}"
+- "*${q1}*"
+- "${a1}"
+- "*${q2}*"
+- "${a2}"
+- ""
+- "```"
+- "${github_report}"
+- "```"
 """
 
 REPORT_TEMPLATE_2 = r"""questions:
