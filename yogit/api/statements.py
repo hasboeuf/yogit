@@ -87,7 +87,7 @@ query {
 ORGANIZATION_MEMBER_LIST_STATEMENT = """
 query {
     viewer {
-        organization(login: $organization) {
+        organization(login: "$organization") {
             membersWithRole(first: $offset $after) {
                 pageInfo {
                     hasNextPage
