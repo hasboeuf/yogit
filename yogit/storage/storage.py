@@ -28,6 +28,9 @@ class Storage:
         try:
             with open(self.filename, "r") as yaml_file:
                 return yaml.load(yaml_file, Loader=yaml.FullLoader) or {}
+        except OSError as error:
+            LOGGER.error(str(error))
+            return {}
         except Exception as error:
             raise click.ClickException("Cannot parse `{}`: {}".format(self.get_path(), str(error)))
             LOGGER.error(str(error))
