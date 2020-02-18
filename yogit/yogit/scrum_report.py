@@ -14,14 +14,14 @@ from yogit.yogit.logger import LOGGER
 from yogit.yogit.slack import SlackPostMessageQuery, SlackMessageLinkQuery
 
 
-def _get_github_report(report_dt):
+def _exec_github_report_query(report_dt):
     try:
         query = OneDayContributionListQuery(report_dt)
         query.execute()  # pylint: disable=no-value-for-parameter
-        return query.tabulate()
+        return query
     except Exception as exception:
-        LOGGER.error(str(exception))
-        return str(exception)
+        LOGGER.exception(str(exception))
+        raise exception
 
 
 def generate_scrum_report(report_dt):
@@ -35,13 +35,22 @@ def generate_scrum_report(report_dt):
     click.echo("• To customize report template, edit `{}`".format(report_settings.get_path()))
     click.echo("• Begin line with an extra " + click.style("<space>", bold=True) + " to indent it")
     click.echo("")
-    click.secho("Report of {}".format(report_dt.date().isoformat()), bold=True)
+
+    report_query = _exec_github_report_query(report_dt)
+    click.secho("Today's cheat sheet 😏:", bold=True)
+    if len(report_query.data) == 0:
+        click.echo("• Sorry, nothing from GitHub may be you can ask your mum? 🤷‍")
+    else:
+        for contrib in report_query.get_contrib_str():
+            click.echo("• {}".format(contrib))
+    click.echo("")
 
     data = {}
     questions = report_settings.get_questions()
     tpl = report_settings.get_template()
-
     suffix = "• "
+
+    click.secho("Report of {}".format(report_dt.date().isoformat()), bold=True)
     for idx, question in enumerate(questions):
         click.echo(click.style(question, bold=True) + " (empty line to move on)")
         answers = []
@@ -60,7 +69,7 @@ def generate_scrum_report(report_dt):
         template = Template("\n".join(section))
         data["date"] = report_dt.date().isoformat()
         if "${github_report}" in template.template:
-            data["github_report"] = _get_github_report(report_dt)
+            data["github_report"] = report_query.tabulate()
         report_sections.append(template.safe_substitute(data))
 
     settings = Settings()

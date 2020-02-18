@@ -11,6 +11,7 @@ from yogit.api.client import GraphQLClient, RESTClient
 from yogit.api.statement import prepare, prepare_pagination
 from yogit.utils.dateutils import dt_for_str, days_ago_str
 from yogit.utils.spinner import spin
+from yogit.yogit.logger import LOGGER
 
 
 def shorten_str(full_string):
@@ -470,21 +471,26 @@ class OneDayContributionListQuery(GraphQLQuery):
 
         for pr_contribution in pr_contributions:
             url = pr_contribution["node"]["pullRequest"]["url"]
+            title = shorten_str(pr_contribution["node"]["pullRequest"]["title"])
             state = pr_contribution["node"]["pullRequest"]["state"]
-            self.data.append([url, "OWNER", state])
+            self.data.append([url, "OWNER", state, title])
 
         for rv_contribution in rv_contributions:
             url = rv_contribution["node"]["pullRequest"]["url"]
+            title = shorten_str(rv_contribution["node"]["pullRequest"]["title"])
             state = rv_contribution["node"]["pullRequestReview"]["state"]
-            self.data.append([url, "REVIEWER", state])
+            self.data.append([url, "REVIEWER", state, title])
 
-        self.data = sorted(self.data, key=lambda x: (x[0], x[1], x[2]))
+        self.data = sorted(self.data, key=lambda x: (x[0], x[1], x[2], x[3]))
 
     def tabulate(self):
-        return tabulate(self.data, headers=["PULL REQUEST", "ROLE", "STATE"])
+        return tabulate([x[:-1] for x in self.data], headers=["PULL REQUEST", "ROLE", "STATE"])
 
     def print(self):
         click.echo(self.tabulate())
+
+    def get_contrib_str(self):
+        return ["{} ({})".format(x[3], x[1].lower()) for x in self.data]
 
 
 class BranchListQuery(GraphQLQuery):

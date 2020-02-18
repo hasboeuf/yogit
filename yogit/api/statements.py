@@ -202,6 +202,7 @@ ONE_DAY_CONTRIBUTION_LIST_STATEMENT = """
                         }
                         pullRequest {
                             url
+                            title
                         }
                     }
                 }

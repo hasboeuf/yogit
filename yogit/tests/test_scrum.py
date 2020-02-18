@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 import responses
 import pytest
 from click.testing import CliRunner
@@ -65,6 +65,9 @@ def test_with_specific_date(mock_get_report, runner):
         "• To customize report template, edit `{}`\n"
         "• Begin line with an extra <space> to indent it\n"
         "\n"
+        "Today's cheat sheet 😏:\n"
+        "• Sorry, nothing from GitHub may be you can ask your mum? 🤷‍\n"
+        "\n"
         "Report of 2019-06-05\n"
         "Copy to clipboard? [y/N] n\n"
         "\n"
@@ -84,8 +87,16 @@ def test_default_report_ok(mock_copy, mock_compute_date, runner):
                     "contributionsCollection": {
                         "pullRequestContributions": {
                             "edges": [
-                                {"node": {"pullRequest": {"url": "https://xyz", "state": "OPEN"}}},
-                                {"node": {"pullRequest": {"url": "https://abc", "state": "MERGED"}}},
+                                {
+                                    "node": {
+                                        "pullRequest": {"url": "https://xyz", "state": "OPEN", "title": "Title xyz"}
+                                    }
+                                },
+                                {
+                                    "node": {
+                                        "pullRequest": {"url": "https://abc", "state": "MERGED", "title": "Title abc"}
+                                    }
+                                },
                             ]
                         },
                         "pullRequestReviewContributions": {
@@ -93,13 +104,13 @@ def test_default_report_ok(mock_copy, mock_compute_date, runner):
                                 {
                                     "node": {
                                         "pullRequestReview": {"url": "https://", "state": "APPROVED"},
-                                        "pullRequest": {"url": "https://ghi"},
+                                        "pullRequest": {"url": "https://ghi", "title": "Title ghi"},
                                     }
                                 },
                                 {
                                     "node": {
                                         "pullRequestReview": {"url": "https://", "state": "APPROVED"},
-                                        "pullRequest": {"url": "https://def"},
+                                        "pullRequest": {"url": "https://def", "title": "Title def"},
                                     }
                                 },
                             ]
@@ -123,6 +134,12 @@ def test_default_report_ok(mock_copy, mock_compute_date, runner):
         "Tips:\n"
         "• To customize report template, edit `{}`\n"
         "• Begin line with an extra <space> to indent it\n"
+        "\n"
+        "Today's cheat sheet 😏:\n"
+        "• Title abc (owner)\n"
+        "• Title def (reviewer)\n"
+        "• Title ghi (reviewer)\n"
+        "• Title xyz (owner)\n"
         "\n"
         "Report of 2019-07-10\n"
         "What have you done today? (empty line to move on)\n"
@@ -156,6 +173,12 @@ def test_default_report_ok(mock_copy, mock_compute_date, runner):
         "Tips:\n"
         "• To customize report template, edit `{}`\n"
         "• Begin line with an extra <space> to indent it\n"
+        "\n"
+        "Today's cheat sheet 😏:\n"
+        "• Title abc (owner)\n"
+        "• Title def (reviewer)\n"
+        "• Title ghi (reviewer)\n"
+        "• Title xyz (owner)\n"
         "\n"
         "Report of 2019-07-10\n"
         "What have you done today? (empty line to move on)\n"
@@ -199,9 +222,10 @@ def test_default_report_ok(mock_copy, mock_compute_date, runner):
 @pytest.mark.usefixtures("mock_settings")
 @pytest.mark.usefixtures("temporary_scrum_report")
 @patch("yogit.yogit.settings.ScrumReportSettings.get", return_value={"questions": [], "template": {"sections": []}})
+@patch("yogit.yogit.scrum_report._exec_github_report_query", return_value=MagicMock())
 @patch("pyperclip.copy", side_effect=Exception("error"))
 @patch("yogit.yogit.scrum._compute_date_str", return_value=datetime(2019, 8, 20, 1, 15, 59, 666))
-def test_report_clipboard_copy_error(mock_compute_date, mock_copy, mock_get_report, runner):
+def test_report_clipboard_copy_error(mock_compute_date, mock_copy, mock_query, mock_get_report, runner):
     Settings().reset_slack()
     result = runner.invoke(cli.main, ["scrum", "report"], input="\n".join(["y\n"]))
     report_settings = ScrumReportSettings()
@@ -212,6 +236,9 @@ def test_report_clipboard_copy_error(mock_compute_date, mock_copy, mock_get_repo
         "Tips:\n"
         "• To customize report template, edit `{}`\n"
         "• Begin line with an extra <space> to indent it\n"
+        "\n"
+        "Today's cheat sheet 😏:\n"
+        "• Sorry, nothing from GitHub may be you can ask your mum? 🤷‍\n"
         "\n"
         "Report of 2019-08-20\n"
         "Copy to clipboard? [y/N] y\n"
