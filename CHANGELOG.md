@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.13.0
+
+* Improve `yogit scrum report`: list contributions before completing the report
+* Slack post now handles correctly #channel mentions (member mentions is not working yet)
+
 ## 1.12.3
 
 * Fix config file loading: do not raise an error when file does not exist
