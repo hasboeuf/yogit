@@ -119,6 +119,7 @@ class SlackPostMessageQuery(SlackQuery):
             "channel": settings.get_slack_channel(),
             "text": self.message,
             "as_user": True,
+            "link_names": True,
         }
         if self.reply_to is not None:
             payload.update({"thread_ts": self.reply_to.ts})
