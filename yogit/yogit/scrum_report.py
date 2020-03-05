@@ -18,10 +18,10 @@ def _exec_github_report_query(report_dt):
     try:
         query = OneDayContributionListQuery(report_dt)
         query.execute()  # pylint: disable=no-value-for-parameter
-        return query
     except Exception as exception:
         LOGGER.exception(str(exception))
-        raise exception
+    finally:
+        return query
 
 
 def generate_scrum_report(report_dt):
@@ -36,8 +36,8 @@ def generate_scrum_report(report_dt):
     click.echo("• Begin line with an extra " + click.style("<space>", bold=True) + " to indent it")
     click.echo("")
 
+    click.secho("GitHub's cheat sheet 😏:", bold=True)
     report_query = _exec_github_report_query(report_dt)
-    click.secho("Today's cheat sheet 😏:", bold=True)
     if len(report_query.data) == 0:
         click.echo("• Sorry, nothing from GitHub may be you can ask your mum? 🤷‍")
     else:

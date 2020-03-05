@@ -65,7 +65,7 @@ def test_with_specific_date(mock_get_report, runner):
         "• To customize report template, edit `{}`\n"
         "• Begin line with an extra <space> to indent it\n"
         "\n"
-        "Today's cheat sheet 😏:\n"
+        "GitHub's cheat sheet 😏:\n"
         "• Sorry, nothing from GitHub may be you can ask your mum? 🤷‍\n"
         "\n"
         "Report of 2019-06-05\n"
@@ -135,7 +135,7 @@ def test_default_report_ok(mock_copy, mock_compute_date, runner):
         "• To customize report template, edit `{}`\n"
         "• Begin line with an extra <space> to indent it\n"
         "\n"
-        "Today's cheat sheet 😏:\n"
+        "GitHub's cheat sheet 😏:\n"
         "• Title abc (owner)\n"
         "• Title def (reviewer)\n"
         "• Title ghi (reviewer)\n"
@@ -174,7 +174,7 @@ def test_default_report_ok(mock_copy, mock_compute_date, runner):
         "• To customize report template, edit `{}`\n"
         "• Begin line with an extra <space> to indent it\n"
         "\n"
-        "Today's cheat sheet 😏:\n"
+        "GitHub's cheat sheet 😏:\n"
         "• Title abc (owner)\n"
         "• Title def (reviewer)\n"
         "• Title ghi (reviewer)\n"
@@ -222,6 +222,31 @@ def test_default_report_ok(mock_copy, mock_compute_date, runner):
 @pytest.mark.usefixtures("mock_settings")
 @pytest.mark.usefixtures("temporary_scrum_report")
 @patch("yogit.yogit.settings.ScrumReportSettings.get", return_value={"questions": [], "template": {"sections": []}})
+@patch("yogit.api.queries.OneDayContributionListQuery.execute", side_effect=Exception())
+@patch("yogit.yogit.scrum._compute_date_str", return_value=datetime(2019, 8, 20, 1, 15, 59, 666))
+def test_report_github_error(mock_compute_date, mock_query, mock_get_report, runner):
+    Settings().reset_slack()
+    result = runner.invoke(cli.main, ["scrum", "report"], input="\n".join(["n\n"]))
+    report_settings = ScrumReportSettings()
+
+    assert result.exit_code == ExitCode.NO_ERROR.value
+    assert result.output == (
+        "Tips:\n"
+        "• To customize report template, edit `{}`\n"
+        "• Begin line with an extra <space> to indent it\n"
+        "\n"
+        "GitHub's cheat sheet 😏:\n"
+        "• Sorry, nothing from GitHub may be you can ask your mum? 🤷‍\n"
+        "\n"
+        "Report of 2019-08-20\n"
+        "Copy to clipboard? [y/N] n\n"
+        "\n"
+    ).format(report_settings.get_path())
+
+
+@pytest.mark.usefixtures("mock_settings")
+@pytest.mark.usefixtures("temporary_scrum_report")
+@patch("yogit.yogit.settings.ScrumReportSettings.get", return_value={"questions": [], "template": {"sections": []}})
 @patch("yogit.yogit.scrum_report._exec_github_report_query", return_value=MagicMock())
 @patch("pyperclip.copy", side_effect=Exception("error"))
 @patch("yogit.yogit.scrum._compute_date_str", return_value=datetime(2019, 8, 20, 1, 15, 59, 666))
@@ -237,7 +262,7 @@ def test_report_clipboard_copy_error(mock_compute_date, mock_copy, mock_query, m
         "• To customize report template, edit `{}`\n"
         "• Begin line with an extra <space> to indent it\n"
         "\n"
-        "Today's cheat sheet 😏:\n"
+        "GitHub's cheat sheet 😏:\n"
         "• Sorry, nothing from GitHub may be you can ask your mum? 🤷‍\n"
         "\n"
         "Report of 2019-08-20\n"
