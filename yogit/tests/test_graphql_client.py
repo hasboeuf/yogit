@@ -44,4 +44,4 @@ def test_ko():
     with pytest.raises(click.ClickException) as e:
         client.get({"query": "request"})
 
-    assert str(e.value) == '{"error": "result"}'
+    assert str(e.value) == "Internal server error"

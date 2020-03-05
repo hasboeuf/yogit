@@ -35,5 +35,7 @@ def http_call(method, url, **kwargs):
         raise click.ClickException("Bad request")
     elif response.status_code == 401:
         raise click.ClickException("Unauthorized")
+    elif response.status_code == 500:
+        raise click.ClickException("Internal server error")
     else:
         raise click.ClickException(response.text)
