@@ -137,8 +137,8 @@ def test_br_list(runner):
                                             "node": {
                                                 "associatedPullRequests": {
                                                     "edges": [
-                                                        {"node": {"url": "https://xyz"}},
-                                                        {"node": {"url": "https://abc"}},
+                                                        {"node": {"url": "https://def/pull/2"}},
+                                                        {"node": {"url": "https://def/pull/1"}},
                                                     ]
                                                 },
                                                 "name": "has_pull_request",
@@ -195,21 +195,21 @@ def test_br_list(runner):
     result = runner.invoke(cli.main, ["branch", "list"])
     assert result.exit_code == ExitCode.NO_ERROR.value
     assert result.output == (
-        "REPO         BRANCH            PULL REQUEST\n"
-        "-----------  ----------------  --------------\n"
-        "https://abc  no_pull_request\n"
-        "https://def  has_pull_request  https://abc\n"
-        "                               https://xyz\n"
-        "https://fgh  xyz\n"
-        "https://xyz  abc\n"
-        "https://xyz  xyz\n"
+        "URL                 BRANCH\n"
+        "------------------  ----------------\n"
+        "https://abc         no_pull_request\n"
+        "https://def/pull/1  has_pull_request\n"
+        "https://def/pull/2\n"
+        "https://fgh         xyz\n"
+        "https://xyz         abc\n"
+        "https://xyz         xyz\n"
         "Count: 5\n"
     )
 
 
 @pytest.mark.usefixtures("mock_settings")
 @responses.activate
-def test_br_list(runner):
+def test_br_list_dangling(runner):
     response_part_1 = {
         "data": {
             "viewer": {
@@ -302,7 +302,7 @@ def test_br_list(runner):
     result = runner.invoke(cli.main, ["branch", "list", "--dangling"])
     assert result.exit_code == ExitCode.NO_ERROR.value
     assert result.output == (
-        "REPO         BRANCH\n"
+        "URL          BRANCH\n"
         "-----------  ---------------\n"
         "https://abc  no_pull_request\n"
         "https://xyz  abc\n"

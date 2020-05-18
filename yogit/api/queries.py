@@ -520,19 +520,22 @@ class BranchListQuery(GraphQLQuery):
                 pr_list = sorted(pr_list)
                 if self.emails is not None:
                     if author_email in self.emails:
+                        url = repo_url
                         if self.is_dangling:
-                            self.data.append([repo_url, branch_name])
+                            self.data.append([url, branch_name])
                         else:
-                            self.data.append([repo_url, branch_name, "\n".join(pr_list)])
+                            if pr_list:
+                                url = "\n".join(pr_list)
+                            self.data.append([url, branch_name])
 
         self.data = sorted(self.data, key=lambda x: (x[0], x[1]))
 
     def print(self):
         no_results_message = "Nothing... 😿 Time to push hard 💪"
-        headers = ["REPO", "BRANCH", "PULL REQUEST"]
+        headers = ["URL", "BRANCH"]
         if self.is_dangling:
             no_results_message = "Everything is clean 👏"
-            headers = ["REPO", "BRANCH"]
+            headers = ["URL", "BRANCH"]
 
         if len(self.data) == 0:
             click.secho(no_results_message, bold=True)
