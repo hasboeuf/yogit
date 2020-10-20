@@ -39,7 +39,7 @@ def generate_scrum_report(report_dt):
     click.secho("GitHub's cheat sheet 😏:", bold=True)
     report_query = _exec_github_report_query(report_dt)
     if len(report_query.data) == 0:
-        click.echo("• Sorry, nothing from GitHub may be you can ask your mum? 🤷‍")
+        click.echo("• Sorry, nothing from GitHub! Maybe you can ask your mum? 🤷‍")
     else:
         for contrib in report_query.get_contrib_str():
             click.echo("• {}".format(contrib))

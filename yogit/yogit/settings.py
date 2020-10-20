@@ -10,7 +10,7 @@ SETTINGS_VERSION = 1
 SCRUM_REPORT_VERSION = 2
 DEFAULT_SCRUM_REPORT_CONFIG = """
 # Available placeholders:
-# questions: list of question to ask
+# questions: list of questions to ask
 # template: report template, contains one or more section.
 #           each element of a section is a line, available placeholders are:
 #   ${date}: "yyyy-MM-dd

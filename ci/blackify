@@ -12,7 +12,7 @@ black -l 120 .
 if test "$1" = "--check"; then
     if ! git diff --exit-code > black.diff ; then
         cat black.diff
-        echo "Coding style is broken! Consider to run `ci/blackify`"
+        echo "Coding style is broken! Consider running `ci/blackify`"
         exit 1
     fi
 fi

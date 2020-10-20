@@ -17,7 +17,7 @@ def branch():
 
 
 @click.command("list", help="List your branches")
-@click.option("--dangling", is_flag=True, help="Only show branches which does not have associated pull request")
+@click.option("--dangling", is_flag=True, help="Only show branches which do not have associated pull requests")
 @click.pass_context
 @account_required
 @check_update
