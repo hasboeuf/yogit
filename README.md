@@ -11,8 +11,8 @@ Command line utility for git daily work.
 ## Requirements
 
 * `Python3` and `pip3`
-* `yogit` is tested with Python `3.5`, `3.6`, `3.7`
-* `yogit` is mostly tested on `Linux` but also works on `macOS` and `Windows` (if using [Windows Terminal](https://github.com/microsoft/terminal)).
+* `yogit` has been tested with Python `3.5`, `3.6`, `3.7`
+* `yogit` has been mostly tested on `Linux` but also works on `macOS` and `Windows` (if using [Windows Terminal](https://github.com/microsoft/terminal)).
 * For now only GitHub API is supported
 
 ## Continuous integration
@@ -61,7 +61,7 @@ See documentation below for more details.
 
 ### Pull request
 
-`yogit pr list [--orga TEXT] [--label TEXT]`: List your opened pull requests. If `--orga` is set, results will be expanded to this specific organization. If `--label` is set, results will be filtered by pull request labels, you can set multiple `--label`.
+`yogit pr list [--orga TEXT] [--label TEXT]`: List your opened pull requests. If `--orga` is set, results will be expanded to this specific organization. If `--label` is set, results will be filtered by pull request labels. You can set multiple `--label`.
 
 ### Review
 
@@ -79,7 +79,7 @@ See documentation below for more details.
 
 A contribution is either a pull request or pull request review.
 
-By default this command is listing today's contributions.
+By default this command lists the contributions of the day.
 
 `yogit contrib stats`: Show some GitHub statistics.
 
@@ -95,8 +95,8 @@ By default this command is listing today's contributions.
 
 `yogit scrum report [--date TEXT]`: Generate your daily activity report
 
-If Slack integration is setup, report can be published on Slack. Note that report is composed of one or more sections, first section will published as a message, next section will be published as a reply of the first one.
+If Slack integration is setup, report can be published on Slack. Note that report is composed of one or more sections: the first section will be published as a message, the next sections will be published as a reply of the first one.
 
-Template of the report can be changed by editing `~/.yogit/scrum_report.yaml`
+Report template can be changed by editing `~/.yogit/scrum_report.yaml`
 
 You might need to install `xcopy` to fully enjoy this command.

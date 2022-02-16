@@ -24,8 +24,8 @@ def get_welcome_text():
 
 Welcome to yogit!
 
-Configuration is stored here `{}`,
-and is not encrypted, only use yogit on your personal computer.
+Configuration is stored here `{}`
+and is not encrypted. Use yogit on your personal computer only.
 """.format(
         settings.get_path()
     )
